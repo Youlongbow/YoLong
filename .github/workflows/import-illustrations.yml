@@ -1,0 +1,44 @@
+name: Import original HEAT and research illustrations
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-illustrations.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: raven-media-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser to read public Notion website images
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Inventory original media references
+        run: node scripts/build.mjs
+      - name: Copy first three original article pages' illustrations
+        env:
+          MIRROR_MAX_PAGES: '3'
+        run: node scripts/import-illustrations-browser.mjs
+      - name: Commit preserved images and update manifest
+        run: |
+          git config user.name 'raven-media-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/media-map.json assets/media/notion/
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: preserve original RAVEN article illustrations"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
