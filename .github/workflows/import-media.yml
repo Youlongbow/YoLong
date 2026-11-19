@@ -30,7 +30,7 @@ jobs:
         run: node scripts/import-logo-browser.mjs
       - name: Verify mirrored logo and map
         run: |
-          test -s assets/media/brand/raven-logo-web.png
+          test -s assets/media/brand/raven-logo-web.webp
           test -s content/media-map.json
       - name: Commit permanent logo copy
         run: |
