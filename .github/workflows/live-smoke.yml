@@ -18,7 +18,7 @@ jobs:
         run: |
           node --input-type=module <<'NODE'
           const base = process.env.SITE_URL;
-          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/app.js', '/content/site.json'];
+          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/app.js', '/content/site.json', '/content/security-zh.json', '/content/security-en.json', '/content/research-zh.json', '/security/zh/2026-11-17-001/', '/security/en/2026-11-17-001/', '/journal/zh/bla-strategy-analysis/', '/journal/en/pakistan-drc-mining-comparison/'];
           const failed = [];
           for (const path of paths) {
             try {
@@ -36,7 +36,9 @@ jobs:
               if (path.endsWith('.css') && !body.includes('.hero')) failed.push(path + ' CSS missing');
               if (path.endsWith('.js') && !body.includes('function bind')) failed.push(path + ' JS missing');
               if (path.endsWith('.json')) {
-                try { const data = JSON.parse(body); if (!data.sections?.zh || !data.sections?.en || !data.events?.length) failed.push(path + ' data invalid'); }
+                try { const data = JSON.parse(body); if (path.endsWith('site.json') && (!data.sections?.zh || !data.sections?.en)) failed.push(path + ' data invalid');
+                if (path.includes('security-') && data.events?.length !== 125) failed.push(path + ' archive count invalid');
+                if (path.includes('research-') && !data.articles?.length) failed.push(path + ' research count invalid'); }
                 catch { failed.push(path + ' not JSON'); }
               }
               if (!path.includes('/assets/') && !path.endsWith('.json') && (!body.includes('id="app"') || !body.includes('/assets/app.js'))) failed.push(path + ' app shell missing');
