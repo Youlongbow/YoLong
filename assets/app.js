@@ -70,7 +70,7 @@ function blockTitle(sectionCopy,title){
 }
 function homeHero(s){
  return '<section class="hero shell '+(lang==='zh'?'hero-zh':'')+'"><div class="hero-copy"><div class="over">'+esc(s.eyebrow)+'</div><h1>'+esc(s.headline)+'</h1><div class="lead">'+esc(s.lead)+'</div><p class="support">'+esc(s.supporting)+'</p><div class="btns"><a class="btn red" href="/contact/'+lang+'/">'+esc(s.contact)+' ↗</a><a class="btn" href="/journal/'+lang+'/">'+esc(s.explore)+' ↗</a></div></div><div class="hero-art"><div class="giant-r">R</div><div class="target"></div><div class="serial">RAVEN / FIELD-TESTED SECURITY<br>STRATEGY — SYSTEMS — EXECUTION</div></div></section>'+
- '<div class="metrics shell"><div class="metric"><strong>15+</strong><span>YEARS / FIELD EXPERIENCE</span></div><div class="metric"><strong>GLOBAL</strong><span>SECURITY & OPERATIONS</span></div><div class="metric"><strong>HEAT</strong><span>TRAINING & PREPAREDNESS</span></div><div class="metric"><strong>125</strong><span>HISTORICAL SECURITY RECORDS</span></div></div>';
+ '<div class="metrics shell"><div class="metric"><strong>15+</strong><span>YEARS / FIELD EXPERIENCE</span></div><div class="metric"><strong>GLOBAL</strong><span>SECURITY & OPERATIONS</span></div><div class="metric"><strong>HEAT</strong><span>TRAINING & PREPAREDNESS</span></div><div class="metric"><strong>'+(securityData?.events?.length||0)+'</strong><span>HISTORICAL SECURITY RECORDS</span></div></div>';
 }
 function expertise(s){
  const list=site.profile[lang==='zh'?'expertiseZh':'expertiseEn'];
