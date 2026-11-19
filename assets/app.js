@@ -169,8 +169,13 @@ function securityList(s,compact=false){
  const extra=compact?'<p class="archive-extra"><a class="btn" href="/security/'+lang+'/">'+esc(s.monitorLink)+' ↗</a></p>':
  '<div class="filters"><input id="search" type="search" placeholder="'+esc(txt.search)+'" aria-label="'+esc(txt.search)+'">'+
  '<select id="type" aria-label="Event category"><option value="">'+txt.all+'</option>'+Object.entries(txt.category).map(([k,v])=>'<option value="'+esc(k)+'">'+esc(v)+'</option>').join('')+'</select></div><div class="result-total" id="match-count">'+txt.count+': '+records.length+'</div>';
- return '<section class="sec shell" id="monitor">'+blockTitle(s,s.monitoringTitle)+'<p class="sec-intro">'+esc(compact?s.monitoringLead:txt.archive)+'</p>'+
- '<div class="archive-label">'+esc(txt.snapshot)+'</div>'+extra+
+ const latest=records.reduce((date,e)=>e.date>date?e.date:date,'');
+ const archiveDescription=lang==='zh'
+  ?'本栏目现收录 '+records.length+' 条中英文安全事件记录，最新记录日期为 '+latest+'。'+(site.preview?' 网站仍处于迁移预览阶段，日常监测发布以原网站为准。':'')
+  :'This archive contains '+records.length+' security event records in both languages. Latest record date: '+latest+'.'+(site.preview?' This is a migration preview; the original site remains the monitoring publication channel.':'');
+ const stamp=(lang==='zh'?'事件归档 / 最新记录 ':'EVENT ARCHIVE / LATEST RECORD ')+latest;
+ return '<section class="sec shell" id="monitor">'+blockTitle(s,s.monitoringTitle)+'<p class="sec-intro">'+esc(compact?s.monitoringLead:archiveDescription)+'</p>'+
+ '<div class="archive-label">'+esc(stamp)+'</div>'+extra+
  '<div class="events" id="events">'+shown.map(eventCard).join('')+'</div>'+
  (!compact&&records.length>18?'<div class="archive-extra"><button id="load-more" class="btn">'+txt.more+' ↓</button></div>':'')+
  '</section>';
