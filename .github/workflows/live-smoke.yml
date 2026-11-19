@@ -54,6 +54,21 @@ jobs:
           if(!brand.ok||!String(brand.headers.get('content-type')).includes('image/png')) failed.push('Local RAVEN brand mark unavailable');
           const media=await fetch(base+'/content/media-map.json').then(r=>r.json()).catch(()=>null);
           if(!media?.branding?.mark)failed.push('Local media mapping missing');
+          // Verify original logo, preserved SVG figures, and image manifest are actually served.
+          const mediaResponse=await fetch(base+'/content/media-map.json',{signal:AbortSignal.timeout(20000)});
+          if(!mediaResponse.ok)failed.push('Missing permanent media manifest');
+          else {
+            const media=await mediaResponse.json();
+            const references=Object.values(media.images||{});
+            const candidates=[media.branding?.logo,...references.filter(p=>p.endsWith('.svg')).slice(0,2),...references.filter(p=>p.endsWith('.webp')).slice(0,2)].filter(Boolean);
+            if(references.length<108)failed.push('Preserved original media reference count regressed: '+references.length);
+            for(const path of [...new Set(candidates)]){
+              const response=await fetch(base+path,{signal:AbortSignal.timeout(20000)});
+              const type=response.headers.get('content-type')||'';
+              console.log('MEDIA_HTTP',response.status,path,type);
+              if(!response.ok || !type.startsWith('image/'))failed.push('Local image missing: '+path);
+            }
+          }
           const oldPage='/p/2f83102210ef8055896fcecd3254a5a6';
           const redirect=await fetch(base+oldPage,{redirect:'manual'});
           const locationHeader=redirect.headers.get('location')||'';
