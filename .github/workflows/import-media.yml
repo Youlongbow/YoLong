@@ -41,5 +41,6 @@ jobs:
             echo 'Original branded media already preserved'
           else
             git commit -m "assets: preserve original RAVEN logo outside Notion"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
