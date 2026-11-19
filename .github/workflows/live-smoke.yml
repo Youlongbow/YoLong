@@ -81,6 +81,21 @@ jobs:
               if(!response.ok || !type.startsWith('image/'))failed.push('Local image missing: '+path);
             }
           }
+          // Verify the original research PDF archive is served independently of Notion.
+          const pdfManifestResponse=await fetchStable(base+'/content/journal-attachments.json');
+          if(!pdfManifestResponse.ok)failed.push('Missing journal PDF manifest');
+          else {
+            const pdfManifest=await pdfManifestResponse.json();
+            if(pdfManifest.publications?.length!==9)failed.push('Original research PDF inventory is incomplete');
+            for(const publication of pdfManifest.publications||[]){
+              try{
+                const response=await fetchStable(base+publication.path,{headers:{Range:'bytes=0-7'}});
+                const start=Buffer.from(await response.arrayBuffer()).subarray(0,5).toString('utf8');
+                console.log('ORIGINAL_PDF_HTTP',response.status,publication.order,publication.id,start);
+                if(!response.ok||start!=='%PDF-')failed.push('Original PDF unavailable: '+publication.id);
+              }catch(error){failed.push('Original PDF fetch failed: '+publication.id+' '+String(error))}
+            }
+          }
           const oldPage='/p/2f83102210ef8055896fcecd3254a5a6';
           const redirect=await fetchStable(base+oldPage,{redirect:'manual'});
           const locationHeader=redirect.headers.get('location')||'';
