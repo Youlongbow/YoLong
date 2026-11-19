@@ -38,5 +38,26 @@ for (const route of routes){
  mkdirSync(dest,{recursive:true});
  copyFileSync('index.html',join(dest,'index.html'));
 }
+const id = value => String(value||'').replace(/-/g,'');
+const redirects=[
+ '/p/2f83102210ef8055896fcecd3254a5a6 /zh/ 301',
+ '/p/2f53102210ef8047931acda0fd9bf6dd /en/ 301',
+ '/p/2f83102210ef81ba8732eba57dd2aee8 /journal/zh/ 301',
+ '/p/2f63102210ef800e9932dcdc7e003942 /journal/en/ 301'
+];
+for(const lang of ['zh','en']){
+ redirects.push('/p/'+id(security[lang].sourcePageId)+' /security/'+lang+'/ 301');
+ for(const record of pages[lang].pages){
+  redirects.push('/p/'+id(record.sourceId)+' /'+record.slug+'/'+lang+'/ 301');
+ }
+ for(const article of research[lang].articles){
+  redirects.push('/p/'+id(article.originalNotionId)+' /journal/'+lang+'/'+article.slug+'/ 301');
+ }
+ for(const module of training[lang].modules){
+  redirects.push('/p/'+id(module.sourceId)+' /training/'+lang+'/'+module.slug+'/ 301');
+ }
+}
+writeFileSync('dist/_redirects',redirects.join('\n')+'\n');
+
 writeFileSync('dist/robots.txt','User-agent: *\nDisallow: /\n');
-console.log(JSON.stringify({status:'preview-built',routes:routes.length,securityRecords:security.zh.events.length,localizedResearchPages:research.zh.articles.length+research.en.articles.length,trainingModules:training.zh.modules.length+training.en.modules.length}));
+console.log(JSON.stringify({status:'preview-built',routes:routes.length,securityRecords:security.zh.events.length,localizedResearchPages:research.zh.articles.length+research.en.articles.length,trainingModules:training.zh.modules.length+training.en.modules.length,legacyRedirects:redirects.length}));
