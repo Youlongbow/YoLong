@@ -32,6 +32,7 @@ jobs:
                 if (!nativeLinks) failed.push('Deployed JavaScript is older than latest repository commit');
               }
               if (!response.ok) { failed.push(path + ' HTTP ' + response.status); continue; }
+              if (path.endsWith('/') && new URL(response.url).pathname !== path) failed.push(path + ' unexpectedly redirected to ' + new URL(response.url).pathname);
               if (path.endsWith('.css') && !body.includes('.hero')) failed.push(path + ' CSS missing');
               if (path.endsWith('.js') && !body.includes('function bind')) failed.push(path + ' JS missing');
               if (path.endsWith('.json')) {
