@@ -49,6 +49,11 @@ jobs:
               console.log('ERROR', path, String(error));
             }
           }
+          const oldPage='/p/2f83102210ef8055896fcecd3254a5a6';
+          const redirect=await fetch(base+oldPage,{redirect:'manual'});
+          const locationHeader=redirect.headers.get('location')||'';
+          console.log('LEGACY_REDIRECT:',redirect.status,oldPage,'to',locationHeader);
+          if (redirect.status!==301 || !locationHeader.includes('/zh/')) failed.push('Legacy Notion homepage redirect failed');
           if (failed.length) {
             console.error('Live smoke test failed:', failed.join('; '));
             process.exitCode = 1;
