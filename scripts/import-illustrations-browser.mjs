@@ -107,6 +107,20 @@ try{
     },step*750);
     await page.waitForTimeout(210);
    }
+   for(const id of [...active]){
+    const job=byId.get(id);
+    const src='https://www.ravenlong.com/image/attachment%3A'+id+'%3A'+encodeURIComponent(job.name);
+    try{
+     const result=await page.evaluate(async(src)=>{
+      const image=new Image();
+      image.style.cssText='position:absolute;width:1px;height:1px;left:-99999px';
+      document.body.appendChild(image);image.src=src;
+      try{await Promise.race([image.decode(),new Promise((_,reject)=>setTimeout(()=>reject(Error('timeout')),7000))]);return {ok:true,width:image.naturalWidth}}
+      finally{image.remove()}
+     },src);
+     print('MEDIA_FORCED',{id,ok:result.ok});
+    }catch(e){print('MEDIA_FORCED_FAILED',{id,name:job.name,error:String(e).slice(0,130)})}
+   }
    await page.waitForTimeout(900);
    print('MEDIA_PAGE',{path:new URL(url).pathname,http:response?.status(),needed:needed.length,remaining:active.size,scroller});
   }catch(e){failed++;print('MEDIA_PAGE_FAILED',{path:new URL(url).pathname,error:String(e).slice(0,180)})}
