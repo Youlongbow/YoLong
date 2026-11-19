@@ -31,6 +31,18 @@ try{
  assert((await desktop.locator('.article-content').innerText()).length>6000,'Long research report migrated in full');
  await desktop.goto(base+'/journal/en/pakistan-drc-mining-comparison/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>6000,'English research report renders');
+ await desktop.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
+ assert((await desktop.locator('.article-content').innerText()).length>850,'About page migrated');
+ await desktop.goto(base+'/experience/en/',{waitUntil:'networkidle',timeout:60000});
+ assert((await desktop.locator('.article-content').innerText()).length>2000,'English experience page migrated');
+ await desktop.goto(base+'/contact/zh/',{waitUntil:'networkidle',timeout:60000});
+ assert((await desktop.locator('.article-content').innerText()).length>200,'Contact page migrated');
+ await desktop.goto(base+'/training/zh/',{waitUntil:'networkidle',timeout:60000});
+ assert(await desktop.locator('.course-card').count()===11,'Full HEAT curriculum displays ten modules plus review');
+ await desktop.goto(base+'/training/en/01/',{waitUntil:'networkidle',timeout:60000});
+ assert((await desktop.locator('.article-content').innerText()).length>4500,'English HEAT module retains full text');
+ await desktop.goto(base+'/training/zh/11/',{waitUntil:'networkidle',timeout:60000});
+ assert((await desktop.locator('.article-content').innerText()).length>1400,'Chinese comprehensive review retains full text');
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
  mobile.on('pageerror',error=>errors.push('mobile: '+error.message));
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
