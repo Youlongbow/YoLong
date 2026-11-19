@@ -1,7 +1,5 @@
 name: Probe public legacy site media
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 jobs:
   probe:
