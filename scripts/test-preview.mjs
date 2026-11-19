@@ -12,8 +12,11 @@ try {
   assert(await desktop.locator('.paper').count()===4,'Four research references render');
   console.log('RAVEN_DESKTOP_JPEG_BASE64:'+ (await desktop.screenshot({type:'jpeg',quality:58})).toString('base64'));
   await desktop.locator('[data-lang="en"]').first().click();
-  await desktop.waitForURL('**/en/',{timeout:15000});
-  assert((await desktop.locator('h1').innerText()).includes('SECURITY BUILT'),'Language switching to English works');
+  await desktop.waitForTimeout(2500);
+  console.log('LANG_SWITCH_ACTUAL_URL:',desktop.url());
+  console.log('LANG_SWITCH_TITLE:',await desktop.locator('h1').first().innerText().catch(e=>String(e)));
+  assert(new URL(desktop.url()).pathname.startsWith('/en/'),'Language switch navigates to English route');
+  assert((await desktop.locator('h1').innerText()).includes('SECURITY BUILT'),'English headline renders after switching');
   await desktop.goto(base+'/security/en/',{waitUntil:'networkidle',timeout:40000});
   assert(await desktop.locator('.event').count()===4,'Event archive renders four sample events');
   await desktop.locator('#search').fill('Kalemie');
