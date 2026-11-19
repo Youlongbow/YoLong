@@ -11,9 +11,11 @@ try{
  const payload=Buffer.from(await image.body());
  const type=(image.headers()['content-type']||'').split(';')[0];
  console.log('ORIGINAL_LOGO_RESPONSE',JSON.stringify({type,bytes:payload.length,url:image.url().split('?')[0]}));
- if(type!=='image/png'||payload.length<1000)throw Error('Original logo was not a valid PNG');
+ const ext=({'image/png':'png','image/webp':'webp','image/jpeg':'jpg'})[type];
+ if(!ext||payload.length<1000)throw Error('Original logo was not a supported raster image');
  mkdirSync('assets/media/brand',{recursive:true});
- writeFileSync('assets/media/brand/raven-logo-web.png',payload);
+ const local='/assets/media/brand/raven-logo-web.'+ext;
+ writeFileSync(local.slice(1),payload);
  mkdirSync('content',{recursive:true});
- writeFileSync('content/media-map.json',JSON.stringify({schema:1,branding:{logo:'/assets/media/brand/raven-logo-web.png'},images:{}},null,2)+'\n');
+ writeFileSync('content/media-map.json',JSON.stringify({schema:1,branding:{logo:local},images:{}},null,2)+'\n');
 }finally{await browser.close()}
