@@ -9,6 +9,8 @@ try{
  desktop.on('pageerror',error=>errors.push('desktop: '+error.message));
  await desktop.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('h1').innerText()).includes('安全体系'),'Chinese homepage is rendered');
+ assert(await desktop.locator('.hero-brand-mark').isVisible(),'Original RAVEN red-eye artwork is visible in the hero');
+ assert(await desktop.locator('.hero-brand-mark').evaluate(img=>img.complete&&img.naturalWidth>0),'Original brand artwork loads from local assets');
  assert(await desktop.locator('.paper').count()>=4,'Migrated research cards render');
  console.log('RAVEN_DESKTOP_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:56})).toString('base64'));
  await desktop.locator('.switch a[href="/en/"]').click();
