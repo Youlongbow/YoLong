@@ -23,5 +23,10 @@ jobs:
           test -s dist/assets/styles.css
           test -s dist/assets/app.js
           test -s dist/content/site.json
-          test -s dist/_redirects
+          test -s dist/en/index.html
+          test -s dist/zh/index.html
+          test -s dist/security/en/index.html
+          test -s dist/security/zh/index.html
+          test -s dist/journal/en/index.html
+          test -s dist/journal/zh/index.html
           node -e "const d=require('./dist/content/site.json');if(!d.sections.zh||!d.sections.en||d.events.length<4)process.exit(1)"
