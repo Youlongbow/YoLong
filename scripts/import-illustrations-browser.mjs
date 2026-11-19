@@ -43,25 +43,15 @@ page.on('response',response=>{
   if(pending.has(id)||!url.includes(id))continue;
   if(response.status()!==200)continue;
   const type=(response.headers()['content-type']||'').split(';')[0].trim();
-  const ext=type==='image/svg+xml'?'png':formats[type];
+  const ext=type==='image/svg+xml'?'svg':formats[type];
   if(!ext)continue;
   pending.add(id);
   const task=(async()=>{
    try{
     let binary=Buffer.from(await response.body());
     if(type==='image/svg+xml'){
-     const png=await page.evaluate(async(svgBase64)=>{
-      const image=new Image();
-      image.src='data:image/svg+xml;base64,'+svgBase64;
-      await image.decode();
-      const width=Math.max(400,Math.min(1800,image.naturalWidth||1200));
-      const height=Math.max(250,Math.min(2000,image.naturalHeight||750));
-      const canvas=document.createElement('canvas');
-      canvas.width=width;canvas.height=height;
-      canvas.getContext('2d').drawImage(image,0,0,width,height);
-      return canvas.toDataURL('image/png').split(',')[1];
-     },binary.toString('base64'));
-     binary=Buffer.from(png,'base64');
+     const svg=binary.toString('utf8');
+     if(!/<svg\b/i.test(svg)||/<script\b|<foreignObject\b|\bon[a-z]+\s*=|javascript:/i.test(svg))throw Error('SVG source failed safety validation');
     }
     if(binary.length<150||binary.length>MAX_BYTES)throw Error('Invalid size '+binary.length);
     const path='assets/media/notion/'+id+'.'+ext;
@@ -109,7 +99,16 @@ try{
    }
    for(const id of [...active]){
     const job=byId.get(id);
-    const src='https://www.ravenlong.com/image/attachment%3A'+id+'%3A'+encodeURIComponent(job.name);
+    const source=[...job.refs][0];
+    const found=source.match(/^notion-file-block:\/\/([^/]+)\/[a-z0-9-]+\?(.+)$/i);
+    if(!found){print('MEDIA_FORCED_FAILED',{id,reason:'missing block reference'});continue}
+    const originalParams=new URLSearchParams(found[2]);
+    const query=new URLSearchParams({
+      table:'block',id:found[1],spaceId:originalParams.get('space_id')||'',
+      userId:'',cache:'v2',imgBuildSrc:'requestProxiedImageUrl'
+    });
+    if(!/\.svg$/i.test(job.name))query.set('width','1310');
+    const src='https://www.ravenlong.com/image/attachment%3A'+id+'%3A'+encodeURIComponent(job.name)+'?'+query.toString();
     try{
      const result=await page.evaluate(async(src)=>{
       const image=new Image();
