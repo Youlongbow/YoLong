@@ -1,5 +1,6 @@
 import { cpSync, mkdirSync, copyFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const site=JSON.parse(readFileSync('content/site.json','utf8'));
 const security={zh:JSON.parse(readFileSync('content/security-zh.json','utf8')),en:JSON.parse(readFileSync('content/security-en.json','utf8'))};
@@ -60,4 +61,5 @@ for(const lang of ['zh','en']){
 writeFileSync('dist/_redirects',redirects.join('\n')+'\n');
 
 writeFileSync('dist/robots.txt','User-agent: *\nDisallow: /\n');
+execFileSync(process.execPath,['scripts/media-audit.mjs'],{stdio:'inherit'});
 console.log(JSON.stringify({status:'preview-built',routes:routes.length,securityRecords:security.zh.events.length,localizedResearchPages:research.zh.articles.length+research.en.articles.length,trainingModules:training.zh.modules.length+training.en.modules.length,legacyRedirects:redirects.length}));
