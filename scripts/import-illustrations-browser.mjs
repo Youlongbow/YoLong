@@ -43,12 +43,26 @@ page.on('response',response=>{
   if(pending.has(id)||!url.includes(id))continue;
   if(response.status()!==200)continue;
   const type=(response.headers()['content-type']||'').split(';')[0].trim();
-  const ext=formats[type];
+  const ext=type==='image/svg+xml'?'png':formats[type];
   if(!ext)continue;
   pending.add(id);
   const task=(async()=>{
    try{
-    const binary=Buffer.from(await response.body());
+    let binary=Buffer.from(await response.body());
+    if(type==='image/svg+xml'){
+     const png=await page.evaluate(async(svgBase64)=>{
+      const image=new Image();
+      image.src='data:image/svg+xml;base64,'+svgBase64;
+      await image.decode();
+      const width=Math.max(400,Math.min(1800,image.naturalWidth||1200));
+      const height=Math.max(250,Math.min(2000,image.naturalHeight||750));
+      const canvas=document.createElement('canvas');
+      canvas.width=width;canvas.height=height;
+      canvas.getContext('2d').drawImage(image,0,0,width,height);
+      return canvas.toDataURL('image/png').split(',')[1];
+     },binary.toString('base64'));
+     binary=Buffer.from(png,'base64');
+    }
     if(binary.length<150||binary.length>MAX_BYTES)throw Error('Invalid size '+binary.length);
     const path='assets/media/notion/'+id+'.'+ext;
     mkdirSync(dirname(path),{recursive:true});
