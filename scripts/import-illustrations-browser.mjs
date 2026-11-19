@@ -88,7 +88,7 @@ try{
     window.__ravenMediaScroll=el;
     return {height:el.scrollHeight,viewport:el.clientHeight,description:String(el.className||el.tagName).slice(0,100),candidates:nodes.length};
    });
-   const totalSteps=Math.min(75,Math.max(2,Math.ceil(scroller.height/750)+1));
+   const totalSteps=Math.min(260,Math.max(2,Math.ceil(scroller.height/750)+1));
    for(let step=0;step<totalSteps && active.size;step++){
     await page.evaluate(y=>{
      const el=window.__ravenMediaScroll;
