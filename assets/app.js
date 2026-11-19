@@ -34,7 +34,7 @@ const phrases={
   featured:'Core capabilities',legacy:'Legacy site',download:'Original link',area:'Expertise',platforms:'Resources & tools'
  }
 };
-let site, securityData, researchData, pagesData, trainingData;
+let site, securityData, researchData, pagesData, trainingData, mediaMap={branding:{},images:{}};
 let currentMatches=[], visible=18;
 const txt=phrases[lang];
 
@@ -53,7 +53,7 @@ function link(label,href,active=false){
 }
 function header(){
  return '<div class="grain"></div><header class="top shell">'+
-  '<a class="logo" href="/'+lang+'/"><span class="logomark">R</span><span class="logotxt">RAVEN<small>SECURITY ARCHITECTURE</small></span></a>'+
+  '<a class="logo" href="/'+lang+'/"><span class="logomark'+(mediaMap.branding?.logo?' logo-loaded':'')+'">'+(mediaMap.branding?.logo?'<img src="'+esc(mediaMap.branding.logo)+'" alt="RAVEN" width="40" height="40">':'R')+'</span><span class="logotxt">RAVEN<small>SECURITY ARCHITECTURE</small></span></a>'+
   '<button id="menu" class="mobile" aria-expanded="false" aria-controls="nav">MENU +</button>'+
   '<nav id="nav" class="nav">'+link('RAVEN','/'+lang+'/',section==='home')+
   link(txt.journal,'/journal/'+lang+'/',section==='journal')+link(txt.security,'/security/'+lang+'/',section==='security')+
@@ -114,6 +114,14 @@ function richBody(markdown,sourceLink){
    return '<aside class="course-callout">'+richInline(inner).replace(/\n/g,'<br>')+'</aside>';
   }
   if(/^<image\b|^<file\b|^<video\b|^<audio\b/.test(first)){
+    const match=chunk.match(/^<(image|file|video|audio)\b[^>]*source="([^"]+)"[^>]*\/?>/i);
+    const fileUrl=match?.[2]||'';
+    const preserved=mediaMap.images?.[fileUrl];
+    const caption=match?chunk.slice(match[0].length).replace(/<\/(?:image|file|video|audio)>/gi,'').trim():'';
+    if(match?.[1]==='image' && preserved){
+      const name=decodeURIComponent((fileUrl.match(/[?&]name=([^&]+)/)||[])[1]||'RAVEN image');
+      return '<figure class="article-figure"><img src="'+esc(preserved)+'" alt="'+esc(name)+'" loading="lazy" decoding="async">'+(caption?'<figcaption>'+richInline(caption).replace(/\n/g,'<br>')+'</figcaption>':'')+'</figure>';
+    }
     return '<aside class="media-placeholder">'+esc(txt.missingMedia)+' <a href="'+esc(sourceLink||oldHome[lang])+'" target="_blank" rel="noopener">'+txt.original+' ↗</a></aside>';
   }
   if(/^<table\b/i.test(first)){
@@ -254,6 +262,7 @@ try{
  if(section==='training')needed.push('/content/training-'+lang+'.json');
  const values=await Promise.all(needed.map(async(url)=>{const res=await fetch(url);if(!res.ok)throw Error(url+' HTTP '+res.status);return res.json()}));
  site=values[0]; let cursor=1;
+ mediaMap=await fetch('/content/media-map.json').then(r=>r.ok?r.json():null).catch(()=>null)||{branding:{},images:{}};
  if(section==='security'||section==='home')securityData=values[cursor++];
  if(section==='journal'||section==='home')researchData=values[cursor++];
  if(['about','experience','contact','training'].includes(section))pagesData=values[cursor++];
