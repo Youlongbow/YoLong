@@ -53,7 +53,7 @@ function link(label,href,active=false){
 }
 function header(){
  return '<div class="grain"></div><header class="top shell">'+
-  '<a class="logo" href="/'+lang+'/"><span class="logomark'+(mediaMap.branding?.logo?' logo-loaded':'')+'">'+(mediaMap.branding?.logo?'<img src="'+esc(mediaMap.branding.logo)+'" alt="RAVEN" width="40" height="40">':'R')+'</span><span class="logotxt">RAVEN<small>SECURITY ARCHITECTURE</small></span></a>'+
+  '<a class="logo" href="/'+lang+'/"><span class="logomark'+(mediaMap.branding?.mark?' logo-loaded':'')+'">'+(mediaMap.branding?.mark?'<img src="'+esc(mediaMap.branding.mark)+'" alt="RAVEN" width="40" height="40">':'R')+'</span><span class="logotxt">RAVEN<small>SECURITY ARCHITECTURE</small></span></a>'+
   '<button id="menu" class="mobile" aria-expanded="false" aria-controls="nav">MENU +</button>'+
   '<nav id="nav" class="nav">'+link('RAVEN','/'+lang+'/',section==='home')+
   link(txt.journal,'/journal/'+lang+'/',section==='journal')+link(txt.security,'/security/'+lang+'/',section==='security')+
@@ -277,6 +277,7 @@ try{
  else if(['about','experience','contact'].includes(section))content=staticContentPage();
  else content=homeHero(s)+expertise(s)+researchList(s,true)+securityList(s,true)+platforms(s);
  $('#app').innerHTML=header()+'<main>'+content+'</main>'+footer(s);
+ if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
 }catch(error){
  console.error('RAVEN preview failed:',error);
