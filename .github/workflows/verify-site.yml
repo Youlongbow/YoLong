@@ -29,4 +29,10 @@ jobs:
           test -s dist/security/zh/index.html
           test -s dist/journal/en/index.html
           test -s dist/journal/zh/index.html
+          test -s dist/security/zh/2026-11-17-001/index.html
+          test -s dist/security/en/2026-11-17-001/index.html
+          test -s dist/journal/zh/bla-strategy-analysis/index.html
+          test -s dist/journal/en/pakistan-drc-mining-comparison/index.html
+          test -s dist/robots.txt
+          node -e "const zh=require('./content/security-zh.json').events,en=require('./content/security-en.json').events;if(zh.length!==125||en.length!==125||zh.some((r,i)=>r.slug!==en[i].slug||r.date!==en[i].date))process.exit(1)"
           node -e "const d=require('./dist/content/site.json');if(!d.sections.zh||!d.sections.en||d.events.length<4)process.exit(1)"
