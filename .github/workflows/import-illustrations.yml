@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/import-illustrations.yml'
+      - 'scripts/import-illustrations-browser.mjs'
   workflow_dispatch:
 permissions:
   contents: write
