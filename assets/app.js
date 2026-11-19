@@ -1,7 +1,7 @@
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const pathParts = location.pathname.split('/').filter(Boolean);
-const section = pathParts[0]==='security' ? 'security' : pathParts[0]==='journal' ? 'journal' : 'home';
+const section = ['security','journal','about','experience','contact','training'].includes(pathParts[0]) ? pathParts[0] : 'home';
 const lang = section==='home' ? (pathParts[0]==='en'?'en':'zh') : (pathParts[1]==='en'?'en':'zh');
 const slug = section==='home' ? '' : (pathParts[2] || '');
 const oldHome = {zh:'https://www.ravenlong.com/p/2f83102210ef8055896fcecd3254a5a6',en:'https://www.ravenlong.com/p/2f53102210ef8047931acda0fd9bf6dd'};
@@ -34,7 +34,7 @@ const phrases={
   featured:'Core capabilities',legacy:'Legacy site',download:'Original link',area:'Expertise',platforms:'Resources & tools'
  }
 };
-let site, securityData, researchData;
+let site, securityData, researchData, pagesData, trainingData;
 let currentMatches=[], visible=18;
 const txt=phrases[lang];
 
@@ -42,6 +42,7 @@ function activeUrl(target){
  if(section==='home') return '/'+target+'/';
  if(!slug) return '/'+section+'/'+target+'/';
  if(section==='security') return '/security/'+target+'/'+slug+'/';
+ if(section==='training') return '/training/'+target+'/'+slug+'/';
  const translations=researchData?.articles || [];
  if(section==='journal' && target===lang) return '/journal/'+target+'/'+slug+'/';
  if(section==='journal' && target!==lang && slug==='pakistan-drc-mining-comparison') return '/journal/'+target+'/'+slug+'/';
@@ -56,8 +57,10 @@ function header(){
   '<button id="menu" class="mobile" aria-expanded="false" aria-controls="nav">MENU +</button>'+
   '<nav id="nav" class="nav">'+link('RAVEN','/'+lang+'/',section==='home')+
   link(txt.journal,'/journal/'+lang+'/',section==='journal')+link(txt.security,'/security/'+lang+'/',section==='security')+
-  link(txt.capabilities,'/'+lang+'/#expertise')+link(txt.platform,'/'+lang+'/#platforms')+
-  '<a target="_blank" rel="noopener" href="'+oldPages[lang].contact+'">'+txt.contact+'</a>'+
+  link(lang==='zh'?'经历':'Experience','/experience/'+lang+'/',section==='experience')+
+  link(lang==='zh'?'关于':'About','/about/'+lang+'/',section==='about')+
+  link('HEAT','/training/'+lang+'/',section==='training')+
+  link(txt.contact,'/contact/'+lang+'/',section==='contact')+
   '<div class="switch"><a class="'+(lang==='zh'?'on':'')+'" href="'+activeUrl('zh')+'">中文</a><a class="'+(lang==='en'?'on':'')+'" href="'+activeUrl('en')+'">EN</a></div>'+
   '</nav></header>'+
   '<div class="ticker shell"><span><i class="live-dot"></i> RAVEN / INDEPENDENT SECURITY RESEARCH</span><div class="right-meta"><span>GLOBAL OPERATIONS</span><span>FIELD PRACTICE</span><span class="preview-tag">MIGRATION PREVIEW</span></div></div>';
@@ -66,7 +69,7 @@ function blockTitle(sectionCopy,title){
  return '<div class="sec-head"><div><div class="over">'+esc(sectionCopy.eyebrow)+'</div><h2 class="'+(lang==='zh'?'zh-h':'')+'">'+esc(title)+'</h2></div></div>';
 }
 function homeHero(s){
- return '<section class="hero shell '+(lang==='zh'?'hero-zh':'')+'"><div class="hero-copy"><div class="over">'+esc(s.eyebrow)+'</div><h1>'+esc(s.headline)+'</h1><div class="lead">'+esc(s.lead)+'</div><p class="support">'+esc(s.supporting)+'</p><div class="btns"><a class="btn red" href="'+oldPages[lang].contact+'" target="_blank" rel="noopener">'+esc(s.contact)+' ↗</a><a class="btn" href="/journal/'+lang+'/">'+esc(s.explore)+' ↗</a></div></div><div class="hero-art"><div class="giant-r">R</div><div class="target"></div><div class="serial">RAVEN / FIELD-TESTED SECURITY<br>STRATEGY — SYSTEMS — EXECUTION</div></div></section>'+
+ return '<section class="hero shell '+(lang==='zh'?'hero-zh':'')+'"><div class="hero-copy"><div class="over">'+esc(s.eyebrow)+'</div><h1>'+esc(s.headline)+'</h1><div class="lead">'+esc(s.lead)+'</div><p class="support">'+esc(s.supporting)+'</p><div class="btns"><a class="btn red" href="/contact/'+lang+'/">'+esc(s.contact)+' ↗</a><a class="btn" href="/journal/'+lang+'/">'+esc(s.explore)+' ↗</a></div></div><div class="hero-art"><div class="giant-r">R</div><div class="target"></div><div class="serial">RAVEN / FIELD-TESTED SECURITY<br>STRATEGY — SYSTEMS — EXECUTION</div></div></section>'+
  '<div class="metrics shell"><div class="metric"><strong>15+</strong><span>YEARS / FIELD EXPERIENCE</span></div><div class="metric"><strong>GLOBAL</strong><span>SECURITY & OPERATIONS</span></div><div class="metric"><strong>HEAT</strong><span>TRAINING & PREPAREDNESS</span></div><div class="metric"><strong>125</strong><span>HISTORICAL SECURITY RECORDS</span></div></div>';
 }
 function expertise(s){
@@ -74,7 +77,7 @@ function expertise(s){
  return '<section class="sec shell" id="expertise">'+blockTitle(s,s.capabilitiesTitle)+'<p class="sec-intro">'+esc(s.capabilitiesLead)+'</p><div class="cards3">'+[0,1,2].map(i=>'<article class="feature"><span class="num">0'+(i+1)+' / '+txt.featured+'</span><h3>'+esc(list[i])+'</h3><span class="arrow">↗</span></article>').join('')+'</div></section>';
 }
 function platforms(s){
- const services=[['01',s.training,s.trainingLead,oldPages[lang].training],['02',s.career,s.careerLead,apps.careers],['03',s.ops,s.opsLead,apps.ops]];
+ const services=[['01',s.training,s.trainingLead,'/training/'+lang+'/'],['02',s.career,s.careerLead,apps.careers],['03',s.ops,s.opsLead,apps.ops]];
  return '<section class="sec shell" id="platforms">'+blockTitle(s,txt.platforms)+'<div class="cards3">'+services.map(x=>'<a class="feature" href="'+esc(x[3])+'" target="_blank" rel="noopener"><span class="num">'+x[0]+' / RAVEN</span><h3>'+esc(x[1])+'</h3><p>'+esc(x[2])+'</p><span class="arrow">↗</span></a>').join('')+'</div></section>';
 }
 function richInline(input){
@@ -89,9 +92,16 @@ function richInline(input){
  return s.replace(/\\\|/g,'|');
 }
 function richBody(markdown,sourceLink){
- const blocks=String(markdown??'').trim().split(/\n\s*\n/).filter(Boolean);
+ const cleaned=String(markdown??'')
+  .replace(/<\/?(?:columns|column|toggle|synced-block-reference)(?:\s+[^>]*)?>/gi,'')
+  .replace(/<p(?:\s+[^>]*)?>/gi,'').replace(/<\/p>/gi,'');
+ const blocks=cleaned.trim().split(/\n\s*\n/).filter(Boolean);
  return blocks.map(chunk=>{
   const first=chunk.split('\n')[0].trim();
+  if(/^<callout\b/i.test(first)){
+   const inner=chunk.replace(/^<callout[^>]*>\n?/i,'').replace(/\n?<\/callout>\s*$/i,'');
+   return '<aside class="course-callout">'+richInline(inner).replace(/\n/g,'<br>')+'</aside>';
+  }
   if(/^<image\b|^<file\b|^<video\b|^<audio\b/.test(first)){
     return '<aside class="media-placeholder">'+esc(txt.missingMedia)+' <a href="'+esc(sourceLink||oldHome[lang])+'" target="_blank" rel="noopener">'+txt.original+' ↗</a></aside>';
   }
@@ -167,8 +177,41 @@ function researchDetail(){
  '<div class="article-content">'+richBody(record.body,record.originalUrl)+
  '<div class="article-end"><a href="/journal/'+lang+'/">'+txt.journal+' ←</a></div></div></article>';
 }
+
+function staticContentPage(){
+ const record=pagesData?.pages.find(x=>x.slug===section);
+ if(!record)return '<section class="sec shell"><h2>404</h2></section>';
+ document.title=record.title+' · RAVEN';
+ return articleHero('RAVEN / '+section.toUpperCase(),record.title,'/'+lang+'/','RAVEN')+
+ '<article class="article-layout shell"><div class="article-sidebar"><p>RAVEN / '+section.toUpperCase()+'</p><div>'+txt.full+'</div></div><div class="article-content">'+richBody(record.body,record.sourceUrl)+'</div></article>';
+}
+function trainingList(){
+ const record=pagesData?.pages.find(x=>x.slug==='training');
+ const introduction=record?.body.replace(/<page url="[^"]+"[^>]*>[\s\S]*?<\/page>/g,'')||'';
+ const modules=trainingData?.modules||[];
+ document.title=(lang==='zh'?'HEAT 敌对环境安全意识培训':'HEAT Hostile Environment Awareness Training')+' · RAVEN';
+ return articleHero('RAVEN / HEAT',record?.title||'HEAT','/'+lang+'/','RAVEN')+
+ '<section class="sec shell course-overview"><div class="course-intro">'+richBody(introduction,record?.sourceUrl)+'</div>'+
+ '<div class="over">COURSE / '+modules.length+' MODULES</div>'+
+ '<div class="course-grid">'+modules.map((m,i)=>'<a class="course-card" href="/training/'+lang+'/'+m.slug+'/"><span>'+m.slug+' / HEAT</span><h3>'+esc(m.title.replace(/^\d{2}\s*[|｜]\s*/,''))+'</h3><em>↗</em></a>').join('')+'</div></section>';
+}
+function trainingDetail(){
+ const modules=trainingData?.modules||[];
+ const idx=modules.findIndex(m=>m.slug===slug);
+ if(idx<0)return '<section class="sec shell"><h2>404</h2><a href="/training/'+lang+'/">HEAT</a></section>';
+ const m=modules[idx];
+ document.title=m.title+' · RAVEN HEAT';
+ const previous=idx?'/training/'+lang+'/'+modules[idx-1].slug+'/':'/training/'+lang+'/';
+ const following=idx<modules.length-1?'/training/'+lang+'/'+modules[idx+1].slug+'/':'/training/'+lang+'/';
+ const backLabel=lang==='zh'?'课程目录':'Course directory';
+ return articleHero('HEAT / MODULE '+m.slug,m.title,'/training/'+lang+'/',backLabel)+
+ '<article class="article-layout shell"><div class="article-sidebar"><p>RAVEN / HEAT</p><div>MODULE '+m.slug+' / '+String(modules.length).padStart(2,'0')+'</div><div><a href="/training/'+lang+'/">'+backLabel+' ↗</a></div></div>'+
+ '<div class="article-content">'+richBody(m.body,m.sourceUrl)+
+ '<nav class="course-next"><a href="'+previous+'">← '+(lang==='zh'?'上一单元':'Previous')+'</a><a href="'+following+'">'+(lang==='zh'?'下一单元':'Next')+' →</a></nav></div></article>';
+}
+
 function footer(s){
- return '<footer class="footer shell"><div class="over">'+esc(s.kicker)+'</div><div class="footer-brand">RAVEN</div><div class="footerline"><span>© '+new Date().getFullYear()+' RAVEN · '+esc(s.siteNote)+'</span><span><a href="'+oldHome[lang]+'" target="_blank" rel="noopener">'+txt.legacy+' ↗</a> / <a href="'+oldPages[lang].contact+'" target="_blank" rel="noopener">'+txt.contact+' ↗</a></span></div></footer>';
+ return '<footer class="footer shell"><div class="over">'+esc(s.kicker)+'</div><div class="footer-brand">RAVEN</div><div class="footerline"><span>© '+new Date().getFullYear()+' RAVEN · '+esc(s.siteNote)+'</span><span><a href="'+oldHome[lang]+'" target="_blank" rel="noopener">'+txt.legacy+' ↗</a> / <a href="/contact/'+lang+'/">'+txt.contact+' ↗</a></span></div></footer>';
 }
 function bind(){
  const menu=$('#menu');
@@ -196,16 +239,22 @@ try{
  const needed=['/content/site.json'];
  if(section==='security'||section==='home')needed.push('/content/security-'+lang+'.json');
  if(section==='journal'||section==='home')needed.push('/content/research-'+lang+'.json');
+ if(['about','experience','contact','training'].includes(section))needed.push('/content/pages-'+lang+'.json');
+ if(section==='training')needed.push('/content/training-'+lang+'.json');
  const values=await Promise.all(needed.map(async(url)=>{const res=await fetch(url);if(!res.ok)throw Error(url+' HTTP '+res.status);return res.json()}));
  site=values[0]; let cursor=1;
  if(section==='security'||section==='home')securityData=values[cursor++];
  if(section==='journal'||section==='home')researchData=values[cursor++];
+ if(['about','experience','contact','training'].includes(section))pagesData=values[cursor++];
+ if(section==='training')trainingData=values[cursor++];
  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
  const s=site.sections[lang];
  document.title='RAVEN — '+(lang==='zh'?'安全架构与风险治理':'Security Architecture & Risk Governance');
  let content='';
  if(section==='security')content=slug?securityDetail():securityList(s);
  else if(section==='journal')content=slug?researchDetail():researchList(s);
+ else if(section==='training')content=slug?trainingDetail():trainingList();
+ else if(['about','experience','contact'].includes(section))content=staticContentPage();
  else content=homeHero(s)+expertise(s)+researchList(s,true)+securityList(s,true)+platforms(s);
  $('#app').innerHTML=header()+'<main>'+content+'</main>'+footer(s);
  bind();
