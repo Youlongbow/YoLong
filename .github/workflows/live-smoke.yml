@@ -49,6 +49,11 @@ jobs:
               console.log('ERROR', path, String(error));
             }
           }
+          const brand=await fetch(base+'/assets/media/brand/raven-mark-light.png');
+          console.log('RAVEN_BRAND_ASSET',brand.status,brand.headers.get('content-type'));
+          if(!brand.ok||!String(brand.headers.get('content-type')).includes('image/png')) failed.push('Local RAVEN brand mark unavailable');
+          const media=await fetch(base+'/content/media-map.json').then(r=>r.json()).catch(()=>null);
+          if(!media?.branding?.mark)failed.push('Local media mapping missing');
           const oldPage='/p/2f83102210ef8055896fcecd3254a5a6';
           const redirect=await fetch(base+oldPage,{redirect:'manual'});
           const locationHeader=redirect.headers.get('location')||'';
