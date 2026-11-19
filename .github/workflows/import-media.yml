@@ -1,0 +1,46 @@
+name: Import original RAVEN media
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-media.yml'
+      - 'scripts/mirror-media.mjs'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: raven-media-import
+  cancel-in-progress: false
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build media index
+        run: node scripts/build.mjs
+      - name: Mirror original branded logo
+        env:
+          MIRROR_LOGO_ONLY: '1'
+        run: node scripts/mirror-media.mjs
+      - name: Ensure logo was copied to static assets
+        run: |
+          test -s content/media-map.json
+          test -s assets/media/brand/raven-logo-web.png
+      - name: Commit archived media
+        run: |
+          git config user.name 'raven-media-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/media-map.json assets/media/
+          if git diff --cached --quiet; then
+            echo 'No new original assets'
+          else
+            git commit -m "assets: preserve original RAVEN logo outside Notion"
+            git push origin HEAD:main
+          fi
