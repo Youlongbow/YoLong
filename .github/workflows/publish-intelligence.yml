@@ -1,0 +1,47 @@
+name: Publish bilingual RAVEN intelligence
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'content/inbox/*.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: raven-intelligence-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refresh main branch
+        run: |
+          git fetch origin main
+          git checkout -B main origin/main
+      - name: Validate and prepare bilingual records
+        run: node scripts/publish-events.mjs
+      - name: Verify static site
+        run: |
+          node --input-type=module --check < assets/app.js
+          node scripts/build.mjs
+          test -s dist/security/zh/index.html
+          test -s dist/security/en/index.html
+      - name: Publish both languages in one commit
+        run: |
+          git config user.name 'raven-publishing-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/security-zh.json content/security-en.json
+          git add -A content/inbox
+          if git diff --cached --quiet; then
+            echo 'No new material'
+          else
+            git commit -m "content: publish validated bilingual security update"
+            git push origin HEAD:main
+          fi
