@@ -37,7 +37,7 @@ jobs:
               if (path.endsWith('.js') && !body.includes('function bind')) failed.push(path + ' JS missing');
               if (path.endsWith('.json')) {
                 try { const data = JSON.parse(body); if (path.endsWith('site.json') && (!data.sections?.zh || !data.sections?.en)) failed.push(path + ' data invalid');
-                if (path.includes('security-') && data.events?.length !== 125) failed.push(path + ' archive count invalid');
+                if (path.includes('security-') && data.events?.length < 125) failed.push(path + ' archive count regressed');
                 if (path.includes('research-') && !data.articles?.length) failed.push(path + ' research count invalid');
                 if (path.includes('pages-') && data.pages?.length !== 4) failed.push(path + ' site pages count invalid');
                 if (path.includes('training-') && data.modules?.length !== 11) failed.push(path + ' training module count invalid'); }
