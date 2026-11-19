@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // RAVEN bilingual security event ingest. Intended to run in GitHub Actions.
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 
 const inbox='content/inbox';
@@ -61,4 +61,5 @@ if(zh.length!==en.length)bad('Bilingual archive size mismatch');
 for(let i=0;i<zh.length;i++)if(zh[i].slug!==en[i].slug||zh[i].date!==en[i].date)bad('Bilingual order/date mismatch '+i);
 if(zh.length<oldCounts.zh||en.length<oldCounts.en)bad('Archive would lose records');
 for(const [lang,path] of Object.entries(paths))writeFileSync(path,JSON.stringify(archives[lang],null,2)+'\n');
+for(const filename of filenames)unlinkSync(join(inbox,filename));
 console.log(JSON.stringify({processedFiles:filenames.length,bilingualEventRecords:zh.length,originalCount:oldCounts.zh,updated:changed}));
