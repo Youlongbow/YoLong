@@ -1,5 +1,5 @@
 import { chromium } from 'playwright';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const page=await browser.newPage({viewport:{width:1400,height:950}});
 const logoId='0fe7f42c-4f01-47a5-bef6-4a6b6db77fe3';
@@ -17,5 +17,7 @@ try{
  const local='/assets/media/brand/raven-logo-web.'+ext;
  writeFileSync(local.slice(1),payload);
  mkdirSync('content',{recursive:true});
- writeFileSync('content/media-map.json',JSON.stringify({schema:1,branding:{logo:local},images:{}},null,2)+'\n');
+ const map=existsSync('content/media-map.json')?JSON.parse(readFileSync('content/media-map.json','utf8')):{schema:1,branding:{},images:{}};
+ map.branding.logo=local;
+ writeFileSync('content/media-map.json',JSON.stringify(map,null,2)+'\n');
 }finally{await browser.close()}
