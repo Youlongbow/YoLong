@@ -34,7 +34,7 @@ const phrases={
   featured:'Core capabilities',legacy:'Legacy site',download:'Original link',area:'Expertise',platforms:'Resources & tools'
  }
 };
-let site, securityData, researchData, pagesData, trainingData, mediaMap={branding:{},images:{}};
+let site, securityData, researchData, pagesData, trainingData, pdfData, mediaMap={branding:{},images:{}};
 let currentMatches=[], visible=18;
 const txt=phrases[lang];
 
@@ -150,13 +150,21 @@ function researchCard(a,isLegacy){
  const badge = isLegacy?'RAVEN / ARCHIVE':'RAVEN / '+txt.full;
  return '<article class="paper"><div class="meta">'+badge+(a.date?' / '+esc(a.date):'')+'</div><h3>'+esc(title)+'</h3>'+(summary?'<p>'+esc(summary)+'</p>':'')+'<a href="'+esc(href)+'"'+(isLegacy?' target="_blank" rel="noopener"':'')+'>'+txt.read+' ↗</a></article>';
 }
+function archivedPdfCards(){
+ const list=pdfData?.publications||[];
+ if(!list.length)return '';
+ const label=lang==='zh'?'原始研究文献（PDF）':'Original research publications (PDF)';
+ return '<h3 class="archive-subtitle">'+label+' <span class="pdf-count">'+list.length+'</span></h3><div class="paper-grid">'+
+ list.map(pub=>'<article class="paper pdf-paper"><div class="meta">RAVEN / PDF ARCHIVE / '+String(pub.order).padStart(2,'0')+'</div><h3>'+esc(pub.title)+'</h3><a href="'+esc(pub.path)+'" target="_blank" rel="noopener">'+(lang==='zh'?'查看原版 PDF':'Open original PDF')+' ↗</a></article>').join('')+
+ '</div>';
+}
 function researchList(s,compact=false){
  const entries=researchData?.articles||[];
  const cards=entries.map(a=>researchCard(a,false));
  const legacy=(site.articles||[]).filter(a=>!entries.some(x=>x.title===a[lang==='zh'?'titleZh':'titleEn']));
  if(compact) return '<section id="journal" class="sec shell">'+blockTitle(s,s.researchTitle)+'<p class="sec-intro">'+esc(s.researchLead)+'</p><div class="paper-grid">'+(cards.length?cards.slice(0,4):legacy.slice(0,4).map(a=>researchCard(a,true))).join('')+'</div><p class="archive-extra"><a class="btn" href="/journal/'+lang+'/">'+txt.journal+' ↗</a></p></section>';
  return '<section id="journal" class="sec shell">'+blockTitle(s,s.researchTitle)+'<p class="sec-intro">'+esc(txt.researchNote)+'</p><div class="paper-grid">'+cards.join('')+'</div>'+
- (legacy.length?'<h3 class="archive-subtitle">'+txt.researchOld+'</h3><div class="paper-grid">'+legacy.map(a=>researchCard(a,true)).join('')+'</div>':'')+'</section>';
+ (legacy.length?'<h3 class="archive-subtitle">'+txt.researchOld+'</h3><div class="paper-grid">'+legacy.map(a=>researchCard(a,true)).join('')+'</div>':'')+archivedPdfCards()+'</section>';
 }
 function eventHref(e){return '/security/'+lang+'/'+e.slug+'/'}
 function eventCard(e){
@@ -263,6 +271,7 @@ try{
  const needed=['/content/site.json'];
  if(section==='security'||section==='home')needed.push('/content/security-'+lang+'.json');
  if(section==='journal'||section==='home')needed.push('/content/research-'+lang+'.json');
+ if(section==='journal')needed.push('/content/journal-attachments.json');
  if(['about','experience','contact','training'].includes(section))needed.push('/content/pages-'+lang+'.json');
  if(section==='training')needed.push('/content/training-'+lang+'.json');
  const values=await Promise.all(needed.map(async(url)=>{const res=await fetch(url);if(!res.ok)throw Error(url+' HTTP '+res.status);return res.json()}));
@@ -270,6 +279,7 @@ try{
  mediaMap=await fetch('/content/media-map.json').then(r=>r.ok?r.json():null).catch(()=>null)||{branding:{},images:{}};
  if(section==='security'||section==='home')securityData=values[cursor++];
  if(section==='journal'||section==='home')researchData=values[cursor++];
+ if(section==='journal')pdfData=values[cursor++];
  if(['about','experience','contact','training'].includes(section))pagesData=values[cursor++];
  if(section==='training')trainingData=values[cursor++];
  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
