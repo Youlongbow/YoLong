@@ -1,0 +1,27 @@
+name: Verify RAVEN website
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser JavaScript syntax
+        run: node --input-type=module --check < assets/app.js
+      - name: Build static website
+        run: node scripts/build.mjs
+      - name: Validate preview distribution
+        run: |
+          test -s dist/index.html
+          test -s dist/assets/styles.css
+          test -s dist/assets/app.js
+          test -s dist/content/site.json
+          test -s dist/_redirects
+          node -e "const d=require('./dist/content/site.json');if(!d.sections.zh||!d.sections.en||d.events.length<4)process.exit(1)"
