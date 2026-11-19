@@ -92,12 +92,23 @@ function richInline(input){
  return s.replace(/\\\|/g,'|');
 }
 function richBody(markdown,sourceLink){
- const cleaned=String(markdown??'')
+ const savedTables=[];
+ let cleaned=String(markdown??'')
   .replace(/<\/?(?:columns|column|toggle|synced-block-reference)(?:\s+[^>]*)?>/gi,'')
   .replace(/<p(?:\s+[^>]*)?>/gi,'').replace(/<\/p>/gi,'');
+ cleaned=cleaned.replace(/<table\b[\s\S]*?<\/table>/gi,table=>{
+  const index=savedTables.push(table)-1;
+  return '\n\n%%RAVEN_TABLE_'+index+'%%\n\n';
+ });
  const blocks=cleaned.trim().split(/\n\s*\n/).filter(Boolean);
  return blocks.map(chunk=>{
   const first=chunk.split('\n')[0].trim();
+  const marker=first.match(/^%%RAVEN_TABLE_(\d+)%%$/);
+  if(marker){
+   let html=richInline(savedTables[Number(marker[1])]||'');
+   html=html.replace(/&lt;(\/?)(table|thead|tbody|tr|td|th|caption)(?:\s+[^&]*?)?&gt;/gi,(_,end,tag)=>'<'+end+tag.toLowerCase()+'>');
+   return '<div class="article-table">'+html+'</div>';
+  }
   if(/^<callout\b/i.test(first)){
    const inner=chunk.replace(/^<callout[^>]*>\n?/i,'').replace(/\n?<\/callout>\s*$/i,'');
    return '<aside class="course-callout">'+richInline(inner).replace(/\n/g,'<br>')+'</aside>';
