@@ -40,6 +40,6 @@ jobs:
           git add content/media-map.json assets/media/notion/
           if ! git diff --cached --quiet; then
             git commit -m "assets: preserve original RAVEN article illustrations"
-            git pull --rebase origin main
+            git pull --rebase -X theirs origin main
             git push origin HEAD:main
           fi
