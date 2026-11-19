@@ -33,6 +33,14 @@ jobs:
           test -s dist/security/en/2026-11-17-001/index.html
           test -s dist/journal/zh/bla-strategy-analysis/index.html
           test -s dist/journal/en/pakistan-drc-mining-comparison/index.html
+          test -s dist/about/zh/index.html
+          test -s dist/about/en/index.html
+          test -s dist/experience/zh/index.html
+          test -s dist/contact/en/index.html
+          test -s dist/training/zh/index.html
+          test -s dist/training/en/01/index.html
+          test -s dist/training/zh/11/index.html
+          node -e "for(const lang of ['zh','en']){const d=require('./content/training-'+lang+'.json');if(d.modules.length!==11||d.modules.some(x=>x.body.length<1000))process.exit(1)}"
           test -s dist/robots.txt
           node -e "const zh=require('./content/security-zh.json').events,en=require('./content/security-en.json').events;if(zh.length!==125||en.length!==125||zh.some((r,i)=>r.slug!==en[i].slug||r.date!==en[i].date))process.exit(1)"
           node -e "const d=require('./dist/content/site.json');if(!d.sections.zh||!d.sections.en||d.events.length<4)process.exit(1)"
