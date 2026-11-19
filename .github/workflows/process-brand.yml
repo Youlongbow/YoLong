@@ -1,0 +1,39 @@
+name: Adapt original RAVEN logo for dark theme
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/process-brand.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: raven-media-import
+  cancel-in-progress: false
+jobs:
+  process:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser canvas processing support
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Create original-brand transparent mark
+        run: node scripts/create-brand-mark.mjs
+      - name: Commit refined brand asset
+        run: |
+          git config user.name 'raven-media-bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add content/media-map.json assets/media/brand/raven-mark-light.png
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: add transparent original RAVEN mark for dark theme"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
