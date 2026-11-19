@@ -1,4 +1,4 @@
-import {mkdtempSync,mkdirSync,copyFileSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
+import {existsSync,mkdtempSync,mkdirSync,copyFileSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -27,12 +27,14 @@ try{
  const e=JSON.parse(readFileSync(join(cwd,'content','security-en.json'),'utf8'));
  assert(z.events.length===before+1&&e.events.length===before+1,'Bilingual insertion count wrong');
  assert(z.events[0].slug===template.slug&&e.events[0].slug===template.slug,'New event not sorted to first position');
+ assert(!existsSync(join(cwd,'content','inbox','test.json')),'Successful publication must clear processed inbox file');
  console.log('PASS valid bilingual event insert');
  setup();
  const invalid=structuredClone(template);invalid.en.body='';
  writeFileSync(join(cwd,'content','inbox','test.json'),JSON.stringify(invalid));
  const bad=spawnSync(process.execPath,[script],{cwd,encoding:'utf8'});
  assert(bad.status!==0,'Malformed event unexpectedly accepted');
+ assert(existsSync(join(cwd,'content','inbox','test.json')),'Invalid input must stay available for correction');
  const unchanged=JSON.parse(readFileSync(join(cwd,'content','security-zh.json'),'utf8'));
  assert(unchanged.events.length===before,'Invalid event modified production-archive copy');
  console.log('PASS invalid bilingual event rejection');
