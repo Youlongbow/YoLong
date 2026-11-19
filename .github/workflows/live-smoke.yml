@@ -1,0 +1,48 @@
+name: Smoke test Cloudflare preview
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  live-http:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check live Cloudflare endpoints
+        env:
+          SITE_URL: https://yolong.bournelong511.workers.dev
+        run: |
+          node --input-type=module <<'NODE'
+          const base = process.env.SITE_URL;
+          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/app.js', '/content/site.json'];
+          const failed = [];
+          for (const path of paths) {
+            try {
+              const response = await fetch(base + path, {signal: AbortSignal.timeout(20000)});
+              const body = await response.text();
+              const type = response.headers.get('content-type') || '';
+              console.log(response.status, path, type, 'bytes=' + body.length);
+              if (!response.ok) { failed.push(path + ' HTTP ' + response.status); continue; }
+              if (path.endsWith('.css') && !body.includes('.hero')) failed.push(path + ' CSS missing');
+              if (path.endsWith('.js') && !body.includes('function bind')) failed.push(path + ' JS missing');
+              if (path.endsWith('.json')) {
+                try { const data = JSON.parse(body); if (!data.sections?.zh || !data.sections?.en || !data.events?.length) failed.push(path + ' data invalid'); }
+                catch { failed.push(path + ' not JSON'); }
+              }
+              if (!path.includes('/assets/') && !path.endsWith('.json') && (!body.includes('id="app"') || !body.includes('/assets/app.js'))) failed.push(path + ' app shell missing');
+            } catch (error) {
+              failed.push(path + ' ' + String(error));
+              console.log('ERROR', path, String(error));
+            }
+          }
+          if (failed.length) {
+            console.error('Live smoke test failed:', failed.join('; '));
+            process.exitCode = 1;
+          } else {
+            console.log('All live Cloudflare endpoints responded with expected content.');
+          }
+          NODE
