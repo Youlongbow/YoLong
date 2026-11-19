@@ -17,7 +17,8 @@ try{
  await desktop.waitForURL('**/en/',{timeout:15000});
  assert((await desktop.locator('h1').innerText()).includes('SECURITY BUILT'),'English homepage language switch works');
  await desktop.goto(base+'/security/en/',{waitUntil:'networkidle',timeout:60000});
- assert((await desktop.locator('#match-count').innerText()).includes('125'),'125 events searchable in archive');
+ const liveArchiveCount=Number((await desktop.locator('#match-count').innerText()).match(/\d+/)?.[0]||0);
+ assert(liveArchiveCount>=125,'Original event archive retained and new records supported');
  assert(await desktop.locator('.event').count()===18,'Archive uses 18-item initial pagination');
  await desktop.locator('#search').fill('Gas Husky');
  const searchCount=await desktop.locator('.event').count();
