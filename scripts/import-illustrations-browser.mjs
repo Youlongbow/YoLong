@@ -31,7 +31,7 @@ for(const file of manifest.files){
 let saved=0,failed=0,visited=0,bytesTotal=0;
 const maxPages=Number(process.env.MIRROR_MAX_PAGES||0);
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
-const context=await browser.newContext({viewport:{width:1440,height:1000},userAgent:'Mozilla/5.0 RAVEN media preservation'});
+const context=await browser.newContext({viewport:{width:1440,height:1000}});
 const page=await context.newPage();
 const formats={'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif','image/avif':'avif'};
 const MAX_BYTES=12*1024*1024;
