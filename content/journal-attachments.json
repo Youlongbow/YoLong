@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "source": "Public RAVEN Journal Notion index",
+  "sourcePage": "2f831022-10ef-81ba-8732-eba57dd2aee8",
+  "total": 9,
+  "publications": [
+    {
+      "order": 1,
+      "id": "c3375c1b-5e79-42ad-aff5-9b25ac8e9de1",
+      "title": "基于开源情报时间线的BLF恐怖袭击循环时间评估（Nokundi袭击案例）",
+      "originalFilename": "基于开源情报时间线的BLF恐怖袭击循环时间评估（Nokundi袭击案例）.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-8011-b6ae-f72438f362c7/c3375c1b-5e79-42ad-aff5-9b25ac8e9de1?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=%E5%9F%BA%E4%BA%8E%E5%BC%80%E6%BA%90%E6%83%85%E6%8A%A5%E6%97%B6%E9%97%B4%E7%BA%BF%E7%9A%84BLF%E6%81%90%E6%80%96%E8%A2%AD%E5%87%BB%E5%BE%AA%E7%8E%AF%E6%97%B6%E9%97%B4%E8%AF%84%E4%BC%B0%EF%BC%88Nokundi%E8%A2%AD%E5%87%BB%E6%A1%88%E4%BE%8B%EF%BC%89.pdf",
+      "path": "/assets/media/publications/c3375c1b-5e79-42ad-aff5-9b25ac8e9de1.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 2,
+      "id": "0ce3f88c-2064-4cf5-8d88-1b29e6d12731",
+      "title": "Temporal Assessment of the BLF Terrorist Attack Cycle Based on OSINT Timelines Evidence from the 2025 Nokundi Incident",
+      "originalFilename": "Temporal_Assessment_of_the_BLF_Terrorist_Attack_Cycle_Based_on_OSINT_Timelines_Evidence_from_the_2025_Nokundi_Incident.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-8059-a6be-cb0ecf26d924/0ce3f88c-2064-4cf5-8d88-1b29e6d12731?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=Temporal_Assessment_of_the_BLF_Terrorist_Attack_Cycle_Based_on_OSINT_Timelines_Evidence_from_the_2025_Nokundi_Incident.pdf",
+      "path": "/assets/media/publications/0ce3f88c-2064-4cf5-8d88-1b29e6d12731.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 3,
+      "id": "41f08859-9d69-4ace-8ca1-fe9121bbc881",
+      "title": "巴基斯坦俾路支省山达克与锡亚迪克矿区安全比较分析",
+      "originalFilename": "巴基斯坦俾路支省山达克与锡亚迪克矿区安全比较分析.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-80fe-af50-f60c3e962a34/41f08859-9d69-4ace-8ca1-fe9121bbc881?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=%E5%B7%B4%E5%9F%BA%E6%96%AF%E5%9D%A6%E4%BF%BE%E8%B7%AF%E6%94%AF%E7%9C%81%E5%B1%B1%E8%BE%BE%E5%85%8B%E4%B8%8E%E9%94%A1%E4%BA%9A%E8%BF%AA%E5%85%8B%E7%9F%BF%E5%8C%BA%E5%AE%89%E5%85%A8%E6%AF%94%E8%BE%83%E5%88%86%E6%9E%90.pdf",
+      "path": "/assets/media/publications/41f08859-9d69-4ace-8ca1-fe9121bbc881.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 4,
+      "id": "57044294-d013-4ba2-b1a4-c0c77efc2a5d",
+      "title": "A Comparative Security Assessment of the SainDak and SiahDik Mining Areas in Balochistan Pakistan",
+      "originalFilename": "A_Comparative_Security_Assessment_of_the_SainDak_and_SiahDik_Mining_Areas_in_Balochistan_Pakistan.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-8003-aa40-e2694190ea76/57044294-d013-4ba2-b1a4-c0c77efc2a5d?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=A_Comparative_Security_Assessment_of_the_SainDak_and_SiahDik_Mining_Areas_in_Balochistan_Pakistan.pdf",
+      "path": "/assets/media/publications/57044294-d013-4ba2-b1a4-c0c77efc2a5d.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 5,
+      "id": "e78ff1c5-8d9a-4280-aaa8-d7e053f86f64",
+      "title": "高风险能源项目中的系统性安保失效：In Amenas恐怖袭击的级联分析及其对中国海外投资的启示",
+      "originalFilename": "高风险能源项目中的系统性安保失效：In_Amenas恐怖袭击的级联分析及其对中国海外投资的启示.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-8085-bdf1-d7199da563e9/e78ff1c5-8d9a-4280-aaa8-d7e053f86f64?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=%E9%AB%98%E9%A3%8E%E9%99%A9%E8%83%BD%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%B8%AD%E7%9A%84%E7%B3%BB%E7%BB%9F%E6%80%A7%E5%AE%89%E4%BF%9D%E5%A4%B1%E6%95%88%EF%BC%9AIn_Amenas%E6%81%90%E6%80%96%E8%A2%AD%E5%87%BB%E7%9A%84%E7%BA%A7%E8%81%94%E5%88%86%E6%9E%90%E5%8F%8A%E5%85%B6%E5%AF%B9%E4%B8%AD%E5%9B%BD%E6%B5%B7%E5%A4%96%E6%8A%95%E8%B5%84%E7%9A%84%E5%90%AF%E7%A4%BA.pdf",
+      "path": "/assets/media/publications/e78ff1c5-8d9a-4280-aaa8-d7e053f86f64.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 6,
+      "id": "d0346316-5a27-4f9c-84ce-750136b2bd1d",
+      "title": "Systemic Security Failures in High-Risk Energy Projects A Cascading Analysis of the In Amenas Terrorist Attack and Implications for Chinese Overseas Investments",
+      "originalFilename": "Systemic_Security_Failures_in_High-Risk_Energy_Projects_A_Cascading_Analysis_of_the_In_Amenas_Terrorist_Attack_and_Implications_for_Chinese_Overseas_Investments.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-805e-aeeb-e0870b8a84d3/d0346316-5a27-4f9c-84ce-750136b2bd1d?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=Systemic_Security_Failures_in_High-Risk_Energy_Projects_A_Cascading_Analysis_of_the_In_Amenas_Terrorist_Attack_and_Implications_for_Chinese_Overseas_Investments.pdf",
+      "path": "/assets/media/publications/d0346316-5a27-4f9c-84ce-750136b2bd1d.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 7,
+      "id": "335a2e8e-2157-41c8-9c0e-bcd5847f9898",
+      "title": "体系不是答案：安保的现实博弈与清醒边界",
+      "originalFilename": "体系不是答案：安保的现实博弈与清醒边界.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-8037-8bf6-e608822c585f/335a2e8e-2157-41c8-9c0e-bcd5847f9898?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=%E4%BD%93%E7%B3%BB%E4%B8%8D%E6%98%AF%E7%AD%94%E6%A1%88%EF%BC%9A%E5%AE%89%E4%BF%9D%E7%9A%84%E7%8E%B0%E5%AE%9E%E5%8D%9A%E5%BC%88%E4%B8%8E%E6%B8%85%E9%86%92%E8%BE%B9%E7%95%8C.pdf",
+      "path": "/assets/media/publications/335a2e8e-2157-41c8-9c0e-bcd5847f9898.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 8,
+      "id": "1b4e8c50-29e6-4622-a015-3a4934a8ae2a",
+      "title": "The System Is Not the Answer-Security as NegotiationNot Perfection",
+      "originalFilename": "The_System_Is_Not_the_Answer-Security_as_NegotiationNot_Perfection.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-80ca-a6c0-e81e8b44a2d8/1b4e8c50-29e6-4622-a015-3a4934a8ae2a?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=The_System_Is_Not_the_Answer-Security_as_NegotiationNot_Perfection.pdf",
+      "path": "/assets/media/publications/1b4e8c50-29e6-4622-a015-3a4934a8ae2a.pdf",
+      "format": "pdf"
+    },
+    {
+      "order": 9,
+      "id": "98831879-85b3-4944-b4b4-f32740209cf3",
+      "title": "视频炮击技术鉴定报告Video Indirect Fire Technical Assessment Report",
+      "originalFilename": "视频炮击技术鉴定报告Video_Indirect_Fire_Technical_Assessment_Report.pdf",
+      "originalRef": "notion-file-block://33531022-10ef-80fe-9b8a-f56ab0e314fb/98831879-85b3-4944-b4b4-f32740209cf3?space_id=9e031022-10ef-814f-aeca-0003ad49e3b6&name=%E8%A7%86%E9%A2%91%E7%82%AE%E5%87%BB%E6%8A%80%E6%9C%AF%E9%89%B4%E5%AE%9A%E6%8A%A5%E5%91%8AVideo_Indirect_Fire_Technical_Assessment_Report.pdf",
+      "path": "/assets/media/publications/98831879-85b3-4944-b4b4-f32740209cf3.pdf",
+      "format": "pdf"
+    }
+  ]
+}
