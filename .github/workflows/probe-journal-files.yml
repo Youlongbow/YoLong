@@ -1,0 +1,21 @@
+name: Probe public journal PDF download links
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-journal-files.yml'
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - run: node scripts/probe-journal-files.mjs
