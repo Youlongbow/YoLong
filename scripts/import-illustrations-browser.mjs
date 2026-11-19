@@ -75,13 +75,26 @@ try{
   try{
    const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:35000});
    await page.waitForTimeout(1300);
-   const height=await page.evaluate(()=>document.body.scrollHeight);
-   for(let y=0;y<height+1200 && active.size;y+=850){
-    await page.evaluate(y=>scrollTo(0,y),y);
-    await page.waitForTimeout(280);
+   const scroller=await page.evaluate(()=>{
+    const nodes=[...document.querySelectorAll('*')].filter(el=>{
+     const style=getComputedStyle(el);
+     return el.clientHeight>150 && el.scrollHeight-el.clientHeight>250 && /(auto|scroll)/.test(style.overflowY);
+    }).sort((a,b)=>(b.scrollHeight-b.clientHeight)-(a.scrollHeight-a.clientHeight));
+    const el=nodes[0]||document.scrollingElement;
+    window.__ravenMediaScroll=el;
+    return {height:el.scrollHeight,viewport:el.clientHeight,description:String(el.className||el.tagName).slice(0,100),candidates:nodes.length};
+   });
+   const totalSteps=Math.min(75,Math.max(2,Math.ceil(scroller.height/750)+1));
+   for(let step=0;step<totalSteps && active.size;step++){
+    await page.evaluate(y=>{
+     const el=window.__ravenMediaScroll;
+     if(el)el.scrollTop=y;
+     else scrollTo(0,y);
+    },step*750);
+    await page.waitForTimeout(210);
    }
-   await page.waitForTimeout(1200);
-   print('MEDIA_PAGE',{path:new URL(url).pathname,http:response?.status(),needed:needed.length,remaining:active.size,scrollHeight:height});
+   await page.waitForTimeout(900);
+   print('MEDIA_PAGE',{path:new URL(url).pathname,http:response?.status(),needed:needed.length,remaining:active.size,scroller});
   }catch(e){failed++;print('MEDIA_PAGE_FAILED',{path:new URL(url).pathname,error:String(e).slice(0,180)})}
   active.clear();
  }
