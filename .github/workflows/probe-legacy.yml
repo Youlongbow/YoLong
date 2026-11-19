@@ -9,27 +9,28 @@ jobs:
     permissions:
       contents: read
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check public legacy page reachability and media hints
+      - name: Install browser
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Inspect legacy website's rendered media
         run: |
           node --input-type=module <<'NODE'
-          const urls = [
-            'https://www.ravenlong.com/',
-            'https://www.ravenlong.com/p/2f83102210ef8055896fcecd3254a5a6',
-            'https://app.notion.com/p/2f83102210ef8055896fcecd3254a5a6',
-          ];
-          for (const u of urls) {
-            try {
-              const r = await fetch(u,{redirect:'follow',signal:AbortSignal.timeout(15000),headers:{'user-agent':'Mozilla/5.0 RAVEN-site-migration/1.0'}});
-              const h = await r.text();
-              console.log(JSON.stringify({
-                url:u,status:r.status,finalUrl:r.url,contentType:r.headers.get('content-type'),
-                length:h.length,images:(h.match(/<img\b/gi)||[]).length,
-                siteTitle:(h.match(/<title[^>]*>([^<]*)/i)||[])[1]||'',
-                notionAssets:/notion\.so|notion\.site|notionusercontent|s3\.us-west/i.test(h)
-              }));
-            }catch(e){console.log(JSON.stringify({url:u,error:String(e)}))}
-          }
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+          try {
+            const page=await browser.newPage({viewport:{width:1440,height:900}});
+            for(const url of ['https://www.ravenlong.com/','https://www.ravenlong.com/p/2f83102210ef8055896fcecd3254a5a6']){
+              try{
+                const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
+                await page.waitForTimeout(6000);
+                const info=await page.evaluate(()=>({title:document.title,headings:[...document.querySelectorAll('h1,h2')].slice(0,5).map(e=>e.textContent.slice(0,70)),images:[...document.images].slice(0,12).map(e=>({alt:e.alt,src:e.currentSrc.split('?')[0].slice(0,240),complete:e.complete,width:e.naturalWidth,height:e.naturalHeight}))}));
+                console.log('RENDERED_LEGACY:',JSON.stringify({url,status:response?.status(),info}).slice(0,5500));
+              }catch(e){console.log('RENDERED_LEGACY_ERROR:',url,String(e).slice(0,320))}
+            }
+          } finally{await browser.close()}
           NODE
