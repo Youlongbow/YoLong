@@ -8,17 +8,20 @@ const manifest=onlyLogo?{files:[]}:JSON.parse(readFileSync('dist/media-manifest.
 const dest='content/media-map.json';
 const map=existsSync(dest)?JSON.parse(readFileSync(dest,'utf8')):{schema:1,images:{},branding:{}};
 const jobs=[logo];
-const seen=new Set([logo.id]);
+const byId=new Map([[logo.id,logo]]);
 for(const item of manifest.files){
  const match=item.source.match(/^notion-file-block:\/\/[^/]+\/([0-9a-f-]{36})\?/i);
  if(!match)continue;
  const id=match[1];
  const name=item.name||'image';
- if(!seen.has(id)){
-  seen.add(id);
-  jobs.push({id,name,ref:item.source});
- }else if(map.images[item.source]){
-  continue;
+ if(!byId.has(id)){
+  const job={id,name,refs:[item.source]};
+  byId.set(id,job);
+  jobs.push(job);
+ }else{
+  const job=byId.get(id);
+  job.refs??=[];
+  job.refs.push(item.source);
  }
 }
 const formats=new Map([
@@ -29,7 +32,7 @@ const MAX_BYTES=12*1024*1024;
 let succeeded=0,skipped=0,failed=0,cursor=0;
 const log=(kind,obj)=>console.log(kind,JSON.stringify(obj));
 async function mirror(job){
- if(!job.logo && map.images[job.ref] && existsSync(map.images[job.ref].replace(/^\/+/,''))){skipped++;return}
+ if(!job.logo && (job.refs||[]).every(ref=>map.images[ref] && existsSync(map.images[ref].replace(/^\/+/,'')))){skipped++;return}
  const publicUrl=root+'/image/attachment%3A'+job.id+'%3A'+encodeURIComponent(job.name);
  for(let attempt=1;attempt<=2;attempt++){
   try{
@@ -47,7 +50,7 @@ async function mirror(job){
    mkdirSync(dirname(path),{recursive:true});
    writeFileSync(path,bytes);
    if(job.logo)map.branding.logo='/'+path;
-   if(job.ref)map.images[job.ref]='/'+path;
+   for(const ref of job.refs||[])map.images[ref]='/'+path;
    succeeded++;
    log('MIRRORED',{name:job.name,path,bytes:bytes.length});
    return;
