@@ -19,6 +19,8 @@ jobs:
         run: node scripts/test-publish.mjs
       - name: Build static website
         run: node scripts/build.mjs
+      - name: Check permanent media archive and missing-asset inventory
+        run: node scripts/verify-media.mjs
       - name: Validate preview distribution
         run: |
           test -s dist/index.html
