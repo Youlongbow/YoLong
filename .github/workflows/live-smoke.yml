@@ -27,7 +27,7 @@ jobs:
               const type = response.headers.get('content-type') || '';
               console.log(response.status, path, type, 'bytes=' + body.length, 'resolved=' + response.url);
               if (path.endsWith('/assets/app.js')) {
-                const nativeLinks=body.includes('data-lang="en" href=');
+                const nativeLinks=body.includes('function activeUrl(target)') && body.includes('href="'+"'"+'+activeUrl(\'en\')');
                 console.log('LIVE_NATIVE_LANGUAGE_LINKS:',nativeLinks);
                 if (!nativeLinks) failed.push('Deployed JavaScript is older than latest repository commit');
               }
