@@ -33,13 +33,24 @@ jobs:
         env:
           MIRROR_MAX_PAGES: '0'
         run: node scripts/import-illustrations-browser.mjs
-      - name: Commit preserved images and update manifest
+      - name: Reconcile updated media map and publish without losing concurrent changes
         run: |
           git config user.name 'raven-media-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add content/media-map.json assets/media/notion/
-          if ! git diff --cached --quiet; then
+          for attempt in 1 2 3; do
+            git fetch origin main
+            node scripts/merge-media-map.mjs
+            git reset --mixed origin/main
+            git add content/media-map.json assets/media/notion/
+            if git diff --cached --quiet; then
+              echo 'All original assets already published'
+              exit 0
+            fi
             git commit -m "assets: preserve original RAVEN article illustrations"
-            git pull --rebase -X theirs origin main
-            git push origin HEAD:main
-          fi
+            if git push origin HEAD:main; then
+              echo 'Media archive committed'
+              exit 0
+            fi
+            echo "Concurrent branch update during upload: attempt $attempt"
+          done
+          exit 1
