@@ -28,9 +28,9 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Inventory original media references
         run: node scripts/build.mjs
-      - name: Copy first three original article pages' illustrations
+      - name: Copy all accessible original article illustrations
         env:
-          MIRROR_MAX_PAGES: '3'
+          MIRROR_MAX_PAGES: '0'
         run: node scripts/import-illustrations-browser.mjs
       - name: Commit preserved images and update manifest
         run: |
