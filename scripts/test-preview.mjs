@@ -35,6 +35,8 @@ try{
  assert((await desktop.locator('.article-content').innerText()).length>6000,'English research report renders');
  await desktop.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>850,'About page migrated');
+ assert(await desktop.locator('.article-figure img').count()>=1,'Original About-page photograph renders from local archive');
+ assert(await desktop.locator('.article-figure img').first().evaluate(img=>img.complete&&img.naturalWidth>0),'Local About-page photograph is fully loaded');
  await desktop.goto(base+'/experience/en/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>2000,'English experience page migrated');
  await desktop.goto(base+'/contact/zh/',{waitUntil:'networkidle',timeout:60000});
