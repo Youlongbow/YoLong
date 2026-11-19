@@ -1,0 +1,35 @@
+name: Probe public legacy site media
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check public legacy page reachability and media hints
+        run: |
+          node --input-type=module <<'NODE'
+          const urls = [
+            'https://www.ravenlong.com/',
+            'https://www.ravenlong.com/p/2f83102210ef8055896fcecd3254a5a6',
+            'https://app.notion.com/p/2f83102210ef8055896fcecd3254a5a6',
+          ];
+          for (const u of urls) {
+            try {
+              const r = await fetch(u,{redirect:'follow',signal:AbortSignal.timeout(15000),headers:{'user-agent':'Mozilla/5.0 RAVEN-site-migration/1.0'}});
+              const h = await r.text();
+              console.log(JSON.stringify({
+                url:u,status:r.status,finalUrl:r.url,contentType:r.headers.get('content-type'),
+                length:h.length,images:(h.match(/<img\b/gi)||[]).length,
+                siteTitle:(h.match(/<title[^>]*>([^<]*)/i)||[])[1]||'',
+                notionAssets:/notion\.so|notion\.site|notionusercontent|s3\.us-west/i.test(h)
+              }));
+            }catch(e){console.log(JSON.stringify({url:u,error:String(e)}))}
+          }
+          NODE
