@@ -4,7 +4,6 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/import-media.yml'
-      - 'scripts/mirror-media.mjs'
   workflow_dispatch:
 permissions:
   contents: write
@@ -23,23 +22,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Build media index
-        run: node scripts/build.mjs
-      - name: Mirror original branded logo
-        env:
-          MIRROR_LOGO_ONLY: '1'
-        run: node scripts/mirror-media.mjs
-      - name: Ensure logo was copied to static assets
+      - name: Install browser to access public original image
         run: |
-          test -s content/media-map.json
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Capture original branded logo from the public website
+        run: node scripts/import-logo-browser.mjs
+      - name: Verify mirrored logo and map
+        run: |
           test -s assets/media/brand/raven-logo-web.png
-      - name: Commit archived media
+          test -s content/media-map.json
+      - name: Commit permanent logo copy
         run: |
           git config user.name 'raven-media-bot'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add content/media-map.json assets/media/
           if git diff --cached --quiet; then
-            echo 'No new original assets'
+            echo 'Original branded media already preserved'
           else
             git commit -m "assets: preserve original RAVEN logo outside Notion"
             git push origin HEAD:main
