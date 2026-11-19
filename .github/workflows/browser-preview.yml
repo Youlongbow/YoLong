@@ -1,7 +1,5 @@
 name: Browser test RAVEN preview
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 jobs:
   browser:
