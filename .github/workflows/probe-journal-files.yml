@@ -1,4 +1,4 @@
-name: Probe public journal PDF download links
+name: Probe original journal document blocks
 on:
   push:
     branches: [main]
