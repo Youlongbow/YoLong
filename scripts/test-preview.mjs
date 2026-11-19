@@ -32,6 +32,10 @@ try{
  assert((await desktop.locator('.article-content a[href^="https://"]').count())>=1,'Incident sources remain clickable');
  await desktop.goto(base+'/journal/zh/bla-strategy-analysis/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>6000,'Long research report migrated in full');
+ assert(await desktop.locator('.article-figure img').count()>=10,'All ten BLA vector figures render as local image elements');
+ const firstFigure=desktop.locator('.article-figure img').first();
+ assert(await firstFigure.evaluate(img=>img.complete&&img.naturalWidth>0),'BLA original vector figure loads from Cloudflare local media');
+
  await desktop.goto(base+'/journal/en/pakistan-drc-mining-comparison/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>6000,'English research report renders');
  await desktop.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
@@ -44,6 +48,8 @@ try{
  assert((await desktop.locator('.article-content').innerText()).length>200,'Contact page migrated');
  await desktop.goto(base+'/training/zh/',{waitUntil:'networkidle',timeout:60000});
  assert(await desktop.locator('.course-card').count()===11,'Full HEAT curriculum displays ten modules plus review');
+ assert(await desktop.locator('.course-intro img').count()>=1,'HEAT introduction displays locally preserved certificate or illustration');
+
  await desktop.goto(base+'/training/en/01/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>4500,'English HEAT module retains full text');
  await desktop.goto(base+'/training/zh/11/',{waitUntil:'networkidle',timeout:60000});
