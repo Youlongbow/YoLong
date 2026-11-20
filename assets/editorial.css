@@ -442,3 +442,58 @@ html[lang="zh-CN"] .article-hero h1{font-family:"Songti SC","Noto Serif CJK SC",
       linear-gradient(90deg,#0b0e11bd 0%,transparent 86%);
   }
 }
+
+
+/* Original-locked raven restoration — fourfold pixel dimensions, unchanged frame.
+   Source: user's 810×353 reference; restored master: 3240×1412 (2.2946:1).
+   Keep source luminance, composition and architecture without CSS color filters. */
+.editorial-hero .hero-photo{
+  inset:0;
+  opacity:1;
+  background-image:url("/assets/media/brand/raven-original-4x-3240.webp");
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+  filter:none;
+  -webkit-mask-image:none;
+  mask-image:none;
+}
+.editorial-hero .hero-vignette{
+  background:
+    linear-gradient(90deg,#0b0e11 0%,#0b0e11f0 15%,#0b0e11b8 32%,#0b0e1168 46%,transparent 68%),
+    linear-gradient(0deg,#0b0e11a0 0%,transparent 16%,transparent 88%);
+}
+@media(min-width:1600px){
+  .editorial-hero .hero-photo{background-position:center center}
+}
+@media(min-width:691px) and (max-width:1100px){
+  .editorial-hero .hero-photo{
+    inset:0;
+    background-size:cover;
+    background-position:58% center;
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+  .editorial-hero .hero-vignette{
+    background:
+      linear-gradient(90deg,#0b0e11 0%,#0b0e11ec 20%,#0b0e11b0 42%,transparent 83%),
+      linear-gradient(0deg,#0b0e1175,transparent 24%);
+  }
+}
+@media(max-width:690px){
+  .editorial-hero .hero-photo{
+    inset:0;
+    background-size:auto 51%;
+    background-position:67% 0;
+    background-repeat:no-repeat;
+    filter:none;
+    opacity:1;
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+  .editorial-hero .hero-vignette{
+    background:
+      linear-gradient(0deg,#0b0e11 0%,#0b0e11f7 16%,#0b0e11cd 38%,#0b0e112c 75%,transparent 100%),
+      linear-gradient(90deg,#0b0e11a5 0%,transparent 90%);
+  }
+}
