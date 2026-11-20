@@ -49,7 +49,7 @@
       "areaTitle": "核心领域",
       "connectTitle": "当安全成为业务的关键条件",
       "connectLead": "围绕实际项目，讨论安全架构、战略风险与执行方案。",
-      "siteNote": "独立网站预览版。正式发布前，部分历史文章及应用仍链接至原站。",
+      "siteNote": "独立安全研究与风险治理 · 部分历史资料持续整理中。",
       "legacy": "查看原站内容"
     },
     "en": {
@@ -78,7 +78,7 @@
       "areaTitle": "Areas of expertise",
       "connectTitle": "When security is mission-critical",
       "connectLead": "Discuss a real assignment involving security architecture, strategic risk or operational decisions.",
-      "siteNote": "Independent website preview. Selected historical articles and applications remain linked to the original site until migration is complete.",
+      "siteNote": "Independent security research and risk governance · Historical material is being curated.",
       "legacy": "View legacy content"
     }
   },
