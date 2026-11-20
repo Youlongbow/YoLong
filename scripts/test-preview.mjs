@@ -29,11 +29,18 @@ try{
  assert(transitionLayout.loaded,'Actual official RAVEN mark loads in transition');
  assert(transitionLayout.logoRight<transitionLayout.wordLeft-5,'Transition logo is LEFT of RAVEN wordmark');
  assert(transitionLayout.lineLeft>=transitionLayout.wordLeft-1&&transitionLayout.lineTop>transitionLayout.wordTop,'Red line is BELOW the wordmark');
- const visualAsset=await desktop.request.get(base+'/assets/media/brand/raven-architecture.svg');
- assert(visualAsset.ok(),'Approved raven-and-architecture image is served locally');
- assert((await visualAsset.text()).includes('data:image/webp;base64,'),'The image is self-contained without external hosts');
+ const visualAsset=await desktop.request.get(base+'/assets/media/brand/raven-architecture-hero-1870.webp');
+ assert(visualAsset.ok(),'New original high-resolution raven artwork is served locally');
+ assert((visualAsset.headers()['content-type']||'').includes('image/webp'),'Hero is a standalone WebP image');
+ const heroImageSize=await desktop.evaluate(async()=>{
+  const img=new Image();
+  img.src='/assets/media/brand/raven-architecture-hero-1870.webp';
+  await img.decode();
+  return {width:img.naturalWidth,height:img.naturalHeight};
+ });
+ assert(heroImageSize.width>=1800&&heroImageSize.height>=800,'Hero contains genuine 1870×841 image detail');
  const background=await desktop.locator('.hero-photo').evaluate(el=>getComputedStyle(el).backgroundImage);
- assert(background.includes('raven-architecture.svg'),'Hero background links to approved image asset');
+ assert(background.includes('raven-architecture-hero-1870.webp'),'Hero background uses actual high-resolution image, not old thumbnail');
  const stylesheet=await desktop.request.get(base+'/assets/editorial.css');
  assert(stylesheet.ok(),'Editorial CSS design system is deployed');
  assert(await desktop.locator('.paper').count()>=4,'Migrated research cards render');
