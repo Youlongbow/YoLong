@@ -7,6 +7,7 @@ const security={zh:JSON.parse(readFileSync('content/security-zh.json','utf8')),e
 const research={zh:JSON.parse(readFileSync('content/research-zh.json','utf8')),en:JSON.parse(readFileSync('content/research-en.json','utf8'))};
 const pages={zh:JSON.parse(readFileSync('content/pages-zh.json','utf8')),en:JSON.parse(readFileSync('content/pages-en.json','utf8'))};
 const training={zh:JSON.parse(readFileSync('content/training-zh.json','utf8')),en:JSON.parse(readFileSync('content/training-en.json','utf8'))};
+const capabilities={zh:JSON.parse(readFileSync('content/capabilities-zh.json','utf8')),en:JSON.parse(readFileSync('content/capabilities-en.json','utf8'))};
 
 if (!site.sections?.zh || !site.sections?.en) throw Error('Missing localized site copy');
 if (security.zh.events.length !== security.en.events.length || security.zh.events.length < 125) throw Error('Security archive count differs by language');
@@ -20,6 +21,7 @@ for(const lang of ['zh','en']){
  if(research[lang].articles.some(a=>!a.body || !a.title))throw Error('Incomplete research article '+lang);
  if(pages[lang].pages.length !== 4 || training[lang].modules.length !== 11)throw Error('Missing site pages or training modules '+lang);
  if(training[lang].modules.some(m=>m.body.length<1000))throw Error('Incomplete HEAT text '+lang);
+ if(capabilities[lang].items.length!==5||capabilities[lang].items.some(m=>!m.title||!m.summary||m.approach.length<3))throw Error('Incomplete capability profiles '+lang);
 }
 
 mkdirSync('dist',{recursive:true});
@@ -33,6 +35,8 @@ for(const lang of ['zh','en']){
  for(const article of research[lang].articles) routes.push('journal/'+lang+'/'+article.slug);
  for(const page of pages[lang].pages)routes.push(page.slug+'/'+lang);
  for(const module of training[lang].modules)routes.push('training/'+lang+'/'+module.slug);
+ routes.push('capabilities/'+lang);
+ for(const item of capabilities[lang].items)routes.push('capabilities/'+lang+'/'+item.slug);
 }
 for (const route of routes){
  const dest=join('dist',route);
