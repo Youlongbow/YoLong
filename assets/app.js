@@ -52,11 +52,21 @@ function activeUrl(target){
 function link(label,href,active=false){
  return '<a class="'+(active?'active':'')+'" href="'+esc(href)+'">'+esc(label)+'</a>';
 }
+function languageSwitch(position='desktop'){
+ const label=lang==='zh'?'语言选择':'Choose language';
+ const zhCurrent=lang==='zh';
+ const enCurrent=lang==='en';
+ return '<div class="switch switch-'+position+'" role="group" aria-label="'+label+'">'+
+  '<a class="switch-option'+(zhCurrent?' on':'')+'" href="'+activeUrl('zh')+'" lang="zh-CN" hreflang="zh-CN" aria-label="'+(zhCurrent?'当前语言：中文':'切换到中文')+'"'+(zhCurrent?' aria-current="page"':'')+'>中文</a>'+
+  '<a class="switch-option'+(enCurrent?' on':'')+'" href="'+activeUrl('en')+'" lang="en" hreflang="en" aria-label="'+(enCurrent?'Current language: English':'Switch to English')+'"'+(enCurrent?' aria-current="page"':'')+'>EN</a>'+
+ '</div>';
+}
 function header(){
  const home=section==='home';
  return '<header class="top shell">'+
   '<a class="logo" href="/'+lang+'/"><span class="logomark'+(mediaMap.branding?.mark?' logo-loaded':'')+'">'+(mediaMap.branding?.mark?'<img src="'+esc(mediaMap.branding.mark)+'" alt="" width="42" height="42">':'R')+'</span><span class="logotxt">RAVEN<small>SECURITY / RESEARCH / OPERATIONS</small></span></a>'+
-  '<button id="menu" class="mobile" type="button" aria-expanded="false" aria-controls="nav">'+(lang==='zh'?'菜单':'MENU')+' <span aria-hidden="true">☰</span></button>'+
+  '<div class="header-tools">'+languageSwitch('mobile')+
+  '<button id="menu" class="mobile" type="button" aria-expanded="false" aria-controls="nav">'+(lang==='zh'?'菜单':'MENU')+' <span aria-hidden="true">☰</span></button></div>'+
   '<nav id="nav" class="nav" aria-label="'+(lang==='zh'?'主导航':'Main navigation')+'">'+
   link(lang==='zh'?'首页':'Home','/'+lang+'/',home)+
   link(txt.security,'/security/'+lang+'/',section==='security')+
@@ -65,7 +75,7 @@ function header(){
   link(lang==='zh'?'专业经历':'Experience','/experience/'+lang+'/',section==='experience')+
   link(lang==='zh'?'关于':'About','/about/'+lang+'/',section==='about')+
   '<a class="nav-contact" href="/contact/'+lang+'/">'+(lang==='zh'?'联系':'Contact')+'</a>'+
-  '<div class="switch" aria-label="Language"><a class="'+(lang==='zh'?'on':'')+'" href="'+activeUrl('zh')+'">中文</a><span aria-hidden="true">/</span><a class="'+(lang==='en'?'on':'')+'" href="'+activeUrl('en')+'">EN</a></div>'+
+  languageSwitch('desktop')+
   '</nav></header>';
 }
 function blockTitle(sectionCopy,title){
