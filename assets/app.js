@@ -299,9 +299,64 @@ function capabilityDetail(s){
  '<nav class="capability-related" aria-label="'+title('Related pages','相关内容')+'"><span>'+title('Related work','延伸了解')+'</span>'+item.links.map(x=>'<a href="'+x.href+'">'+esc(x.label)+' ↗</a>').join('')+'</nav>'+
  '</section>';
 }
+
+/* Dedicated bilingual editorial layouts for About and Experience.
+   These pages use structured copy and locally mirrored imagery instead
+   of flattening legacy Notion column tags into a narrow article body. */
+function professionalContentPage(record){
+ const p=record.presentation;
+ const refs=[...String(record.body||'').matchAll(/<image\b[^>]*source="([^"]+)"/gi)].map(m=>m[1]);
+ const photos=refs.map(ref=>mediaMap.images?.[ref]||'');
+ const photo=(index,caption,klass='')=>{
+  const src=photos[index]||'';
+  return src
+   ?'<figure class="profile-photo '+klass+'"><img src="'+esc(src)+'" alt="'+esc(caption||record.title)+'" loading="lazy" decoding="async"><figcaption>'+esc(caption||'RAVEN / FIELD WORK')+'</figcaption></figure>'
+   :'<div class="profile-photo profile-photo-fallback '+klass+'" aria-hidden="true"><span>R / RAVEN</span></div>';
+ };
+ const stats=(p.metrics||[]).map(entry=>'<div class="profile-stat"><strong>'+esc(entry.value)+'</strong><span>'+esc(entry.label)+'</span></div>').join('');
+ const stories=(p.chapters||[]).map((chapter,i)=>{
+  const paragraphs=(chapter.paragraphs||[]).map(x=>'<p>'+esc(x)+'</p>').join('');
+  const visual=i===0
+   ?'<aside class="profile-index-art" aria-hidden="true"><span>R / '+String(i+1).padStart(2,'0')+'</span><strong>'+String(i+1).padStart(2,'0')+'</strong><small>'+esc(chapter.caption||'FIELD OPERATIONS')+'</small></aside>'
+   :photo(chapter.image,chapter.caption,'profile-story-photo');
+  return '<article class="profile-story">'+
+   '<div class="profile-story-copy"><div class="profile-kicker">'+esc(chapter.tag)+'</div><h3>'+esc(chapter.title)+'</h3>'+paragraphs+'</div>'+
+   '<div class="profile-story-visual">'+visual+'</div>'+
+   '</article>';
+ }).join('');
+ const qualifications=(p.qualifications||[]).map((group,i)=>
+  '<section class="profile-credential"><span class="profile-small-index">'+String(i+1).padStart(2,'0')+' / 03</span><h3>'+esc(group.heading)+'</h3>'+
+   '<ul>'+group.items.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></section>').join('');
+ const highlights=(p.highlights||[]).map((item,i)=>
+  '<article class="profile-assignment"><span class="profile-small-index">'+String(i+1).padStart(2,'0')+' / '+esc(item.location)+'</span>'+
+  '<h3>'+esc(item.title)+'</h3><b>'+esc(item.role)+'</b><p>'+esc(item.summary)+'</p></article>').join('');
+ const archives=(p.archives||[]).map((group,i)=>
+  '<details class="profile-archive"><summary><span>'+String(i+1).padStart(2,'0')+' / '+esc(group.title)+'</span><b aria-hidden="true">+</b></summary>'+
+  '<ul>'+group.items.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></details>').join('');
+ const archiveSection=p.archives?.length
+  ?'<section class="profile-portfolio shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.archiveEyebrow||'PROJECT ARCHIVE')+'</span><h2>'+esc(p.archiveTitle||'More Projects')+'</h2></div><div class="profile-archive-list">'+archives+'</div></section>':'';
+ const featureSection=p.highlights?.length
+  ?'<section class="profile-featured shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.qualEyebrow)+'</span><h2>'+esc(p.qualTitle)+'</h2><p>'+esc(p.qualLead||'')+'</p></div><div class="profile-assignments">'+highlights+'</div></section>'
+  :'<section class="profile-featured shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.qualEyebrow)+'</span><h2>'+esc(p.qualTitle)+'</h2><p>'+esc(p.qualLead||'')+'</p></div><div class="profile-credentials">'+qualifications+'</div></section>';
+ document.title=record.title+' · RAVEN';
+ return '<main class="profile-design profile-'+esc(section)+'">'+
+  '<header class="profile-hero shell"><div class="profile-hero-copy"><span class="profile-kicker">'+esc(p.eyebrow)+'</span>'+
+  '<h1>'+esc(p.title)+'</h1><p class="profile-lead">'+esc(p.lead)+'</p><p class="profile-strap">'+esc(p.strap||'')+'</p>'+
+  '<div class="profile-hero-actions"><a href="'+esc(p.primaryLink)+'">'+esc(p.primaryLabel)+' <span aria-hidden="true">↗</span></a><a href="'+esc(p.secondaryLink)+'">'+esc(p.secondaryLabel)+' <span aria-hidden="true">↗</span></a></div></div>'+
+  '<div class="profile-hero-visual">'+photo(0,section==='about'?'RAVEN / FIELD ORIGINS':'RAVEN / HIGH-RISK OPERATIONS','profile-hero-photo')+
+  '<div class="profile-art-corner" aria-hidden="true">R / '+esc(section.toUpperCase())+'</div></div></header>'+
+  '<div class="profile-stats shell">'+stats+'</div>'+
+  '<section class="profile-narrative shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.sectionEyebrow)+'</span><h2>'+esc(p.sectionTitle)+'</h2><p>'+esc(p.sectionLead||'')+'</p></div><div class="profile-stories">'+stories+'</div></section>'+
+  featureSection+archiveSection+
+  '<section class="profile-closing shell"><span class="profile-kicker">RAVEN / SECURITY & OPERATIONS</span><h2>'+esc(p.closing)+'</h2>'+
+  '<p>'+esc(p.book||'')+'</p><div class="profile-hero-actions"><a href="'+esc(p.primaryLink)+'">'+esc(p.primaryLabel)+' ↗</a><a href="'+esc(p.secondaryLink)+'">'+esc(p.secondaryLabel)+' ↗</a></div></section>'+
+  '</main>';
+}
+
 function staticContentPage(){
  const record=pagesData?.pages.find(x=>x.slug===section);
  if(!record)return '<section class="sec shell"><h2>404</h2></section>';
+ if(record.presentation && (section==='about'||section==='experience'))return professionalContentPage(record);
  document.title=record.title+' · RAVEN';
  return articleHero('RAVEN / '+section.toUpperCase(),record.title,'/'+lang+'/','RAVEN')+
  '<article class="article-layout shell"><div class="article-sidebar"><p>RAVEN / '+section.toUpperCase()+'</p><div>'+txt.full+'</div></div><div class="article-content">'+richBody(record.body,record.sourceUrl)+'</div></article>';
