@@ -298,14 +298,14 @@ function staticContentPage(){
 }
 function trainingList(){
  const record=pagesData?.pages.find(x=>x.slug==='training');
- const introduction=record?.body.replace(/<page url="[^"]+"[^>]*>[\s\S]*?<\/page>/g,'')||'';
+ const introduction=(record?.body||'').replace(/<page url="[^"]+"[^>]*>[\s\S]*?<\/page>/g,'').replace(/^# [^\n]+\n\s*\n/,'');
  const modules=trainingData?.modules||[];
  document.title=(lang==='zh'?'HEAT 敌对环境安全意识培训':'HEAT Hostile Environment Awareness Training')+' · RAVEN';
  const imageFor=module=>{
   const m=String(module.body||'').match(/<image\b[^>]*source="([^"]+)"[^>]*>/i);
   return m?mediaMap.images?.[m[1]]||'':'';
  };
- return articleHero('RAVEN / HEAT',record?.title||'HEAT','/'+lang+'/','RAVEN')+
+ return articleHero('RAVEN / HEAT',lang==='zh'?'HEAT｜敌对环境安全意识培训':'HEAT | Hostile Environment Awareness Training','/'+lang+'/','RAVEN')+
  '<section class="sec shell course-overview"><div class="course-intro">'+richBody(introduction,record?.sourceUrl)+'</div>'+
  '<div class="course-section-heading"><div class="over">COURSE / '+modules.length+' MODULES</div><h2>'+(lang==='zh'?'课程模块':'Course modules')+'</h2><p>'+(lang==='zh'?'每个单元包含现场场景、判断方法和可执行的应对措施。':'Each module combines practical scenarios, decisions and operational responses.')+'</p></div>'+
  '<div class="course-grid">'+modules.map((m,i)=>{
