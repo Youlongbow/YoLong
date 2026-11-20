@@ -338,6 +338,21 @@ function professionalContentPage(record){
  const featureSection=p.highlights?.length
   ?'<section class="profile-featured shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.qualEyebrow)+'</span><h2>'+esc(p.qualTitle)+'</h2><p>'+esc(p.qualLead||'')+'</p></div><div class="profile-assignments">'+highlights+'</div></section>'
   :'<section class="profile-featured shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.qualEyebrow)+'</span><h2>'+esc(p.qualTitle)+'</h2><p>'+esc(p.qualLead||'')+'</p></div><div class="profile-credentials">'+qualifications+'</div></section>';
+ const shop=p.purchase;
+ const shopOptions=Array.isArray(shop?.options)
+  ?shop.options.filter(x=>typeof x.url==='string' && /^https:\/\//i.test(x.url))
+  :[];
+ const purchaseSection=section==='about' && shop && shopOptions.length
+  ?'<section class="profile-book shell" aria-labelledby="profile-book-title">'+
+   '<div class="profile-book-art" aria-hidden="true"><span>RAVEN / PUBLISHED WORK</span><strong>R</strong><small>RISK / GOVERNANCE / OPERATIONS</small></div>'+
+   '<div class="profile-book-content"><span class="profile-kicker">'+esc(shop.eyebrow||'PUBLISHED WORK')+'</span>'+
+   '<h2 id="profile-book-title">'+esc(shop.title)+'</h2><p class="profile-book-subtitle">'+esc(shop.subtitle||'')+'</p>'+
+   '<p class="profile-book-description">'+esc(shop.description||'')+'</p>'+
+   '<details class="profile-buy"><summary><span>'+esc(shop.actionLabel||'Buy the book')+'</span><span class="profile-buy-arrow" aria-hidden="true">↗</span></summary>'+
+   '<div class="profile-buy-menu"><p>'+esc(shop.chooserLabel||'Choose a store')+'</p>'+
+   shopOptions.map(x=>'<a class="profile-buy-option" href="'+esc(x.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(x.label)+'</span><small>'+esc(x.caption||'')+'</small><b aria-hidden="true">↗</b></a>').join('')+
+   '<small class="profile-buy-note">'+esc(shop.note||'')+'</small></div></details></div></section>'
+  :'';
  document.title=record.title+' · RAVEN';
  return '<main class="profile-design profile-'+esc(section)+'">'+
   '<header class="profile-hero shell"><div class="profile-hero-copy"><span class="profile-kicker">'+esc(p.eyebrow)+'</span>'+
@@ -347,7 +362,7 @@ function professionalContentPage(record){
   '<div class="profile-art-corner" aria-hidden="true">R / '+esc(section.toUpperCase())+'</div></div></header>'+
   '<div class="profile-stats shell">'+stats+'</div>'+
   '<section class="profile-narrative shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.sectionEyebrow)+'</span><h2>'+esc(p.sectionTitle)+'</h2><p>'+esc(p.sectionLead||'')+'</p></div><div class="profile-stories">'+stories+'</div></section>'+
-  featureSection+archiveSection+
+  featureSection+archiveSection+purchaseSection+
   '<section class="profile-closing shell"><span class="profile-kicker">RAVEN / SECURITY & OPERATIONS</span><h2>'+esc(p.closing)+'</h2>'+
   '<p>'+esc(p.book||'')+'</p><div class="profile-hero-actions"><a href="'+esc(p.primaryLink)+'">'+esc(p.primaryLabel)+' ↗</a><a href="'+esc(p.secondaryLink)+'">'+esc(p.secondaryLabel)+' ↗</a></div></section>'+
   '</main>';
