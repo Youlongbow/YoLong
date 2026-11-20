@@ -1007,3 +1007,36 @@ html[lang=en] .interior-layout .article-hero h1{
   .section-training .course-card:hover img,
   #journal .paper:hover{transform:none}
 }
+
+
+/* HEAT needs its real course identity and a contextual visual above the text. */
+.section-training .article-hero{
+  min-height:320px;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  background-color:#0b0e11;
+  background-image:
+    linear-gradient(90deg,#0b0e11 0%,#0b0e11fb 31%,#0b0e11df 56%,#0b0e1170 82%,#0b0e1135 100%),
+    url("/assets/media/notion/81e24df2-d3ff-443b-af9f-5074bcfb4655.webp");
+  background-position:center,right center;
+  background-size:cover,auto 100%;
+  background-repeat:no-repeat;
+}
+.section-training .article-hero h1{
+  max-width:840px;font-size:clamp(31px,3.6vw,55px);
+}
+html[lang=en] .section-training .article-hero h1{
+  max-width:850px;font-size:clamp(33px,4.1vw,62px);
+}
+@media(max-width:700px){
+  .section-training .article-hero{
+    min-height:305px;
+    background-image:
+      linear-gradient(90deg,#0b0e11 0%,#0b0e11ef 40%,#0b0e11bd 90%),
+      url("/assets/media/notion/81e24df2-d3ff-443b-af9f-5074bcfb4655.webp");
+    background-size:cover,auto 100%;background-position:center,70% center;
+  }
+  .section-training .article-hero h1,
+  html[lang=en] .section-training .article-hero h1{
+    font-size:clamp(30px,7vw,38px);
+  }
+}
