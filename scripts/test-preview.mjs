@@ -36,6 +36,11 @@ try{
  assert(gatewayPictures.length===3&&gatewayPictures.every(x=>x.loaded),'All three editorial gateways show real archived media');
  assert(gatewayPictures.every(x=>Math.abs(x.aspect-16/9)<.06),'All section images keep a consistent 16:9 cover ratio');
  assert(await desktop.locator('.gateway-action').count()===3,'Each editorial gateway has a clear action');
+ const monitorCover=await desktop.locator('.gateway-monitor img').getAttribute('src');
+ assert(monitorCover==='/assets/media/brand/raven-global-monitor.webp','Global monitoring section has no borrowed third-party risk map branding');
+ const originalCover=await desktop.request.get(base+monitorCover);
+ assert(originalCover.ok() && (originalCover.headers()['content-type']||'').includes('image/webp'),'Original RAVEN monitoring artwork is served as a self-hosted WebP');
+
 
  assert(await desktop.locator('.expertise-item[href^="/capabilities/zh/"]').count()===5,'Five homepage expertise cards are real links');
  assert(await desktop.locator('.expertise-item p').count()===5,'Each expertise card has a meaningful summary');
@@ -153,6 +158,28 @@ try{
  mobile.on('pageerror',error=>errors.push('mobile: '+error.message));
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  console.log('RAVEN_MOBILE_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:58})).toString('base64'));
+
+ const phoneGateways=await mobile.locator('.editorial-gateways').evaluate(container=>{
+   const c=container.getBoundingClientRect();
+   const cards=[...container.querySelectorAll('.gateway')].map(el=>{
+     const b=el.getBoundingClientRect();
+     const t=el.querySelector('h2').getBoundingClientRect();
+     const img=el.querySelector('img');
+     return {left:b.left,right:b.right,width:b.width,height:b.height,titleHeight:t.height,
+       imgLoaded:img.complete&&img.naturalWidth>0,imgSrc:img.getAttribute('src')};
+   });
+   return {width:c.width,columns:getComputedStyle(container).gridTemplateColumns.split(' ').length,cards};
+ });
+ assert(phoneGateways.columns===1,'Mobile homepage renders ONE full-width editorial gateway column');
+ assert(phoneGateways.cards.length===3&&phoneGateways.cards.every(x=>x.width>=310),'Mobile gateway cards use readable widths, not three narrow columns');
+ assert(phoneGateways.cards.every(x=>x.imgLoaded&&x.titleHeight<85),'Mobile gateway images load and headings avoid vertical word stacking');
+ assert(phoneGateways.cards[1].imgSrc==='/assets/media/brand/raven-global-monitor.webp','Security intelligence uses original unbranded RAVEN artwork');
+ await mobile.locator('.editorial-gateways').scrollIntoViewIfNeeded();
+ console.log('RAVEN_MOBILE_CARDS_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:62})).toString('base64'));
+ await mobile.locator('.gateway-monitor').click();
+ await mobile.waitForURL('**/security/zh/',{timeout:15000});
+ assert((await mobile.locator('h1').innerText()).includes('全球安全'),'Mobile monitoring card opens the actual intelligence archive');
+ await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  assert(await mobile.locator('.expertise-item[href^="/capabilities/zh/"]').count()===5,'All five clickable specialties are available on mobile');
  const mobileLockup=await mobile.evaluate(()=>{
   const overlay=document.querySelector('#site-transition');
