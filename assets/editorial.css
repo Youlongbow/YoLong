@@ -1771,3 +1771,59 @@ html[lang=zh] .profile-design .profile-book h2{
  html[lang=zh] .profile-design .profile-book h2{font-size:36px}
  .profile-design .profile-buy{width:100%}
 }
+
+
+/* RAVEN typography fix — keep Chinese headings from orphaning a single glyph.
+   Balance heading lines instead of forcing nowrap or shrinking every title. */
+:where(
+  .editorial-hero h1,
+  .gateway h2,
+  .sec-head h2,
+  .editorial-statement h2,
+  .interior-layout .article-hero h1,
+  .article-content > h2,
+  .article-content > h3,
+  .profile-design .profile-hero h1,
+  .profile-design .profile-section-head h2,
+  .profile-design .profile-story h3,
+  .profile-design .profile-assignment h3,
+  .profile-design .profile-credential h3,
+  .profile-design .profile-book h2,
+  .profile-design .profile-closing h2
+) {
+  text-wrap: balance;
+  word-break: normal;
+  overflow-wrap: normal;
+  line-break: strict;
+  max-width: 100%;
+}
+.profile-design .profile-hero-copy,
+.profile-design .profile-story-copy,
+.profile-design .profile-section-head,
+.editorial-hero .hero-copy {
+  min-width: 0;
+}
+:where(.profile-design .profile-lead, .profile-design .profile-story p, .hero-dek, .gateway p) {
+  text-wrap: pretty;
+}
+/* Chinese title on narrower desktop/tablet: reserve enough copy width
+   before switching to the existing stacked mobile layout. */
+@media (min-width:821px) and (max-width:1180px) {
+  html[lang=zh] .profile-design .profile-hero {
+    grid-template-columns: minmax(0,1.11fr) minmax(0,.89fr);
+  }
+  html[lang=zh] .profile-design .profile-hero h1 {
+    font-size: clamp(32px,3.15vw,41px);
+    letter-spacing: -.045em;
+  }
+  .profile-design .profile-hero {
+    gap: clamp(22px,2.8vw,36px);
+  }
+}
+/* Keep short control labels intact on small screens. */
+.profile-design .profile-hero-actions a,
+.profile-design .profile-buy summary,
+.nav a.nav-contact,
+.editorial-hero .btns a {
+  white-space: nowrap;
+}
