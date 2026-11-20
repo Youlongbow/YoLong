@@ -5,6 +5,11 @@ on:
     paths:
       - '.github/workflows/browser-preview.yml'
       - 'assets/editorial.css'
+      - 'assets/transition.css'
+      - 'assets/app.js'
+      - 'scripts/test-preview.mjs'
+      - 'content/capabilities-zh.json'
+      - 'content/capabilities-en.json'
   workflow_dispatch:
 jobs:
   browser:
