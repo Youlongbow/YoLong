@@ -31,7 +31,7 @@ a,button{transition:color .18s ease,background .18s ease,border-color .18s ease,
 .mobile{display:none}
 .home-layout{overflow:hidden}
 .editorial-hero{height:clamp(535px,44vw,670px);position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(125deg,#0b0e11 0%,#171d22 58%,#333b40 100%);border-bottom:1px solid #9a9da04a}
-.hero-photo{position:absolute;inset:-1px -1px 0 30%;background-image:linear-gradient(90deg,#0b0e11 0%,#0b0e1130 18%,transparent 38%),url("/assets/media/brand/raven-architecture.webp");background-position:left center,center 43%;background-size:cover;filter:saturate(.45) contrast(1.08);opacity:1;z-index:-2}
+.hero-photo{position:absolute;inset:-1px -1px 0 30%;background-image:linear-gradient(90deg,#0b0e11 0%,#0b0e1130 18%,transparent 38%),url("/assets/media/brand/raven-architecture.svg");background-position:left center,center 43%;background-size:cover;filter:saturate(.45) contrast(1.08);opacity:1;z-index:-2}
 .hero-vignette{position:absolute;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(90deg,#0b0e11 2%,#0b0e11eb 23%,#0b0e11b8 38%,#0b0e113f 57%,transparent 80%),linear-gradient(0deg,#0b0e11bb 0,transparent 24%,transparent 79%,#0b0e1177 100%);}
 .hero-inner{height:100%;display:flex;align-items:center}
 .editorial-hero .hero-copy{padding:24px 0 55px;width:min(650px,61%);z-index:2}
