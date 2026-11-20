@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-20",
-  "total": 127,
+  "total": 128,
   "events": [
     {
       "slug": "2026-11-19-chagai-los-mining-site-seizure",
@@ -30,6 +30,18 @@
       "eventDate": "2026-11-19",
       "sourceUrls": [
         "https://thebalochistanpost.net/2026/11/armed-men-attack-mining-site-in-chagai-and-block-highway-in-khuzdar/"
+      ]
+    },
+    {
+      "slug": "2026-11-19-mali-africa-corps-lancet-strikes",
+      "date": "2026-11-19",
+      "region": "Mali / Sahel",
+      "category": "security",
+      "title": "Mali: Africa Corps expands Lancet strikes amid rising airstrike fatalities",
+      "summary": "Reuters reported CIG findings on 19 November that Russian Africa Corps forces increased Lancet drone use in Mali, while ACLED-derived strike and fatality counts rose sharply after April.",
+      "body": "Facts: Reuters reported a Conflict Insights Group assessment identifying at least ten strikes since April using ZALA Lancet loitering munitions with surveillance drones. CIG cited ACLED figures showing weekly recorded airstrikes rising from fewer than seven to almost sixteen and associated fatalities from fewer than 25 to over 60. CIG assessed that at least one strike almost certainly targeted a vehicle carrying civilians. Assessment: After the coordinated April insurgent offensive, Russian and Malian forces increased remote strikes to regain initiative. Greater strike capacity may bring tactical benefits but increases the importance of civilian vehicle identification and intelligence quality. An alternative explanation is that the larger battlefield and more targets explain the increased strike count. Business implications: Mining, energy and logistics operators in contested central and northern Mali should review route-specific exposure to aerial operations, field-vehicle authorisations, contractor movement, vehicle identification and stopping points. Indicators: strike locations and civilian harm, weekly ACLED trends, official investigations, carrier rerouting and insurance terms. Source: https://www.reuters.com/world/africa/russias-africa-corps-deploys-new-drone-mali-strikes-increase-analysis-says-2026-11-19/",
+      "sourceUrls": [
+        "https://www.reuters.com/world/africa/russias-africa-corps-deploys-new-drone-mali-strikes-increase-analysis-says-2026-11-19/"
       ]
     },
     {
