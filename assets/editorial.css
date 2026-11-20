@@ -255,3 +255,18 @@ html[lang="zh-CN"] .article-hero h1{font-family:"Songti SC","Noto Serif CJK SC",
  }
  .editorial-hero .hero-copy{padding-bottom:55px}
 }
+
+
+/* Feather the image boundary into the graphite field: no floating photo rectangle. */
+@media(min-width:691px){
+ .editorial-hero .hero-photo{
+  -webkit-mask-image:linear-gradient(to bottom,transparent 2%,#000 27%,#000 68%,transparent 97%);
+  mask-image:linear-gradient(to bottom,transparent 2%,#000 27%,#000 68%,transparent 97%);
+ }
+}
+@media(max-width:690px){
+ .editorial-hero .hero-photo{
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 49%,transparent 79%);
+  mask-image:linear-gradient(to bottom,#000 0%,#000 49%,transparent 79%);
+ }
+}
