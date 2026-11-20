@@ -1,0 +1,32 @@
+/* Official RAVEN identity during initial loading and internal page changes. */
+.site-transition{
+  position:fixed;inset:0;z-index:1000;display:grid;place-items:center;
+  background:#0b0e11;color:#efede8;opacity:1;visibility:visible;
+  pointer-events:all;transition:opacity .36s ease,visibility .36s ease;
+}
+.transition-lockup{
+  display:flex;flex-direction:column;align-items:center;gap:19px;
+  transform:translateY(-7px);
+}
+.transition-mark{
+  display:block;width:clamp(48px,5.5vw,70px);height:clamp(48px,5.5vw,70px);
+  object-fit:contain;filter:drop-shadow(0 3px 10px #0008);
+}
+.transition-wordmark{
+  display:block;font-family:Georgia,"Times New Roman",serif;font-size:clamp(43px,6vw,65px);
+  font-weight:500;letter-spacing:.17em;line-height:1.08;margin-left:.17em;
+}
+.transition-rule{
+  display:block;background:#b82a32;width:min(170px,39vw);height:2px;
+  transform-origin:left center;animation:raven-line-in .65s ease both;
+}
+.site-transition.is-exiting{
+  opacity:0;visibility:hidden;pointer-events:none;
+}
+.site-transition.is-hidden{display:none;}
+.site-transition.is-entering{opacity:1;visibility:visible;pointer-events:all;}
+@keyframes raven-line-in{from{transform:scaleX(.1);opacity:.5}to{transform:scaleX(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){
+ .site-transition{transition:none}
+ .transition-rule{animation:none}
+}
