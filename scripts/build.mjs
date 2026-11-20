@@ -1,5 +1,6 @@
 import { cpSync, mkdirSync, copyFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 
 const site=JSON.parse(readFileSync('content/site.json','utf8'));
@@ -25,9 +26,16 @@ for(const lang of ['zh','en']){
 }
 
 mkdirSync('dist',{recursive:true});
-copyFileSync('index.html','dist/index.html');
 cpSync('assets','dist/assets',{recursive:true});
 cpSync('content','dist/content',{recursive:true});
+// Content-addressed stylesheet URLs keep CDN and browser caches from serving an old hero.
+const cssContent=readFileSync('assets/editorial.css');
+const cssHash=createHash('sha256').update(cssContent).digest('hex').slice(0,12);
+const versionedCss='editorial.'+cssHash+'.css';
+writeFileSync(join('dist','assets',versionedCss),cssContent);
+const html=readFileSync('index.html','utf8')
+ .replace('/assets/editorial.css','/assets/'+versionedCss);
+writeFileSync('dist/index.html',html);
 
 const routes=['zh','en','journal/zh','journal/en','security/zh','security/en'];
 for(const lang of ['zh','en']){
@@ -41,7 +49,7 @@ for(const lang of ['zh','en']){
 for (const route of routes){
  const dest=join('dist',route);
  mkdirSync(dest,{recursive:true});
- copyFileSync('index.html',join(dest,'index.html'));
+ writeFileSync(join(dest,'index.html'),html);
 }
 const id = value => String(value||'').replace(/-/g,'');
 const redirects=[
@@ -66,4 +74,4 @@ writeFileSync('dist/_redirects',redirects.join('\n')+'\n');
 
 writeFileSync('dist/robots.txt','User-agent: *\nDisallow: /\n');
 execFileSync(process.execPath,['scripts/media-audit.mjs'],{stdio:'inherit'});
-console.log(JSON.stringify({status:'preview-built',routes:routes.length,securityRecords:security.zh.events.length,localizedResearchPages:research.zh.articles.length+research.en.articles.length,trainingModules:training.zh.modules.length+training.en.modules.length,legacyRedirects:redirects.length}));
+console.log(JSON.stringify({status:'preview-built',routes:routes.length,securityRecords:security.zh.events.length,localizedResearchPages:research.zh.articles.length+research.en.articles.length,trainingModules:training.zh.modules.length+training.en.modules.length,legacyRedirects:redirects.length,styleRevision:cssHash}));
