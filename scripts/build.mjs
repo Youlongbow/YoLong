@@ -33,8 +33,14 @@ const cssContent=readFileSync('assets/editorial.css');
 const cssHash=createHash('sha256').update(cssContent).digest('hex').slice(0,12);
 const versionedCss='editorial.'+cssHash+'.css';
 writeFileSync(join('dist','assets',versionedCss),cssContent);
+// Loading identity uses content-addressed CSS to avoid stale transition artwork.
+const transitionCss=readFileSync('assets/transition.css');
+const transitionHash=createHash('sha256').update(transitionCss).digest('hex').slice(0,12);
+const transitionFile='transition.'+transitionHash+'.css';
+writeFileSync(join('dist','assets',transitionFile),transitionCss);
 const html=readFileSync('index.html','utf8')
- .replace('/assets/editorial.css','/assets/'+versionedCss);
+ .replace('/assets/editorial.css','/assets/'+versionedCss)
+ .replace('/assets/transition.css','/assets/'+transitionFile);
 writeFileSync('dist/index.html',html);
 
 const routes=['zh','en','journal/zh','journal/en','security/zh','security/en'];
