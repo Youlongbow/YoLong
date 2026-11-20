@@ -56,5 +56,13 @@ jobs:
           test -s dist/capabilities/zh/security-governance/index.html
           node -e "for(const l of ['zh','en']){const c=require('./content/capabilities-'+l+'.json').items;if(c.length!==5||c.some(x=>!x.summary||x.approach.length<3))process.exit(1)}"
           test -s dist/robots.txt
+          test -s dist/sitemap.xml
+          grep -q 'https://www.ravenlong.com/about/zh/' dist/sitemap.xml
+          grep -q 'Allow: /' dist/robots.txt
+          grep -q 'Sitemap: https://www.ravenlong.com/sitemap.xml' dist/robots.txt
+          grep -q 'rel="canonical"' dist/about/zh/index.html
+          grep -q 'hreflang="en"' dist/about/zh/index.html
+          grep -q 'application/ld+json' dist/journal/zh/bla-strategy-analysis/index.html
+          grep -q 'mailto:' dist/assets/app.js
           node -e "const zh=require('./content/security-zh.json').events,en=require('./content/security-en.json').events;if(zh.length<125||zh.length!==en.length||zh.some((r,i)=>r.slug!==en[i].slug||r.date!==en[i].date))process.exit(1)"
           node -e "const d=require('./dist/content/site.json');if(!d.sections.zh||!d.sections.en||d.events.length<4)process.exit(1)"
