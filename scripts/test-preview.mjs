@@ -27,6 +27,8 @@ try{
  assert(slot.left>slot.viewport*.25,'Desktop photo is positioned in the right-side art slot');
  assert(slot.backgroundSize==='contain','Desktop photo preserves the full original frame without cropping');
  assert((await desktop.locator('h1').innerText()).includes('安全研究'),'Chinese editorial headline is rendered');
+ const wrap=await desktop.locator('.editorial-hero h1').evaluate(el=>getComputedStyle(el).textWrap);
+ assert(wrap.includes('balance'),'Headings use balanced line breaks');
  assert(await desktop.locator('.editorial-hero').isVisible(),'Editorial homepage hero is visible');
  assert(await desktop.locator('.gateway').count()===3,'Three contrasting editorial section cards render');
  const gatewayPictures=await desktop.locator('.gateway-media img').evaluateAll(imgs=>imgs.map(img=>{
@@ -83,7 +85,9 @@ try{
  console.log('RAVEN_CARDS_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
  await desktop.locator('.switch a[href="/en/"]').click();
  await desktop.waitForURL('**/en/',{timeout:15000});
- assert((await desktop.locator('h1').innerText()).includes('Security Research'),'English homepage language switch works');
+ // Initial static SEO markup is intentionally replaced by the hydrated app.
+ await desktop.locator('.editorial-hero h1').waitFor({state:'visible',timeout:30000});
+ assert((await desktop.locator('.editorial-hero h1').innerText()).includes('Security Research'),'English homepage language switch works');
  await desktop.goto(base+'/capabilities/zh/security-architecture/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('h1').innerText()).includes('高风险环境'),'Chinese capability detail loads');
  assert(await desktop.locator('.capability-step').count()===4,'Capability detail includes four concrete methods');
