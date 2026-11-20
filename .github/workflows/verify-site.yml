@@ -46,6 +46,15 @@ jobs:
           test -s dist/training/zh/11/index.html
           node -e "for(const lang of ['zh','en']){const d=require('./content/training-'+lang+'.json');if(d.modules.length!==11||d.modules.some(x=>x.body.length<1000))process.exit(1)}"
           test -s dist/media-manifest.json
+          test -s dist/assets/transition.css
+          test -s dist/content/capabilities-zh.json
+          test -s dist/content/capabilities-en.json
+          test -s dist/capabilities/zh/index.html
+          test -s dist/capabilities/en/index.html
+          test -s dist/capabilities/zh/security-architecture/index.html
+          test -s dist/capabilities/en/security-architecture/index.html
+          test -s dist/capabilities/zh/security-governance/index.html
+          node -e "for(const l of ['zh','en']){const c=require('./content/capabilities-'+l+'.json').items;if(c.length!==5||c.some(x=>!x.summary||x.approach.length<3))process.exit(1)}"
           test -s dist/robots.txt
           node -e "const zh=require('./content/security-zh.json').events,en=require('./content/security-en.json').events;if(zh.length<125||zh.length!==en.length||zh.some((r,i)=>r.slug!==en[i].slug||r.date!==en[i].date))process.exit(1)"
           node -e "const d=require('./dist/content/site.json');if(!d.sections.zh||!d.sections.en||d.events.length<4)process.exit(1)"
