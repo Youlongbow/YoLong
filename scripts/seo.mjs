@@ -68,9 +68,59 @@ for(const lang of ['zh','en']){
  routes.push('capabilities/'+lang);
  for(const x of d.capabilities)routes.push('capabilities/'+lang+'/'+x.slug);
 }
+
+function extendedDescription(route,current){
+ const segments=route.split('/');
+ const lang=segments.includes('en')?'en':'zh';
+ const extra=lang==='zh'?'RAVEN 聚焦海外复杂环境安全管理，结合真实项目实践、原创研究和运营经验，提供能够直接用于风险判断、安保体系建设及项目决策的专业内容。':'RAVEN publishes original field-informed research and practical security architecture guidance for overseas project leaders, corporate security teams and operators facing complex threat environments.';
+ if(Array.from(current).length>=70)return short(current,175);
+ return short(current+' '+extra,175);
+}
+function crawlableBody(route){
+ const parts=route.split('/');
+ const lang=parts.includes('en')?'en':'zh';
+ const d=records[lang];
+ const cat=parts[0],detail=parts[2]||null;
+ const refs=[];
+ const intro=[];
+ if(cat==='zh'||cat==='en'){
+  intro.push(site.sections[lang].supporting,site.sections[lang].capabilitiesLead,site.sections[lang].researchLead,site.sections[lang].monitoringLead);
+  refs.push(...d.research.slice(0,5).map(x=>({url:'/journal/'+lang+'/'+x.slug,title:x.title,desc:x.summary||x.excerpt||x.body})));
+  refs.push(...d.security.slice(0,5).map(x=>({url:'/security/'+lang+'/'+x.slug,title:x.title,desc:x.summary||x.body})));
+ }else if(cat==='journal'&&!detail){
+  intro.push(site.sections[lang].researchLead);
+  refs.push(...d.research.slice(0,35).map(x=>({url:'/journal/'+lang+'/'+x.slug,title:x.title,desc:x.excerpt||x.summary||x.body})));
+ }else if(cat==='security'&&!detail){
+  intro.push(site.sections[lang].monitoringLead);
+  refs.push(...d.security.slice(0,35).map(x=>({url:'/security/'+lang+'/'+x.slug,title:x.title,desc:x.summary||x.body})));
+ }else if(cat==='capabilities'&&!detail){
+  intro.push(site.sections[lang].capabilitiesLead);
+  refs.push(...d.capabilities.map(x=>({url:'/capabilities/'+lang+'/'+x.slug,title:x.title,desc:x.summary})));
+ }else{
+  const item=cat==='journal'?d.research.find(x=>x.slug===detail):
+   cat==='security'?d.security.find(x=>x.slug===detail):
+   cat==='capabilities'?d.capabilities.find(x=>x.slug===detail):
+   cat==='training'&&detail?d.training.find(x=>x.slug===detail):
+   d.pages.find(x=>x.slug===cat);
+  if(item){
+   intro.push(item.summary||item.excerpt||item.lead||'');
+   const markdown=item.body||'';
+   // Extract paragraphs from original published content while preserving text and attribution.
+   const paragraphs=markdown.split(/\n{2,}/).map(x=>short(x,650))
+    .filter(x=>x.length>30 && !/^(https?:\/\/|notion-file-block|<image)/i.test(x))
+    .slice(0,cat==='contact'?16:32);
+   intro.push(...paragraphs);
+  }
+ }
+ const paragraphs=intro.filter(Boolean).map(x=>'<p>'+attr(short(x,850))+'</p>').join('');
+ const related=refs.map(x=>'<article><h2><a href="'+attr(x.url)+'">'+attr(short(x.title,150))+'</a></h2><p>'+attr(short(x.desc,260))+'</p></article>').join('');
+ return '<section aria-label="'+(lang==='zh'?'页面正文':'Page content')+'">'+paragraphs+related+'</section>';
+}
+
 const sourceHtml=readFileSync('dist/index.html','utf8');
 function asHtml(route){
  const m=metadata(route);
+ m.desc=extendedDescription(route,m.desc);
  const target=routeUrl(route);
  const zh=routeUrl(alt(route,'zh'));
  const en=routeUrl(alt(route,'en'));
@@ -94,7 +144,7 @@ function asHtml(route){
  '<a href="/experience/'+m.lang+'/">'+(m.lang==='zh'?'经历':'Experience')+'</a> · '+
  '<a href="/journal/'+m.lang+'/">'+(m.lang==='zh'?'研究与观点':'Journal')+'</a> · '+
  '<a href="/security/'+m.lang+'/">'+(m.lang==='zh'?'安全动态':'Security Intelligence')+'</a></nav>';
- const initial='<main class="seo-first-paint" style="padding:9vh 7vw;max-width:1150px"><h1 style="font-size:clamp(28px,4vw,52px);line-height:1.3;font-weight:600">'+attr(m.title)+'</h1><p style="font-size:16px;line-height:1.8;color:#bbb">'+attr(m.desc)+'</p>'+nav+'</main>';
+ const initial='<main class="seo-first-paint" style="padding:9vh 7vw;max-width:1150px"><h1 style="font-size:clamp(28px,4vw,52px);line-height:1.3;font-weight:600">'+attr(m.title)+'</h1><p style="font-size:16px;line-height:1.8;color:#bbb">'+attr(m.desc)+'</p>'+crawlableBody(route)+nav+'</main>';
  return sourceHtml.replace('<html lang="zh">','<html lang="'+m.lang+'">')
   .replace(/<meta name="description" content="[^"]*">/,'<meta name="description" content="'+attr(m.desc)+'">')
   .replace(/<title>[^<]*<\/title>/,'<title>'+attr(m.title)+'</title>')
