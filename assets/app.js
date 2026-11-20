@@ -76,17 +76,34 @@ function homeHero(s){
  const statementTitle=z?'独立研究 · 现场实践':'Independent research. Field practice.';
  const heading=z?'安全研究、风险治理与运营实践':'Security Research, Risk Governance & Field Practice';
  const subtitle=z?'以专业研究和现场经验，支持高风险环境下的安全决策与业务运营。':'Research and operational experience supporting security decisions in demanding environments.';
+ // These covers are already archived on RAVEN, and illustrate their section.
+ // They are not presented as photographs of any reported incident.
  const cards=[
-  {kind:'journal',count:'01',name:z?'研究与观点':'Research & analysis',description:z?'战略分析、案例研究与安全治理':'Strategic assessment, case studies and security governance',href:'/journal/'+lang+'/'},
-  {kind:'monitor',count:'02',name:z?'全球安全动态':'Security intelligence',description:z?'追踪关键事件及其运营影响':'Global incident monitoring and operational implications',href:'/security/'+lang+'/'},
-  {kind:'training',count:'03',name:z?'HEAT 培训':'HEAT training',description:z?'基于实际情境的安全准备与应对':'Practical preparation for challenging environments',href:'/training/'+lang+'/'}
+  {kind:'journal',count:'01',name:z?'研究与观点':'Research & analysis',
+   category:z?'独立研究 / STRATEGIC INSIGHTS':'RESEARCH / STRATEGIC INSIGHTS',
+   description:z?'战略演变、矿业风险与安全治理的深度分析。':'In-depth analysis of strategic change, mining security and risk governance.',
+   action:z?'阅读研究报告':'Explore research',
+   image:'/assets/media/notion/77d3ad07-abfd-4300-89de-7a82a775c1fe.png',
+   alt:z?'BLA战略研究报告中的分析图表':'Diagram from the BLA strategic research report',href:'/journal/'+lang+'/'},
+  {kind:'monitor',count:'02',name:z?'全球安全动态':'Security intelligence',
+   category:z?'安全情报 / GLOBAL MONITOR':'INTELLIGENCE / GLOBAL MONITOR',
+   description:z?'持续追踪全球事件，分析对人员、路线和经营活动的影响。':'Events and assessments of their effects on people, routes and operations.',
+   action:z?'查看事件档案':'View incident archive',
+   image:'/assets/media/notion/c9f09efa-e0fa-4c2a-90c5-e436d392e74d.webp',
+   alt:z?'全球风险地图资料图':'Global risk map reference image',href:'/security/'+lang+'/'},
+  {kind:'training',count:'03',name:z?'HEAT 培训':'HEAT training',
+   category:z?'实践培训 / SCENARIO LEARNING':'TRAINING / SCENARIO LEARNING',
+   description:z?'真实情境教学、行动准备与突发事件判断训练。':'Practical field scenarios, preparation and emergency decision-making.',
+   action:z?'进入培训课程':'Explore HEAT course',
+   image:'/assets/media/notion/81e24df2-d3ff-443b-af9f-5074bcfb4655.webp',
+   alt:z?'HEAT道路封控情境模拟图':'HEAT simulated road-closure scenario',href:'/training/'+lang+'/'}
  ];
  return '<section class="editorial-hero" aria-labelledby="hero-title"><div class="hero-photo" role="img" aria-label="'+(z?'乌鸦站立在石质建筑上，背后是明暗交错的云层':'A raven perched on stone architecture against a dramatic sky')+'"></div><div class="hero-vignette"></div>'+
   '<div class="hero-inner shell"><div class="hero-copy"><div class="over">RAVEN <span class="over-slash">/</span> SECURITY & RISK</div><div class="hero-wordmark" aria-hidden="true">RAVEN</div><h1 id="hero-title">'+esc(heading)+'</h1><p class="hero-dek">'+esc(subtitle)+'</p>'+
   '<div class="btns"><a class="btn red" href="/security/'+lang+'/">'+(z?'全球安全动态':'Explore intelligence')+' <span aria-hidden="true">↗</span></a><a class="btn" href="/journal/'+lang+'/">'+(z?'研究与观点':'Explore research')+' <span aria-hidden="true">↗</span></a></div></div></div></section>'+
   '<section class="editorial-statement shell" aria-label="'+esc(statementTitle)+'"><div class="statement-light"><span class="statement-rule"></span><strong>'+esc(statementTitle)+'</strong></div><p>'+esc(s.lead)+'</p></section>'+
   '<section class="editorial-gateways shell" aria-label="'+(z?'核心栏目':'Featured sections')+'">'+cards.map(card=>
-   '<a class="gateway gateway-'+card.kind+'" href="'+card.href+'"><div class="gateway-top"><span>'+card.count+' / RAVEN</span><span aria-hidden="true" class="gateway-arrow">↗</span></div><div class="gateway-copy"><h2>'+esc(card.name)+'</h2><p>'+esc(card.description)+'</p></div></a>').join('')+'</section>';
+   '<a class="gateway gateway-'+card.kind+'" href="'+card.href+'"><div class="gateway-media"><img src="'+esc(card.image)+'" alt="'+esc(card.alt)+'" loading="lazy" decoding="async"></div><div class="gateway-body"><div class="gateway-top"><span>'+esc(card.category)+'</span><span class="gateway-index">'+card.count+' / 03</span></div><h2>'+esc(card.name)+'</h2><p>'+esc(card.description)+'</p><div class="gateway-action"><span>'+esc(card.action)+'</span><span class="gateway-arrow" aria-hidden="true">↗</span></div></div></a>').join('')+'</section>';
 }
 function expertise(s){
  const items=capabilityData?.items||[];
@@ -141,7 +158,7 @@ function richBody(markdown,sourceLink){
     const caption=match?chunk.slice(match[0].length).replace(/<\/(?:image|file|video|audio)>/gi,'').trim():'';
     if(match?.[1]==='image' && preserved){
       const name=decodeURIComponent((fileUrl.match(/[?&]name=([^&]+)/)||[])[1]||'RAVEN image');
-      return '<figure class="article-figure"><img src="'+esc(preserved)+'" alt="'+esc(name)+'" loading="lazy" decoding="async">'+(caption?'<figcaption>'+richInline(caption).replace(/\n/g,'<br>')+'</figcaption>':'')+'</figure>';
+      return '<figure class="article-figure '+(/\.svg$/i.test(name)?'article-diagram':'article-photograph')+'"><img src="'+esc(preserved)+'" alt="'+esc(name)+'" loading="lazy" decoding="async">'+(caption?'<figcaption>'+richInline(caption).replace(/\n/g,'<br>')+'</figcaption>':'')+'</figure>';
     }
     return '<aside class="media-placeholder">'+esc(txt.missingMedia)+' <a href="'+esc(sourceLink||oldHome[lang])+'" target="_blank" rel="noopener">'+txt.original+' ↗</a></aside>';
   }
@@ -165,11 +182,30 @@ function richBody(markdown,sourceLink){
  }).join('');
 }
 function researchCard(a,isLegacy){
- const title = a.title || a[lang==='zh'?'titleZh':'titleEn'];
- const summary = a[lang==='zh'?'excerptZh':'excerptEn'] || '';
- const href = isLegacy?a.url:'/journal/'+lang+'/'+a.slug+'/';
- const badge = isLegacy?'RAVEN / ARCHIVE':'RAVEN / '+txt.full;
- return '<article class="paper"><div class="meta">'+badge+(a.date?' / '+esc(a.date):'')+'</div><h3>'+esc(title)+'</h3>'+(summary?'<p>'+esc(summary)+'</p>':'')+'<a href="'+esc(href)+'"'+(isLegacy?' target="_blank" rel="noopener"':'')+'>'+txt.read+' ↗</a></article>';
+ const title=a.title || a[lang==='zh'?'titleZh':'titleEn'];
+ const href=isLegacy?a.url:'/journal/'+lang+'/'+a.slug+'/';
+ const slugKey=a.slug||'';
+ const covers={
+  'pakistan-drc-mining-comparison':{src:'/assets/media/notion/c9f09efa-e0fa-4c2a-90c5-e436d392e74d.webp',kind:'photo',
+   zh:'比较巴基斯坦和刚果（金）的矿业威胁结构与现场安保策略。',en:'Comparing mining threats, exposure and protective strategies in Pakistan and the DRC.'},
+  'bla-strategy-analysis':{src:'/assets/media/notion/77d3ad07-abfd-4300-89de-7a82a775c1fe.png',kind:'diagram',
+   zh:'追踪BLA的组织与战略变化，评估其对矿业投资及经营的影响。',en:'Assessing BLA strategic change and its implications for mining and investment.'},
+  'blf-bla-operational-divergence':{src:'/assets/media/notion/4b0b8b2a-6bb1-4fd4-ad2f-319e5671c24e.png',kind:'diagram',
+   zh:'分析俾路支武装组织行动分化及其对地区商业活动的影响。',en:'Examining divergent militant activity and the consequences for business operations.'},
+  'bla-war-logic':{src:'/assets/media/notion/88c554e3-417c-4143-a9da-f4742bdff43f.png',kind:'diagram',
+   zh:'研究资金、领导层与组织利益如何影响武装组织的战略决策。',en:'Exploring funding, leadership and organisational incentives in strategic decision-making.'},
+  'bla-leadership-2026-02':{src:'/assets/media/notion/9b27bfe5-9caa-42b3-bbac-d50a805c6552.png',kind:'diagram',
+   zh:'评估领导权重组、战略调整与俾路支地区经营风险。',en:'Reviewing leadership reorganisation, strategic shifts and regional operating risk.'}
+ };
+ const cover=covers[slugKey];
+ const excerpt=a[lang==='zh'?'excerptZh':'excerptEn'] || (cover?.[lang]||'');
+ const description=excerpt.length>185?excerpt.slice(0,185)+'…':excerpt;
+ const label=isLegacy?'RAVEN / ARCHIVE':(lang==='zh'?'独立研究 / RESEARCH':'INDEPENDENT RESEARCH');
+ return '<article class="paper'+(cover?' paper-illustrated':'')+'">'+
+ (cover?'<a class="paper-media '+(cover.kind==='diagram'?'media-diagram':'media-photo')+'" href="'+esc(href)+'"><img src="'+esc(cover.src)+'" alt="'+esc(lang==='zh'?'研究报告配图':'Illustration from the research report')+'" loading="lazy" decoding="async"></a>':'<div class="paper-media paper-media-plain" aria-hidden="true"><span>R / RESEARCH</span></div>')+
+ '<div class="paper-content"><div class="meta">'+esc(label)+(a.date?' / '+esc(a.date):'')+'</div><h3><a class="paper-title-link" href="'+esc(href)+'"'+(isLegacy?' target="_blank" rel="noopener"':'')+'>'+esc(title)+'</a></h3>'+
+ (description?'<p>'+esc(description)+'</p>':'')+
+ '<a class="paper-read" href="'+esc(href)+'"'+(isLegacy?' target="_blank" rel="noopener"':'')+'>'+(lang==='zh'?'阅读全文':'Read analysis')+' <span aria-hidden="true">↗</span></a></div></article>';
 }
 function archivedPdfCards(){
  const list=pdfData?.publications||[];
@@ -265,10 +301,19 @@ function trainingList(){
  const introduction=record?.body.replace(/<page url="[^"]+"[^>]*>[\s\S]*?<\/page>/g,'')||'';
  const modules=trainingData?.modules||[];
  document.title=(lang==='zh'?'HEAT 敌对环境安全意识培训':'HEAT Hostile Environment Awareness Training')+' · RAVEN';
+ const imageFor=module=>{
+  const m=String(module.body||'').match(/<image\b[^>]*source="([^"]+)"[^>]*>/i);
+  return m?mediaMap.images?.[m[1]]||'':'';
+ };
  return articleHero('RAVEN / HEAT',record?.title||'HEAT','/'+lang+'/','RAVEN')+
  '<section class="sec shell course-overview"><div class="course-intro">'+richBody(introduction,record?.sourceUrl)+'</div>'+
- '<div class="over">COURSE / '+modules.length+' MODULES</div>'+
- '<div class="course-grid">'+modules.map((m,i)=>'<a class="course-card" href="/training/'+lang+'/'+m.slug+'/"><span>'+m.slug+' / HEAT</span><h3>'+esc(m.title.replace(/^\d{2}\s*[|｜]\s*/,''))+'</h3><em>↗</em></a>').join('')+'</div></section>';
+ '<div class="course-section-heading"><div class="over">COURSE / '+modules.length+' MODULES</div><h2>'+(lang==='zh'?'课程模块':'Course modules')+'</h2><p>'+(lang==='zh'?'每个单元包含现场场景、判断方法和可执行的应对措施。':'Each module combines practical scenarios, decisions and operational responses.')+'</p></div>'+
+ '<div class="course-grid">'+modules.map((m,i)=>{
+  const src=imageFor(m);
+  return '<a class="course-card" href="/training/'+lang+'/'+m.slug+'/">'+
+    (src?'<div class="course-card-media"><img src="'+esc(src)+'" alt="'+esc(lang==='zh'?'课程情境示意':'Training scenario illustration')+'" loading="lazy" decoding="async"></div>':'<div class="course-card-media course-card-plain" aria-hidden="true">HEAT / RAVEN</div>')+
+    '<div class="course-card-body"><span>'+m.slug+' / HEAT</span><h3>'+esc(m.title.replace(/^\d{2}\s*[|｜]\s*/,''))+'</h3><div class="course-card-action">'+(lang==='zh'?'进入单元':'Open module')+' <em aria-hidden="true">↗</em></div></div></a>';
+ }).join('')+'</div></section>';
 }
 function trainingDetail(){
  const modules=trainingData?.modules||[];
