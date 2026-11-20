@@ -1076,3 +1076,117 @@ html[lang=en] .section-training .article-hero h1{
  .article-details summary{padding:14px 16px}
  .article-details-body{padding:18px 16px}
 }
+
+
+/* Mobile editorial gateway fix (2026-11-20).
+   The homepage selector is more specific than earlier responsive rules;
+   match that specificity so a 390px phone never renders three columns. */
+@media (min-width:701px) and (max-width:1110px){
+  .home-layout .editorial-gateways{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px;
+  }
+}
+@media (max-width:700px){
+  .home-layout .editorial-gateways{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:16px;
+    padding-inline:20px;
+    padding-top:22px;
+    padding-bottom:35px;
+    width:100%;
+    box-sizing:border-box;
+  }
+  .home-layout .editorial-gateways .gateway,
+  .home-layout .editorial-gateways .gateway:last-child{
+    width:100%;min-width:0;
+    grid-column:1;
+    flex-direction:column;
+    min-height:0;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    align-items:stretch;
+  }
+  .home-layout .editorial-gateways .gateway-media,
+  .home-layout .editorial-gateways .gateway:last-child .gateway-media{
+    flex:0 0 auto;
+    display:block;
+    width:100%;
+    height:auto;
+    min-height:0;
+    aspect-ratio:16/9;
+  }
+  .home-layout .editorial-gateways .gateway-media img{
+    display:block;
+    width:100%;height:100%;
+    max-width:100%;
+    object-fit:cover;
+  }
+  .home-layout .editorial-gateways .gateway-journal .gateway-media img{
+    object-fit:contain;
+    padding:10px;
+  }
+  .home-layout .editorial-gateways .gateway-body,
+  .home-layout .editorial-gateways .gateway:last-child .gateway-body{
+    min-height:0;
+    width:100%;
+    padding:20px 22px 19px;
+    flex:1;
+    box-sizing:border-box;
+  }
+  .home-layout .editorial-gateways .gateway-top{
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    max-width:100%;
+    font:500 10px/1.5 var(--mono);
+    letter-spacing:.015em;
+  }
+  .home-layout .editorial-gateways .gateway-top > span:first-child{
+    min-width:0;
+    flex:1;
+    overflow-wrap:normal;
+    word-break:keep-all;
+  }
+  .home-layout .editorial-gateways .gateway-index{
+    flex:none;
+  }
+  .home-layout .editorial-gateways .gateway h2{
+    max-width:100%;
+    font-size:clamp(24px,6.7vw,29px);
+    line-height:1.35;
+    letter-spacing:0;
+    margin:15px 0 8px;
+    word-break:keep-all;
+    overflow-wrap:normal;
+  }
+  .home-layout .editorial-gateways .gateway p{
+    max-width:100%;
+    font-size:13.5px;
+    line-height:1.7;
+    margin:0 0 17px;
+    word-break:normal;
+    overflow-wrap:anywhere;
+  }
+  .home-layout .editorial-gateways .gateway-action{
+    min-height:37px;
+    margin-top:0;
+    padding-top:12px;
+    font-size:13px;
+    gap:12px;
+    align-items:center;
+    border-top:1px solid #aeb5b6;
+  }
+  .home-layout .editorial-gateways .gateway-monitor .gateway-action{border-top-color:#4d5558}
+  .home-layout .editorial-gateways .gateway-arrow{font-size:22px;flex:none;}
+}
+@media (max-width:370px){
+  .home-layout .editorial-gateways{padding-inline:16px;gap:13px}
+  .home-layout .editorial-gateways .gateway-body{padding:18px 18px 17px}
+  .home-layout .editorial-gateways .gateway-top{font-size:9.5px}
+  .home-layout .editorial-gateways .gateway h2{font-size:24px}
+}
