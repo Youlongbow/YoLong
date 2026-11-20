@@ -30,7 +30,7 @@ jobs:
               await new Promise(resolve=>setTimeout(resolve,attempt*400));
             }
           }
-          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/editorial.css', '/assets/transition.css', '/assets/media/brand/raven-architecture.svg', '/assets/app.js', '/content/site.json', '/content/security-zh.json', '/content/security-en.json', '/content/research-zh.json', '/security/zh/2026-11-17-001/', '/security/en/2026-11-17-001/', '/journal/zh/bla-strategy-analysis/', '/journal/en/pakistan-drc-mining-comparison/', '/about/zh/', '/experience/en/', '/contact/zh/', '/training/zh/', '/training/en/01/', '/training/zh/11/', '/content/pages-zh.json', '/content/pages-en.json', '/content/training-zh.json', '/content/training-en.json', '/content/capabilities-zh.json', '/content/capabilities-en.json', '/capabilities/zh/', '/capabilities/en/', '/capabilities/zh/security-architecture/', '/capabilities/en/security-governance/'];
+          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/editorial.css', '/assets/transition.css', '/assets/media/brand/raven-architecture-hero-1870.webp', '/assets/app.js', '/content/site.json', '/content/security-zh.json', '/content/security-en.json', '/content/research-zh.json', '/security/zh/2026-11-17-001/', '/security/en/2026-11-17-001/', '/journal/zh/bla-strategy-analysis/', '/journal/en/pakistan-drc-mining-comparison/', '/about/zh/', '/experience/en/', '/contact/zh/', '/training/zh/', '/training/en/01/', '/training/zh/11/', '/content/pages-zh.json', '/content/pages-en.json', '/content/training-zh.json', '/content/training-en.json', '/content/capabilities-zh.json', '/content/capabilities-en.json', '/capabilities/zh/', '/capabilities/en/', '/capabilities/zh/security-architecture/', '/capabilities/en/security-governance/'];
           const failed = [];
           for (const path of paths) {
             try {
@@ -47,7 +47,7 @@ jobs:
               if (path.endsWith('/') && new URL(response.url).pathname !== path) failed.push(path + ' unexpectedly redirected to ' + new URL(response.url).pathname);
               if (path.endsWith('.css') && !path.endsWith('transition.css') && !body.includes('.hero')) failed.push(path + ' CSS missing');
               if (path.endsWith('transition.css') && !body.includes('grid-template-columns')) failed.push(path + ' horizontal brand lockup missing');
-              if (path.endsWith('raven-architecture.svg') && (!body.includes('<svg') || !body.includes('data:image/webp;base64,'))) failed.push(path + ' branded hero art missing');
+              if (path.endsWith('raven-architecture-hero-1870.webp') && (!type.includes('image/webp') || body.length < 30000)) failed.push(path + ' high-resolution image missing or unexpectedly small');
               if (path.endsWith('editorial.css') && !body.includes('.editorial-hero')) failed.push(path + ' editorial design missing');
               if (path.endsWith('.js') && !body.includes('function bind')) failed.push(path + ' JS missing');
               if (path.endsWith('.json')) {
