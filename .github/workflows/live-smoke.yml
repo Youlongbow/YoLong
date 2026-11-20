@@ -30,7 +30,7 @@ jobs:
               await new Promise(resolve=>setTimeout(resolve,attempt*400));
             }
           }
-          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/app.js', '/content/site.json', '/content/security-zh.json', '/content/security-en.json', '/content/research-zh.json', '/security/zh/2026-11-17-001/', '/security/en/2026-11-17-001/', '/journal/zh/bla-strategy-analysis/', '/journal/en/pakistan-drc-mining-comparison/', '/about/zh/', '/experience/en/', '/contact/zh/', '/training/zh/', '/training/en/01/', '/training/zh/11/', '/content/pages-zh.json', '/content/pages-en.json', '/content/training-zh.json', '/content/training-en.json'];
+          const paths = ['/', '/zh/', '/en/', '/journal/zh/', '/security/en/', '/assets/styles.css', '/assets/editorial.css', '/assets/media/brand/raven-architecture.svg', '/assets/app.js', '/content/site.json', '/content/security-zh.json', '/content/security-en.json', '/content/research-zh.json', '/security/zh/2026-11-17-001/', '/security/en/2026-11-17-001/', '/journal/zh/bla-strategy-analysis/', '/journal/en/pakistan-drc-mining-comparison/', '/about/zh/', '/experience/en/', '/contact/zh/', '/training/zh/', '/training/en/01/', '/training/zh/11/', '/content/pages-zh.json', '/content/pages-en.json', '/content/training-zh.json', '/content/training-en.json'];
           const failed = [];
           for (const path of paths) {
             try {
@@ -46,6 +46,8 @@ jobs:
               if (!response.ok) { failed.push(path + ' HTTP ' + response.status); continue; }
               if (path.endsWith('/') && new URL(response.url).pathname !== path) failed.push(path + ' unexpectedly redirected to ' + new URL(response.url).pathname);
               if (path.endsWith('.css') && !body.includes('.hero')) failed.push(path + ' CSS missing');
+              if (path.endsWith('raven-architecture.svg') && (!body.includes('<svg') || !body.includes('data:image/webp;base64,'))) failed.push(path + ' branded hero art missing');
+              if (path.endsWith('editorial.css') && !body.includes('.editorial-hero')) failed.push(path + ' editorial design missing');
               if (path.endsWith('.js') && !body.includes('function bind')) failed.push(path + ' JS missing');
               if (path.endsWith('.json')) {
                 try { const data = JSON.parse(body); if (path.endsWith('site.json') && (!data.sections?.zh || !data.sections?.en)) failed.push(path + ' data invalid');
