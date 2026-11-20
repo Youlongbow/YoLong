@@ -139,7 +139,10 @@ try{
  });
  assert(aboutColumns.copyRight<aboutColumns.imageLeft && aboutColumns.copyWidth>350 && aboutColumns.imageWidth>350,'Desktop About uses genuinely separate readable copy and image columns');
  console.log('RAVEN_ABOUT_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
- await desktop.locator('.profile-story').first().scrollIntoViewIfNeeded();
+ await desktop.locator('.profile-story').nth(1).scrollIntoViewIfNeeded();
+ const aboutChapterImage=desktop.locator('.profile-story').nth(1).locator('img');
+ await aboutChapterImage.evaluate(img=>img.decode());
+ assert(await aboutChapterImage.evaluate(img=>img.naturalWidth>0),'Second About chapter image decodes correctly');
  console.log('RAVEN_ABOUT_STORY_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
  await desktop.goto(base+'/experience/en/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.profile-design.profile-experience').innerText()).length>1800,'English experience page renders redesigned copy and projects');
@@ -149,6 +152,9 @@ try{
  assert(await desktop.locator('.profile-photo img').count()===4,'Project photography uses local assets in structured slots');
  console.log('RAVEN_EXPERIENCE_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
  await desktop.locator('.profile-story').nth(1).scrollIntoViewIfNeeded();
+ const experienceChapterImage=desktop.locator('.profile-story').nth(1).locator('img');
+ await experienceChapterImage.evaluate(img=>img.decode());
+ assert(await experienceChapterImage.evaluate(img=>img.naturalWidth>0),'Second Experience chapter image decodes correctly');
  console.log('RAVEN_EXPERIENCE_STORY_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
  await desktop.goto(base+'/contact/zh/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>200,'Contact page migrated');
