@@ -96,7 +96,7 @@ try{
  console.log('RAVEN_DESKTOP_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:56})).toString('base64'));
  await desktop.locator('.editorial-gateways').scrollIntoViewIfNeeded();
  console.log('RAVEN_CARDS_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
- await desktop.locator('.switch a[href="/en/"]').click();
+ await desktop.locator('.switch-desktop a[href="/en/"]').click();
  await desktop.waitForURL('**/en/',{timeout:15000});
  // Initial static SEO markup is intentionally replaced by the hydrated app.
  await desktop.locator('.editorial-hero h1').waitFor({state:'visible',timeout:30000});
