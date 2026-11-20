@@ -287,6 +287,32 @@ function bind(){
  type.addEventListener('change',()=>{visible=18;render()});
  $('#load-more')?.addEventListener('click',()=>{visible+=18;render()});
 }
+function finishBrandTransition(){
+ const overlay=$('#site-transition');
+ if(!overlay)return;
+ overlay.classList.remove('is-entering');
+ overlay.classList.add('is-exiting');
+ window.setTimeout(()=>overlay.classList.add('is-hidden'),400);
+}
+function installBrandNavigation(){
+ document.addEventListener('click',event=>{
+  if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+  const anchor=event.target.closest('a[href]');
+  if(!anchor||anchor.target==='_blank'||anchor.hasAttribute('download'))return;
+  const href=new URL(anchor.href,location.href);
+  if(href.origin!==location.origin||!['https:','http:'].includes(href.protocol))return;
+  if(href.pathname===location.pathname && href.search===location.search && href.hash)return;
+  event.preventDefault();
+  const overlay=$('#site-transition');
+  if(overlay){
+   overlay.classList.remove('is-hidden','is-exiting');
+   overlay.classList.add('is-entering');
+  }
+  window.setTimeout(()=>{location.assign(href.href)},window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:160);
+ },{passive:false});
+ window.addEventListener('pageshow',event=>{if(event.persisted)finishBrandTransition()});
+}
+installBrandNavigation();
 try{
  const needed=['/content/site.json'];
  if(section==='security'||section==='home')needed.push('/content/security-'+lang+'.json');
@@ -314,7 +340,9 @@ try{
  $('#app').innerHTML=header()+'<main class="'+(section==='home'?'home-layout':'interior-layout')+'">'+content+'</main>'+footer(s);
  if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
+ window.requestAnimationFrame(finishBrandTransition);
 }catch(error){
  console.error('RAVEN preview failed:',error);
  $('#app').innerHTML='<main class="shell sec"><h1>RAVEN</h1><p>Content unavailable. Please refresh this preview.</p></main>';
+ finishBrandTransition();
 }
