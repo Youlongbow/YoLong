@@ -1,0 +1,46 @@
+name: Diagnose RAVEN production domain
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-domain.yml'
+      - 'wrangler.jsonc'
+      - 'wrangler.production.jsonc'
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Inspect public DNS and live site identity
+        run: |
+          node --input-type=module <<'NODE'
+          import { promises as dns } from 'node:dns';
+          for(const host of ['ravenlong.com','www.ravenlong.com']){
+            for(const [label, fn] of [['NS',dns.resolveNs],['CNAME',dns.resolveCname],['A',dns.resolve4]]){
+              try{console.log('DNS',host,label,JSON.stringify(await fn(host)));}
+              catch(e){console.log('DNS',host,label,e.code||String(e));}
+            }
+          }
+          for(const url of ['https://www.ravenlong.com/','https://www.ravenlong.com/content/site.json','https://www.ravenlong.com/zh/','https://www.ravenlong.com/sitemap.xml','https://yolong.bournelong511.workers.dev/zh/']){
+            try{
+              const res=await fetch(url,{redirect:'manual',signal:AbortSignal.timeout(15000)});
+              const body=(await res.text()).slice(0,25000);
+              console.log('WEB',JSON.stringify({
+                url,
+                status:res.status,
+                location:res.headers.get('location'),
+                cfRay:res.headers.get('cf-ray'),
+                server:res.headers.get('server'),
+                contentType:res.headers.get('content-type'),
+                contentLen:body.length,
+                title:(body.match(/<title[^>]*>([^<]*)/i)||[])[1]||'',
+                hasNewApp:body.includes('id="app"'),
+                hasNotion:/(external\.notion\.site|notion\.site|NotionSite|notioncdn)/i.test(body),
+                hasSitemap:body.includes('<urlset'),
+                first:body.slice(0,140)
+              }));
+            }catch(e){console.log('WEB',url,String(e).slice(0,200));}
+          }
+          NODE
