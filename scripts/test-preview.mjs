@@ -182,7 +182,7 @@ try{
  console.log('RAVEN_MOBILE_CARDS_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:62})).toString('base64'));
  await mobile.locator('.gateway-monitor').click();
  await mobile.waitForURL('**/security/zh/',{timeout:15000});
- assert((await mobile.locator('h1').innerText()).includes('全球安全'),'Mobile monitoring card opens the actual intelligence archive');
+ assert((await mobile.locator('#monitor h2').first().innerText()).includes('全球安全'),'Mobile monitoring card opens the actual intelligence archive');
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  assert(await mobile.locator('.expertise-item[href^="/capabilities/zh/"]').count()===5,'All five clickable specialties are available on mobile');
  const mobileLockup=await mobile.evaluate(()=>{
