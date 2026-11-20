@@ -17,7 +17,7 @@ const attr=v=>String(v??'').replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&
 const plain=v=>String(v??'').replace(/<[^>]+>/g,' ').replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').replace(/[*#_]/g,' ').replace(/\s+/g,' ').trim();
 const short=(v,n=170)=>Array.from(plain(v)).slice(0,n).join('');
 const routeUrl=r=>origin+'/'+r+'/';
-const alt=(r,l)=>r.replace(/\/(zh|en)(?=\/|$)/,'/'+l);
+const alt=(r,l)=>(r==='zh'||r==='en')?l:r.replace(/\/(zh|en)(?=\/|$)/,'/'+l);
 function metadata(route){
  const parts=route.split('/');
  const lang=parts.includes('en')?'en':'zh';
