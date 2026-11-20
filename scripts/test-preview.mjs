@@ -128,11 +128,22 @@ try{
  await desktop.goto(base+'/journal/en/pakistan-drc-mining-comparison/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>6000,'English research report renders');
  await desktop.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
- assert((await desktop.locator('.article-content').innerText()).length>850,'About page migrated');
- assert(await desktop.locator('.article-figure img').count()>=1,'Original About-page photograph renders from local archive');
- assert(await desktop.locator('.article-figure img').first().evaluate(img=>img.complete&&img.naturalWidth>0),'Local About-page photograph is fully loaded');
+ assert((await desktop.locator('.profile-design.profile-about').innerText()).length>850,'Chinese About uses the dedicated editorial profile layout');
+ assert(await desktop.locator('.profile-story').count()===3,'About page presents three editorial career chapters');
+ assert(await desktop.locator('.profile-photo img').count()===3,'About photo assets render in balanced feature and chapter slots');
+ assert(await desktop.locator('.profile-photo img').first().evaluate(img=>img.complete&&img.naturalWidth>0),'Local About-page hero photograph is loaded');
+ const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
+  const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
+  const image=el.querySelector('.profile-hero-visual').getBoundingClientRect();
+  return {copyRight:copy.right,imageLeft:image.left,copyWidth:copy.width,imageWidth:image.width};
+ });
+ assert(aboutColumns.copyRight<aboutColumns.imageLeft && aboutColumns.copyWidth>350 && aboutColumns.imageWidth>350,'Desktop About uses genuinely separate readable copy and image columns');
  await desktop.goto(base+'/experience/en/',{waitUntil:'networkidle',timeout:60000});
- assert((await desktop.locator('.article-content').innerText()).length>2000,'English experience page migrated');
+ assert((await desktop.locator('.profile-design.profile-experience').innerText()).length>1800,'English experience page renders redesigned copy and projects');
+ assert(await desktop.locator('.profile-story').count()===4,'Experience page presents four project categories');
+ assert(await desktop.locator('.profile-assignment').count()===4,'Selected project roles are presented as four legible cards');
+ assert(await desktop.locator('.profile-archive').count()===3,'Additional project archive remains accessible');
+ assert(await desktop.locator('.profile-photo img').count()===4,'Project photography uses local assets in structured slots');
  await desktop.goto(base+'/contact/zh/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>200,'Contact page migrated');
  await desktop.goto(base+'/training/zh/',{waitUntil:'networkidle',timeout:60000});
@@ -185,6 +196,19 @@ try{
  assert((await mobile.locator('#monitor h2').first().innerText()).includes('全球安全'),'Mobile monitoring card opens the actual intelligence archive');
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  assert(await mobile.locator('.expertise-item[href^="/capabilities/zh/"]').count()===5,'All five clickable specialties are available on mobile');
+ await mobile.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
+ const aboutMobile=await mobile.locator('.profile-hero').evaluate(el=>{
+  const c=el.querySelector('.profile-hero-copy').getBoundingClientRect();
+  const im=el.querySelector('.profile-hero-visual').getBoundingClientRect();
+  return {copyBottom:c.bottom,imageTop:im.top,docWidth:document.documentElement.scrollWidth,viewport:innerWidth};
+ });
+ assert(aboutMobile.copyBottom<=aboutMobile.imageTop+2,'Mobile About stacks the hero photograph below the copy');
+ assert(aboutMobile.docWidth<=aboutMobile.viewport+2,'Mobile About has no horizontal overflow');
+ await mobile.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
+ const experienceMobile=await mobile.evaluate(()=>({docWidth:document.documentElement.scrollWidth,viewport:innerWidth}));
+ assert(experienceMobile.docWidth<=experienceMobile.viewport+2,'Mobile Experience has no horizontal overflow');
+ assert(await mobile.locator('.profile-assignment').count()===4,'Mobile Experience retains all selected projects');
+ await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  const mobileLockup=await mobile.evaluate(()=>{
   const overlay=document.querySelector('#site-transition');
   overlay.classList.remove('is-hidden','is-exiting');
