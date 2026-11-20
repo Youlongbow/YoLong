@@ -66,17 +66,22 @@ try{
   const mark=document.querySelector('.transition-mark');
   const word=document.querySelector('.transition-wordmark');
   const rule=document.querySelector('.transition-rule');
-  const a=mark.getBoundingClientRect(),b=word.getBoundingClientRect(),c=rule.getBoundingClientRect();
+  const slogan=document.querySelector('.transition-slogan');
+  const a=mark.getBoundingClientRect(),b=word.getBoundingClientRect(),c=rule.getBoundingClientRect(),d=slogan.getBoundingClientRect();
   const loaded=mark.complete&&mark.naturalWidth>0;
   overlay.classList.remove('is-entering');
   overlay.classList.add('is-hidden');
-  return {loaded,logoRight:a.right,wordLeft:b.left,wordRight:b.right,lineLeft:c.left,wordTop:b.top,lineTop:c.top,logoHeight:a.height,logoWidth:a.width,wordFont:parseFloat(getComputedStyle(word).fontSize),viewport:innerWidth};
+  return {loaded,logoRight:a.right,wordLeft:b.left,wordRight:b.right,lineLeft:c.left,wordTop:b.top,lineTop:c.top,logoHeight:a.height,logoWidth:a.width,wordFont:parseFloat(getComputedStyle(word).fontSize),slogan:slogan.textContent.trim(),sloganTop:d.top,sloganRight:d.right,ruleBottom:c.bottom,viewport:innerWidth};
  });
  assert(transitionLayout.loaded,'Actual official RAVEN mark loads in transition');
  assert(transitionLayout.logoRight<transitionLayout.wordLeft-5,'Transition logo is LEFT of RAVEN wordmark');
  assert(transitionLayout.lineLeft>=transitionLayout.wordLeft-1&&transitionLayout.lineTop>transitionLayout.wordTop,'Red line is BELOW the wordmark');
  assert(transitionLayout.logoWidth>=230&&transitionLayout.wordFont>=185,'Original RAVEN mark and wordmark have tripled in size');
  assert(transitionLayout.wordRight<transitionLayout.viewport-10,'Triple-size desktop brand remains within viewport');
+ assert(transitionLayout.slogan==='PREPARED FOR THE UNPREDICTABLE' &&
+  transitionLayout.sloganTop>transitionLayout.ruleBottom &&
+  transitionLayout.sloganRight<transitionLayout.viewport-8,
+  'Approved English slogan appears beneath RAVEN without clipping');
  const visualAsset=await desktop.request.get(base+'/assets/media/brand/raven-original-4x-3240.webp');
  assert(visualAsset.ok(),'New original high-resolution raven artwork is served locally');
  assert((visualAsset.headers()['content-type']||'').includes('image/webp'),'Hero is a standalone WebP image');
@@ -268,13 +273,18 @@ try{
   overlay.classList.add('is-entering');
   const mark=document.querySelector('.transition-mark').getBoundingClientRect();
   const word=document.querySelector('.transition-wordmark').getBoundingClientRect();
-  const result={logoRight:mark.right,wordLeft:word.left,wordRight:word.right,viewport:innerWidth,logoWidth:mark.width,wordFont:parseFloat(getComputedStyle(document.querySelector('.transition-wordmark')).fontSize)};
+  const slogan=document.querySelector('.transition-slogan'), sr=slogan.getBoundingClientRect();
+  const result={logoRight:mark.right,wordLeft:word.left,wordRight:word.right,viewport:innerWidth,logoWidth:mark.width,wordFont:parseFloat(getComputedStyle(document.querySelector('.transition-wordmark')).fontSize),slogan:slogan.textContent.trim(),sloganLeft:sr.left,sloganRight:sr.right,sloganTop:sr.top,wordBottom:word.bottom};
   overlay.classList.remove('is-entering');
   overlay.classList.add('is-hidden');
   return result;
  });
  assert(mobileLockup.logoRight<mobileLockup.wordLeft && mobileLockup.wordRight<=mobileLockup.viewport,'Mobile transition remains horizontal without overflow');
  assert(mobileLockup.logoWidth>=80&&mobileLockup.wordFont>=50,'Mobile loading identity is visibly enlarged');
+ assert(mobileLockup.slogan==='PREPARED FOR THE UNPREDICTABLE' &&
+  mobileLockup.sloganLeft>=0 && mobileLockup.sloganRight<=mobileLockup.viewport &&
+  mobileLockup.sloganTop>mobileLockup.wordBottom,
+  'Mobile loader shows approved slogan as one readable line below the original identity');
  assert(await mobile.locator('#menu').isVisible(),'Mobile navigation control is visible');
  await mobile.locator('#menu').click();
  assert(await mobile.locator('#nav').isVisible(),'Mobile navigation opens');
