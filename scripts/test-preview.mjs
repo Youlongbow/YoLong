@@ -140,6 +140,10 @@ try{
  console.log('RAVEN_TRAINING_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:48})).toString('base64'));
 
  assert(await desktop.locator('.course-intro img').count()>=1,'HEAT introduction displays locally preserved certificate or illustration');
+ assert(await desktop.locator('.course-intro .article-details summary').count()>=1,'HEAT introduction renders author note as an accessible disclosure');
+ await desktop.locator('.course-intro .article-details summary').first().click();
+ assert(await desktop.locator('.course-intro .article-details[open]').count()>=1,'HEAT author note can be expanded without losing source text');
+
 
  await desktop.goto(base+'/training/en/01/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>4500,'English HEAT module retains full text');
