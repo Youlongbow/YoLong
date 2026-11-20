@@ -311,7 +311,7 @@ try{
  else if(section==='training')content=slug?trainingDetail():trainingList();
  else if(['about','experience','contact'].includes(section))content=staticContentPage();
  else content=homeHero(s)+expertise(s)+securityList(s,true)+researchList(s,true)+platforms(s);
- $('#app').innerHTML=header()+'<main>'+content+'</main>'+footer(s);
+ $('#app').innerHTML=header()+'<main class="'+(section==='home'?'home-layout':'interior-layout')+'">'+content+'</main>'+footer(s);
  if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
 }catch(error){
