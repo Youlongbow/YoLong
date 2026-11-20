@@ -52,29 +52,49 @@ function link(label,href,active=false){
  return '<a class="'+(active?'active':'')+'" href="'+esc(href)+'">'+esc(label)+'</a>';
 }
 function header(){
- return '<div class="grain"></div><header class="top shell">'+
-  '<a class="logo" href="/'+lang+'/"><span class="logomark'+(mediaMap.branding?.mark?' logo-loaded':'')+'">'+(mediaMap.branding?.mark?'<img src="'+esc(mediaMap.branding.mark)+'" alt="RAVEN" width="40" height="40">':'R')+'</span><span class="logotxt">RAVEN<small>SECURITY ARCHITECTURE</small></span></a>'+
-  '<button id="menu" class="mobile" aria-expanded="false" aria-controls="nav">MENU +</button>'+
-  '<nav id="nav" class="nav">'+link('RAVEN','/'+lang+'/',section==='home')+
-  link(txt.journal,'/journal/'+lang+'/',section==='journal')+link(txt.security,'/security/'+lang+'/',section==='security')+
-  link(lang==='zh'?'经历':'Experience','/experience/'+lang+'/',section==='experience')+
-  link(lang==='zh'?'关于':'About','/about/'+lang+'/',section==='about')+
+ const home=section==='home';
+ return '<header class="top shell">'+
+  '<a class="logo" href="/'+lang+'/"><span class="logomark'+(mediaMap.branding?.mark?' logo-loaded':'')+'">'+(mediaMap.branding?.mark?'<img src="'+esc(mediaMap.branding.mark)+'" alt="" width="42" height="42">':'R')+'</span><span class="logotxt">RAVEN<small>SECURITY / RESEARCH / OPERATIONS</small></span></a>'+
+  '<button id="menu" class="mobile" type="button" aria-expanded="false" aria-controls="nav">'+(lang==='zh'?'菜单':'MENU')+' <span aria-hidden="true">☰</span></button>'+
+  '<nav id="nav" class="nav" aria-label="'+(lang==='zh'?'主导航':'Main navigation')+'">'+
+  link(lang==='zh'?'首页':'Home','/'+lang+'/',home)+
+  link(txt.security,'/security/'+lang+'/',section==='security')+
+  link(txt.journal,'/journal/'+lang+'/',section==='journal')+
   link('HEAT','/training/'+lang+'/',section==='training')+
-  link(txt.contact,'/contact/'+lang+'/',section==='contact')+
-  '<div class="switch"><a class="'+(lang==='zh'?'on':'')+'" href="'+activeUrl('zh')+'">中文</a><a class="'+(lang==='en'?'on':'')+'" href="'+activeUrl('en')+'">EN</a></div>'+
-  '</nav></header>'+
-  '<div class="ticker shell"><span><i class="live-dot"></i> RAVEN / INDEPENDENT SECURITY RESEARCH</span><div class="right-meta"><span>GLOBAL OPERATIONS</span><span>FIELD PRACTICE</span><span class="preview-tag">MIGRATION PREVIEW</span></div></div>';
+  link(lang==='zh'?'专业经历':'Experience','/experience/'+lang+'/',section==='experience')+
+  link(lang==='zh'?'关于':'About','/about/'+lang+'/',section==='about')+
+  '<a class="nav-contact" href="/contact/'+lang+'/">'+(lang==='zh'?'联系':'Contact')+'</a>'+
+  '<div class="switch" aria-label="Language"><a class="'+(lang==='zh'?'on':'')+'" href="'+activeUrl('zh')+'">中文</a><span aria-hidden="true">/</span><a class="'+(lang==='en'?'on':'')+'" href="'+activeUrl('en')+'">EN</a></div>'+
+  '</nav></header>';
 }
 function blockTitle(sectionCopy,title){
  return '<div class="sec-head"><div><div class="over">'+esc(sectionCopy.eyebrow)+'</div><h2 class="'+(lang==='zh'?'zh-h':'')+'">'+esc(title)+'</h2></div></div>';
 }
 function homeHero(s){
- return '<section class="hero shell '+(lang==='zh'?'hero-zh':'')+'"><div class="hero-copy"><div class="over">'+esc(s.eyebrow)+'</div><h1>'+esc(s.headline)+'</h1><div class="lead">'+esc(s.lead)+'</div><p class="support">'+esc(s.supporting)+'</p><div class="btns"><a class="btn red" href="/contact/'+lang+'/">'+esc(s.contact)+' ↗</a><a class="btn" href="/journal/'+lang+'/">'+esc(s.explore)+' ↗</a></div></div><div class="hero-art"><div class="giant-r">R</div><div class="target"></div><div class="serial">RAVEN / FIELD-TESTED SECURITY<br>STRATEGY — SYSTEMS — EXECUTION</div></div></section>'+
- '<div class="metrics shell"><div class="metric"><strong>15+</strong><span>YEARS / FIELD EXPERIENCE</span></div><div class="metric"><strong>GLOBAL</strong><span>SECURITY & OPERATIONS</span></div><div class="metric"><strong>HEAT</strong><span>TRAINING & PREPAREDNESS</span></div><div class="metric"><strong>'+(securityData?.events?.length||0)+'</strong><span>HISTORICAL SECURITY RECORDS</span></div></div>';
+ const z=lang==='zh';
+ const statementTitle=z?'独立研究 · 现场实践':'Independent research. Field practice.';
+ const heading=z?'安全研究、风险治理与运营实践':'Security Research, Risk Governance & Field Practice';
+ const subtitle=z?'以专业研究和现场经验，支持高风险环境下的安全决策与业务运营。':'Research and operational experience supporting security decisions in demanding environments.';
+ const cards=[
+  {kind:'journal',count:'01',name:z?'研究与观点':'Research & analysis',description:z?'战略分析、案例研究与安全治理':'Strategic assessment, case studies and security governance',href:'/journal/'+lang+'/'},
+  {kind:'monitor',count:'02',name:z?'全球安全动态':'Security intelligence',description:z?'追踪关键事件及其运营影响':'Global incident monitoring and operational implications',href:'/security/'+lang+'/'},
+  {kind:'training',count:'03',name:z?'HEAT 培训':'HEAT training',description:z?'基于实际情境的安全准备与应对':'Practical preparation for challenging environments',href:'/training/'+lang+'/'}
+ ];
+ return '<section class="editorial-hero" aria-labelledby="hero-title"><div class="hero-photo" role="img" aria-label="'+(z?'乌鸦站立在石质建筑上，背后是明暗交错的云层':'A raven perched on stone architecture against a dramatic sky')+'"></div><div class="hero-vignette"></div>'+
+  '<div class="hero-inner shell"><div class="hero-copy"><div class="over">RAVEN <span class="over-slash">/</span> SECURITY & RISK</div><div class="hero-wordmark" aria-hidden="true">RAVEN</div><h1 id="hero-title">'+esc(heading)+'</h1><p class="hero-dek">'+esc(subtitle)+'</p>'+
+  '<div class="btns"><a class="btn red" href="/security/'+lang+'/">'+(z?'全球安全动态':'Explore intelligence')+' <span aria-hidden="true">↗</span></a><a class="btn" href="/journal/'+lang+'/">'+(z?'研究与观点':'Explore research')+' <span aria-hidden="true">↗</span></a></div></div></div></section>'+
+  '<section class="editorial-statement shell" aria-label="'+esc(statementTitle)+'"><div class="statement-light"><span class="statement-rule"></span><strong>'+esc(statementTitle)+'</strong></div><p>'+esc(s.lead)+'</p></section>'+
+  '<section class="editorial-gateways shell" aria-label="'+(z?'核心栏目':'Featured sections')+'">'+cards.map(card=>
+   '<a class="gateway gateway-'+card.kind+'" href="'+card.href+'"><div class="gateway-top"><span>'+card.count+' / RAVEN</span><span aria-hidden="true" class="gateway-arrow">↗</span></div><div class="gateway-copy"><h2>'+esc(card.name)+'</h2><p>'+esc(card.description)+'</p></div></a>').join('')+'</section>';
 }
 function expertise(s){
  const list=site.profile[lang==='zh'?'expertiseZh':'expertiseEn'];
- return '<section class="sec shell" id="expertise">'+blockTitle(s,s.capabilitiesTitle)+'<p class="sec-intro">'+esc(s.capabilitiesLead)+'</p><div class="cards3">'+[0,1,2].map(i=>'<article class="feature"><span class="num">0'+(i+1)+' / '+txt.featured+'</span><h3>'+esc(list[i])+'</h3><span class="arrow">↗</span></article>').join('')+'</div></section>';
+ return '<section class="sec shell expertise-editorial" id="expertise">'+
+  '<div class="editorial-section-top"><span class="over">'+(lang==='zh'?'业务能力':'CAPABILITIES')+'</span><span class="section-index">01 / 04</span></div>'+
+  '<div class="expertise-title-line"><h2 class="'+(lang==='zh'?'zh-h':'')+'">'+esc(s.capabilitiesTitle)+'</h2><p>'+esc(s.capabilitiesLead)+'</p></div>'+
+  '<div class="expertise-list">'+list.map((item,i)=>
+   '<div class="expertise-item"><span class="expertise-number">'+String(i+1).padStart(2,'0')+'</span><h3>'+esc(item)+'</h3><span class="expertise-stroke" aria-hidden="true">↗</span></div>').join('')+'</div>'+
+  '</section>';
 }
 function platforms(s){
  const services=[['01',s.training,s.trainingLead,'/training/'+lang+'/'],['02',s.career,s.careerLead,apps.careers],['03',s.ops,s.opsLead,apps.ops]];
@@ -290,7 +310,7 @@ try{
  else if(section==='journal')content=slug?researchDetail():researchList(s);
  else if(section==='training')content=slug?trainingDetail():trainingList();
  else if(['about','experience','contact'].includes(section))content=staticContentPage();
- else content=homeHero(s)+expertise(s)+researchList(s,true)+securityList(s,true)+platforms(s);
+ else content=homeHero(s)+expertise(s)+securityList(s,true)+researchList(s,true)+platforms(s);
  $('#app').innerHTML=header()+'<main>'+content+'</main>'+footer(s);
  if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
