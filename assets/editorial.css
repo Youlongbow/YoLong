@@ -525,3 +525,6 @@ html[lang="zh-CN"] .article-hero h1{font-family:"Songti SC","Noto Serif CJK SC",
     mask-image:linear-gradient(90deg,transparent 0%,#000 20%,#000 100%);
   }
 }
+
+/* Subtle luminance refinement only — preserve original colors, framing and detail. */
+.editorial-hero .hero-photo { filter: brightness(.91); }
