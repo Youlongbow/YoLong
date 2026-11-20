@@ -1,0 +1,218 @@
+/* RAVEN · Editorial Intelligence / approved dark & light art direction
+   Design v1: restrained, architectural, high contrast, responsive.
+   All images are self-hosted; fonts use local system fallbacks. */
+:root{
+ color-scheme:dark;
+ --black:#0b0e11; --panel:#171a1d; --paper:#eeece7; --sub:#a7a9aa;
+ --line:#30363a; --red:#b9292d; --display:Georgia,"Iowan Old Style","Baskerville","Songti SC",serif;
+ --body:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+ --mono:ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+body{background:#0b0e11;color:#eeece8;font-family:var(--body);-webkit-font-smoothing:antialiased;}
+.grain{opacity:.025}
+a,button{transition:color .18s ease,background .18s ease,border-color .18s ease,transform .25s ease}
+.shell{max-width:1600px;padding-inline:clamp(22px,4.2vw,72px)}
+.top{height:84px;position:relative;z-index:50;background:#0b0e11;border-bottom:1px solid #ffffff20;gap:24px;}
+.logo{min-width:236px;gap:14px}
+.logomark.logo-loaded{width:43px;height:43px;flex:none}
+.logotxt{font:600 27px/1.1 Georgia,"Times New Roman",serif;letter-spacing:.18em}
+.logotxt small{font:9px/1.6 var(--mono);color:#979a9c;letter-spacing:.16em;white-space:nowrap;margin-top:4px}
+.nav{gap:clamp(14px,1.6vw,30px)}
+.nav a{font:500 12px/1.35 var(--body);text-transform:none;letter-spacing:0;color:#c3c4c4;position:relative;padding-block:30px}
+.nav a:hover,.nav a.active{color:#fff}
+.nav a.active:before{display:none}
+.nav a.active:after{content:"";position:absolute;height:2px;background:#c33239;left:0;right:0;bottom:0}
+.nav a.nav-contact{color:#ececeb;border:1px solid #777a7a;padding:10px 16px;line-height:1.3}
+.nav a.nav-contact:hover{background:#edeae4;color:#1b1b1b}
+.nav .switch{border:0;display:flex;gap:10px;align-items:center;border-left:1px solid #4c5053;padding-left:17px}
+.nav .switch a{padding:0;font-size:11px;color:#7e8588;line-height:1}
+.nav .switch a.on{background:none;color:#fff}
+.nav .switch span{font:11px var(--mono);color:#61676b}
+.mobile{display:none}
+.home-layout{overflow:hidden}
+.editorial-hero{height:clamp(535px,44vw,670px);position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(125deg,#0b0e11 0%,#171d22 58%,#333b40 100%);border-bottom:1px solid #9a9da04a}
+.hero-photo{position:absolute;inset:-1px -1px 0 30%;background-image:linear-gradient(90deg,#0b0e11 0%,#0b0e1130 18%,transparent 38%),url("/assets/media/brand/raven-architecture.webp");background-position:left center,center 43%;background-size:cover;filter:saturate(.45) contrast(1.08);opacity:1;z-index:-2}
+.hero-vignette{position:absolute;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(90deg,#0b0e11 2%,#0b0e11eb 23%,#0b0e11b8 38%,#0b0e113f 57%,transparent 80%),linear-gradient(0deg,#0b0e11bb 0,transparent 24%,transparent 79%,#0b0e1177 100%);}
+.hero-inner{height:100%;display:flex;align-items:center}
+.editorial-hero .hero-copy{padding:24px 0 55px;width:min(650px,61%);z-index:2}
+.editorial-hero .over{color:#c5c5c1;letter-spacing:.2em;font:10px/1.5 var(--mono);margin:0 0 25px}
+.editorial-hero .over:before{background:var(--red)}
+.over-slash{color:#a4a4a2;margin-inline:3px}
+.hero-wordmark{font:500 clamp(72px,8.5vw,150px)/.85 Georgia,"Times New Roman",serif;letter-spacing:.015em;margin:0 0 22px;color:#f3f2ee;text-shadow:0 3px 35px #00000066}
+.editorial-hero h1{font-family:var(--display);font-weight:500;font-size:clamp(27px,3.05vw,46px);line-height:1.21;text-transform:none;letter-spacing:-.015em;max-width:680px;margin:0 0 17px;color:#f5f3ef}
+html[lang="zh-CN"] .editorial-hero h1{font-family:"Songti SC","Noto Serif CJK SC","Source Han Serif SC","SimSun",serif;font-size:clamp(27px,3vw,47px);font-weight:600;line-height:1.45;letter-spacing:.025em}
+.hero-dek{font-size:clamp(13px,1.1vw,16px);color:#c7c9c9;line-height:1.95;max-width:610px;margin:0}
+.editorial-hero .btns{margin-top:36px;gap:13px}
+.editorial-hero .btn{font:600 12px/1.3 var(--body);text-transform:none;min-height:46px;letter-spacing:.025em;min-width:170px;justify-content:space-between;padding:13px 19px;background:#10141794;border-color:#a1a3a3;color:#f4f4f4}
+.editorial-hero .btn.red{background:#b3272d;border-color:#b3272d;color:#fff}
+.editorial-hero .btn:hover{background:#f3f1ec;color:#111;border-color:#f3f1ec;transform:translateY(-2px)}
+.editorial-statement{display:grid;grid-template-columns:38% 62%;min-height:110px;position:relative;z-index:3;margin-top:-14px;padding-top:0;padding-bottom:0;background:linear-gradient(111deg,#15181a,#1b2024);box-shadow:0 -6px 28px #07090b75,0 13px 38px #0008;border:1px solid #77787955}
+.statement-light{background:linear-gradient(120deg,#efede8,#dcdad5);color:#151719;clip-path:polygon(0 0,100% 0,94% 100%,0 100%);margin-left:calc(-1 * clamp(22px,4.2vw,72px));padding:19px 45px 19px clamp(48px,6vw,110px);display:flex;gap:27px;align-items:center}
+.statement-light strong{font:500 clamp(21px,2.2vw,35px)/1.14 Georgia,"Songti SC",serif;max-width:400px}
+html[lang="zh-CN"] .statement-light strong{font-weight:600}
+.statement-rule{height:58px;width:3px;background:#b4262d;flex:none}
+.editorial-statement p{align-self:center;font-size:clamp(13px,1.1vw,16px);line-height:1.85;color:#d3d2cf;margin:0;padding:22px 36px;max-width:850px}
+.editorial-gateways{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;padding-top:24px;padding-bottom:0}
+.gateway{position:relative;min-height:270px;border:1px solid #484c4e;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:24px 28px;isolation:isolate;box-shadow:0 15px 28px #0005}
+.gateway:hover{transform:translateY(-4px);box-shadow:0 18px 36px #0009}
+.gateway-journal,.gateway-training{color:#15181a;background:linear-gradient(120deg,#f0efeb 10%,#dedbd5 66%,#a1a3a5)}
+.gateway-journal:before{content:"";position:absolute;inset:12% -20% -36% 40%;background:repeating-linear-gradient(174deg,#6d767a24 0 1px,#ffffff0c 1px 10px),linear-gradient(120deg,transparent,#232d354a);transform:rotate(-11deg);clip-path:polygon(11% 0,100% 0,91% 100%,0 100%);z-index:-1}
+.gateway-training{background:linear-gradient(120deg,#f2f0eb 8%,#e6e3dd 48%,#a6a7a5)}
+.gateway-training:before{content:"";position:absolute;inset:-55% -33% -40% 48%;background:linear-gradient(133deg,#bfc0bc 0 33%,#61666a 33% 34%,#d7d8d4 34% 51%,#818486 51% 52%,#3a4145 52% 76%,#d2d1cb 77%);transform:rotate(-10deg);opacity:.45;z-index:-1}
+.gateway-monitor{color:#f1f0eb;background:linear-gradient(140deg,#252d33 0%,#111619 66%,#141b1f)}
+.gateway-monitor:before{content:"";position:absolute;inset:-25% -10% -70% 48%;border:2px solid #e0e2e81f;border-radius:50%;box-shadow:0 0 0 40px #cfd7df08,0 0 0 90px #cfd7df06,0 0 0 155px #cfd7df06;z-index:-1}
+.gateway-monitor:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 85% 90%,#a5b6c029,transparent 60%)}
+.gateway-top{display:flex;justify-content:space-between;align-items:center;gap:20px;font:10px/1.2 var(--mono);letter-spacing:.12em;opacity:.72}
+.gateway-top .gateway-arrow{font:23px/1 var(--body);font-weight:300}
+.gateway-copy{position:relative;z-index:2;max-width:82%}
+.gateway h2{font:500 clamp(25px,2.3vw,35px)/1.18 Georgia,"Songti SC",serif;margin:0 0 12px}
+html[lang="zh-CN"] .gateway h2{font-family:"Songti SC","Noto Serif CJK SC","SimSun",serif;font-weight:600;letter-spacing:.025em}
+.gateway p{font:13px/1.75 var(--body);margin:0;max-width:300px}
+.home-layout .sec{padding-block:100px;border-bottom:1px solid #34383c}
+.home-layout .expertise-editorial{padding-top:105px;padding-bottom:80px}
+.editorial-section-top{display:flex;align-items:center;justify-content:space-between;color:#b1b0af}
+.editorial-section-top .over{font-size:10px;color:#cfceca}
+.editorial-section-top .section-index{font:11px var(--mono);color:#727980}
+.expertise-title-line{display:flex;align-items:end;justify-content:space-between;gap:45px;margin:18px 0 37px}
+.expertise-title-line h2{font:500 clamp(39px,5vw,73px)/1.1 Georgia,"Songti SC",serif;margin:0;letter-spacing:-.03em;color:#f3f1ec}
+html[lang="zh-CN"] .expertise-title-line h2{font-weight:600;letter-spacing:.01em}
+.expertise-title-line p{font:13px/1.85 var(--body);color:#aeb0ae;max-width:470px;margin:0 0 3px}
+.expertise-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid #5f6668;border-bottom:1px solid #41484a}
+.expertise-item{padding:22px 18px 24px;border-right:1px solid #41484a;display:flex;flex-direction:column;gap:25px;min-height:152px}
+.expertise-item:first-child{padding-left:0}.expertise-item:last-child{border-right:0}
+.expertise-number{font:10px var(--mono);color:#cf494e}
+.expertise-item h3{font-size:clamp(13px,1.12vw,17px);font-weight:500;line-height:1.6;margin:0;max-width:200px}
+.expertise-stroke{color:#626a6e;align-self:flex-end;font:18px/1 var(--body);margin-top:auto}
+.home-layout .sec-head h2{font:500 clamp(34px,3.8vw,59px)/1.18 Georgia,"Songti SC",serif;letter-spacing:-.012em;margin:15px 0 9px}
+html[lang="zh-CN"] .home-layout .sec-head h2{font-weight:600}
+.home-layout .sec-head{margin-bottom:24px}
+.home-layout .sec .over{font-size:10px;color:#cfcecb}
+.home-layout .sec-intro{max-width:750px;font-size:14px;color:#adb0b1;line-height:1.95;margin-bottom:28px}
+.home-layout #monitor{background:linear-gradient(180deg,#171b1e,#111517);max-width:none;padding-left:max(clamp(22px,4.2vw,72px),calc((100vw - 1600px)/2 + 72px));padding-right:max(clamp(22px,4.2vw,72px),calc((100vw - 1600px)/2 + 72px));}
+.home-layout #monitor .archive-label{font:10px var(--mono);color:#aeb2b3;margin:19px 0 28px;padding:9px 15px;border-left-color:#b72c33}
+.home-layout #monitor .events{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);grid-template-rows:repeat(3,minmax(106px,auto));gap:0;border:1px solid #4d5357;background:transparent}
+.home-layout #monitor .event{min-width:0;display:flex;flex-direction:column;gap:8px;padding:21px 29px;border-bottom:1px solid #394145;background:#161b1e;transition:background .2s}
+.home-layout #monitor .event:hover{background:#242b30}
+.home-layout #monitor .event:first-child{grid-row:1/4;background:linear-gradient(135deg,#eeece8,#dcdad3);color:#191c1f;border-right:1px solid #454b4e;padding:37px 45px;position:relative;justify-content:flex-end;min-height:390px;overflow:hidden}
+.home-layout #monitor .event:first-child:before{content:"";position:absolute;top:-26%;right:-27%;width:82%;aspect-ratio:1;border:1px solid #91999c66;border-radius:50%;box-shadow:0 0 0 28px #4e5b6213,0 0 0 67px #4e5b620e,0 0 0 118px #4e5b620a}
+.home-layout #monitor .event:first-child h3{font:500 clamp(23px,2.2vw,34px)/1.4 Georgia,"Songti SC",serif;max-width:580px;margin:13px 0}
+html[lang="zh-CN"] .home-layout #monitor .event:first-child h3{font-weight:600}
+.home-layout #monitor .event:first-child .detail-link{color:#191b1b}
+.home-layout #monitor .event:first-child .detail-link:hover{color:#ad292e}
+.home-layout #monitor .event:first-child .date{color:#4c5154}
+.home-layout #monitor .event:first-child .meta{color:#9f252b}
+.home-layout #monitor .event:first-child p{color:#565b5c;line-height:1.85;font-size:13px}
+.home-layout #monitor .event:first-child .source{color:#a52229}
+.home-layout #monitor .event:not(:first-child) .date{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:#92999d}
+.home-layout #monitor .event:not(:first-child) .date div{display:inline}
+.home-layout #monitor .event:not(:first-child) h3{font:500 17px/1.55 var(--body);margin:0}
+.home-layout #monitor .event:not(:first-child) p{display:none}
+.home-layout #monitor .event:not(:first-child) .source{margin-top:0}
+.home-layout #monitor .archive-extra{margin:15px 0 18px}
+.home-layout #monitor .archive-extra .btn{font:12px var(--body);border-color:#808488;padding:12px 17px}
+.home-layout #journal .paper-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.home-layout #journal .paper{border:1px solid #4e5255;background:linear-gradient(130deg,#24292b,#111517);min-height:248px;padding:32px}
+.home-layout #journal .paper:first-child{background:#e7e5e0;color:#1e2223;border-color:#c1c2bf}
+.home-layout #journal .paper:first-child h3,.home-layout #journal .paper:first-child a{color:#222}
+.home-layout #journal .paper:first-child p{color:#555}
+.home-layout #journal .paper h3{font-size:clamp(20px,1.75vw,28px)}
+.home-layout #journal .paper .meta{color:#b34b4e}
+.home-layout #platforms{background:#1b2024;max-width:none;padding-left:max(clamp(22px,4.2vw,72px),calc((100vw - 1600px)/2 + 72px));padding-right:max(clamp(22px,4.2vw,72px),calc((100vw - 1600px)/2 + 72px))}
+.home-layout #platforms .feature{background:#262b2e;border:0;min-height:230px}
+.home-layout #platforms .feature:hover{background:#353c3f}
+.home-layout #platforms .feature h3{font-size:20px;margin-top:35px}
+.home-layout #platforms .cards3{gap:1px;border-color:#4c5255}
+.home-layout .footer{padding-top:70px}
+.footer-brand{font-family:Georgia,"Times New Roman",serif;font-weight:500;letter-spacing:.11em;color:#32373a}
+.footerline{font:11px/1.9 var(--body)}
+.article-hero h1{font-family:Georgia,"Songti SC",serif;font-weight:500}
+html[lang="zh-CN"] .article-hero h1{font-family:"Songti SC","Noto Serif CJK SC","SimSun",serif;font-weight:600}
+@media(max-width:1230px){
+ .nav{gap:16px}.nav a{font-size:11px}.logo{min-width:180px}
+ .logotxt{font-size:23px}
+ .hero-photo{inset:-1px -10% 0 28%}
+ .editorial-hero .hero-copy{width:min(610px,60%)}
+ .expertise-list{grid-template-columns:repeat(3,1fr)}
+ .expertise-item:nth-child(3){border-right:0}
+ .expertise-item:nth-child(-n+3){border-bottom:1px solid #41484a}
+ .expertise-item:nth-child(4){padding-left:0}
+}
+@media(max-width:960px){
+ .top{height:76px}
+ .mobile{display:flex;align-items:center;gap:10px;background:none;border:1px solid #585d5f;color:white;padding:8px 11px;font:11px var(--body)}
+ .nav{display:none;position:absolute;left:0;right:0;top:75px;background:#13171a;padding:24px clamp(22px,4.2vw,72px) 32px;border-bottom:1px solid #44494b;gap:3px;max-height:calc(100vh - 75px);overflow-y:auto;align-items:stretch;box-shadow:0 18px 34px #0009}
+ .nav.open{display:flex}
+ .nav a{padding:13px 3px;font-size:14px}
+ .nav a.active:after{height:1px;left:0;right:auto;width:40px}
+ .nav a.nav-contact{width:max-content;padding:10px 18px;margin-top:8px}
+ .nav .switch{border-left:0;padding:13px 0 0}
+ .nav .switch a{padding:10px}
+ .hero-photo{inset:0 -13% 0 15%}
+ .hero-vignette{background:linear-gradient(90deg,#0b0e11 5%,#0b0e11e8 30%,#0b0e1188 62%,#0b0e1100 97%),linear-gradient(0deg,#0b0e11ad,transparent 25%)}
+ .editorial-hero{height:545px}
+ .editorial-hero .hero-copy{width:71%}
+ .hero-wordmark{font-size:95px}
+ .editorial-statement{grid-template-columns:42% 58%}
+ .statement-light{padding-left:55px;padding-right:30px}
+ .statement-light strong{font-size:23px}
+ .editorial-gateways{gap:10px}
+ .gateway{min-height:245px;padding:19px 19px}
+ .gateway-copy{max-width:95%}
+ .gateway h2{font-size:24px}
+ .expertise-title-line{display:block}
+ .expertise-title-line p{max-width:750px;margin-top:18px}
+}
+@media(max-width:690px){
+ .shell{padding-inline:21px}
+ .top{height:70px}
+ .logo{min-width:0;gap:10px}
+ .logomark.logo-loaded{height:35px;width:35px}
+ .logotxt{font-size:23px}
+ .logotxt small{font-size:7px;letter-spacing:.07em}
+ .nav{top:69px}
+ .editorial-hero{height:620px}
+ .hero-photo{inset:0 -78% 0 2%;opacity:.8;background-position:63% 33%}
+ .hero-vignette{background:linear-gradient(90deg,#0b0e11 0%,#0b0e11e8 15%,#0b0e1194 59%,#0b0e112d 100%),linear-gradient(0deg,#0b0e11c9 1%,transparent 55%)}
+ .hero-inner{align-items:flex-end}
+ .editorial-hero .hero-copy{width:100%;padding:40px 0 75px}
+ .hero-wordmark{font-size:clamp(72px,16vw,108px);margin-bottom:16px}
+ .editorial-hero h1,html[lang="zh-CN"] .editorial-hero h1{font-size:clamp(26px,6.4vw,39px);line-height:1.38;max-width:95%}
+ .editorial-hero .over{font-size:9px;margin-bottom:18px}
+ .hero-dek{font-size:13px;max-width:88%}
+ .editorial-hero .btns{gap:9px;margin-top:28px}
+ .editorial-hero .btn{min-width:0;width:auto;flex:1;padding:12px 11px;font-size:11px;gap:8px}
+ .editorial-statement{display:flex;flex-direction:column;margin-top:0;padding:0;box-shadow:0 12px 30px #0007}
+ .statement-light{margin:0;width:100%;clip-path:none;padding:18px 22px;min-height:88px}
+ .statement-light strong{font-size:25px}
+ .statement-rule{height:45px}
+ .editorial-statement p{padding:22px;color:#d2d4d4;font-size:13px}
+ .editorial-gateways{grid-template-columns:1fr;gap:12px;padding-top:17px}
+ .gateway{min-height:180px;padding:20px 24px}
+ .gateway h2{font-size:28px}
+ .gateway-copy{max-width:75%}
+ .gateway p{font-size:12px}
+ .home-layout .sec{padding-block:70px}
+ .home-layout .expertise-editorial{padding-top:75px}
+ .expertise-title-line h2{font-size:36px}
+ .expertise-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .expertise-item{padding:18px 13px;min-height:139px}
+ .expertise-item:nth-child(3){border-right:1px solid #41484a}
+ .expertise-item:nth-child(even){border-right:0}
+ .expertise-item:nth-child(-n+4){border-bottom:1px solid #41484a}
+ .expertise-item:nth-child(4){padding-left:13px}
+ .expertise-item:nth-child(5){padding-left:0}
+ .home-layout #monitor,.home-layout #platforms{padding-left:21px;padding-right:21px}
+ .home-layout #monitor .events{grid-template-columns:1fr;grid-template-rows:auto}
+ .home-layout #monitor .event:first-child{grid-row:auto;min-height:320px;padding:31px 26px;border-right:0}
+ .home-layout #monitor .event:first-child h3{font-size:24px}
+ .home-layout #monitor .event:not(:first-child){padding:19px 22px}
+ .home-layout #journal .paper-grid{grid-template-columns:1fr}
+ .home-layout #platforms .cards3{grid-template-columns:1fr}
+ .sec-head{display:block}
+ .home-layout .sec-head h2{font-size:36px}
+ .home-layout #journal .paper{min-height:215px}
+}
+@media(prefers-reduced-motion:reduce){
+ .gateway,.editorial-hero .btn{transition:none}
+ .gateway:hover,.editorial-hero .btn:hover{transform:none}
+}
