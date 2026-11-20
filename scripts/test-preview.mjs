@@ -159,6 +159,10 @@ try{
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  console.log('RAVEN_MOBILE_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:58})).toString('base64'));
 
+ for(const img of await mobile.locator('.gateway-media img').all()){
+   await img.scrollIntoViewIfNeeded();
+   await img.evaluate(el=>el.decode().catch(()=>{}));
+ }
  const phoneGateways=await mobile.locator('.editorial-gateways').evaluate(container=>{
    const c=container.getBoundingClientRect();
    const cards=[...container.querySelectorAll('.gateway')].map(el=>{
