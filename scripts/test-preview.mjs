@@ -29,6 +29,19 @@ try{
  assert((await desktop.locator('h1').innerText()).includes('安全研究'),'Chinese editorial headline is rendered');
  const wrap=await desktop.locator('.editorial-hero h1').evaluate(el=>getComputedStyle(el).textWrap);
  assert(wrap.includes('balance'),'Headings use balanced line breaks');
+ const languageDesktop=desktop.locator('.nav .switch-desktop');
+ assert(await languageDesktop.isVisible(),'Desktop language selector is visible in the header');
+ const selectorDesktop=await languageDesktop.evaluate(el=>{
+  const links=[...el.querySelectorAll('a')];
+  const selected=el.querySelector('a.on');
+  return {labels:links.map(a=>a.innerText),background:getComputedStyle(selected).backgroundColor,
+   height:el.getBoundingClientRect().height,width:el.getBoundingClientRect().width,
+   accessible:links.every(a=>a.hasAttribute('aria-label'))};
+ });
+ assert(selectorDesktop.labels.join('|')==='中文|EN' && selectorDesktop.height>=39 && selectorDesktop.accessible,
+   'Desktop language selector has readable two-way controls and accessible labels');
+ assert(selectorDesktop.background!=='rgba(0, 0, 0, 0)',
+   'Selected language has a prominent filled state');
  assert(await desktop.locator('.editorial-hero').isVisible(),'Editorial homepage hero is visible');
  assert(await desktop.locator('.gateway').count()===3,'Three contrasting editorial section cards render');
  const gatewayPictures=await desktop.locator('.gateway-media img').evaluateAll(imgs=>imgs.map(img=>{
@@ -184,6 +197,28 @@ try{
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
  mobile.on('pageerror',error=>errors.push('mobile: '+error.message));
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
+ const languageMobile=mobile.locator('.header-tools .switch-mobile');
+ assert(await languageMobile.isVisible(),'Mobile language switch is always visible without opening the menu');
+ const headerFit=await mobile.evaluate(()=>{
+  const brand=document.querySelector('.top .logo').getBoundingClientRect();
+  const selector=document.querySelector('.switch-mobile').getBoundingClientRect();
+  const menu=document.querySelector('#menu').getBoundingClientRect();
+  return {brandRight:brand.right,selectorLeft:selector.left,selectorRight:selector.right,
+   menuLeft:menu.left,menuRight:menu.right,viewport:innerWidth,scroll:document.documentElement.scrollWidth};
+ });
+ assert(headerFit.brandRight+2<=headerFit.selectorLeft && headerFit.selectorRight+2<=headerFit.menuLeft
+  && headerFit.menuRight<headerFit.viewport && headerFit.scroll<=headerFit.viewport+1,
+  'Mobile header fits the logo, bilingual switch and menu without overlap or horizontal scrolling');
+ await mobile.locator('.switch-mobile a[href="/en/"]').click();
+ await mobile.waitForURL('**/en/',{timeout:15000});
+ await mobile.locator('.editorial-hero h1').waitFor({state:'visible',timeout:15000});
+ assert(await mobile.locator('.switch-mobile a[aria-current="page"]').innerText()==='EN',
+   'Mobile English switch updates current language state');
+ await mobile.locator('.switch-mobile a[href="/zh/"]').click();
+ await mobile.waitForURL('**/zh/',{timeout:15000});
+ await mobile.locator('.editorial-hero h1').waitFor({state:'visible',timeout:15000});
+ assert(await mobile.locator('.switch-mobile a[aria-current="page"]').innerText()==='中文',
+   'Mobile Chinese switch restores language correctly');
  console.log('RAVEN_MOBILE_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:58})).toString('base64'));
 
  for(const img of await mobile.locator('.gateway-media img').all()){
@@ -250,6 +285,19 @@ try{
  });
  console.log('RAVEN_MOBILE_OVERFLOW_DIAGNOSTIC:'+JSON.stringify(width));
  assert(width.scroll<=width.inner+1,'No horizontal overflow on mobile');
+ await mobile.setViewportSize({width:320,height:800});
+ await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
+ const narrow=await mobile.evaluate(()=>{
+  const brand=document.querySelector('.top .logo').getBoundingClientRect();
+  const choice=document.querySelector('.switch-mobile').getBoundingClientRect();
+  const menu=document.querySelector('#menu').getBoundingClientRect();
+  return {brandRight:brand.right,choiceLeft:choice.left,choiceRight:choice.right,
+   menuLeft:menu.left,menuRight:menu.right,viewport:innerWidth,scroll:document.documentElement.scrollWidth};
+ });
+ assert(narrow.brandRight<=narrow.choiceLeft+1 && narrow.choiceRight<=narrow.menuLeft+1
+  && narrow.menuRight<=narrow.viewport && narrow.scroll<=narrow.viewport+1,
+  'Small 320px phone keeps language switch visible without overlap');
+
  assert(errors.length===0,'No unhandled JavaScript errors: '+errors.join('; '));
  console.log('BROWSER PREVIEW TEST SUCCESS');
 }finally{await browser.close()}
