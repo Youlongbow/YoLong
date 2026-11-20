@@ -527,4 +527,4 @@ html[lang="zh-CN"] .article-hero h1{font-family:"Songti SC","Noto Serif CJK SC",
 }
 
 /* Subtle luminance refinement only — preserve original colors, framing and detail. */
-.editorial-hero .hero-photo { filter: brightness(.91); }
+.editorial-hero .hero-photo { filter: brightness(.84); }
