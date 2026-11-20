@@ -125,7 +125,11 @@ function richInline(input){
  s=s.replace(/&lt;(\/?)i&gt;/gi,(_,end)=>end?'</em>':'<em>');
  s=s.replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>');
  s=s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>');
- s=s.replace(/\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)/g,(_,label,url)=>'<a href="'+url.replace(/&amp;/g,'&amp;')+'" target="_blank" rel="noopener noreferrer">'+label+'</a>');
+ s=s.replace(/\[([^\]\n]+)\]\(((?:https?:\/\/|mailto:)[^)\s]+)\)/gi,(_,label,url)=>{
+  const href=url.replace(/&amp;/g,'&');
+  const external=/^https?:\/\//i.test(href);
+  return '<a href="'+esc(href)+'"'+(external?' target="_blank" rel="noopener noreferrer"':'')+'>'+label+'</a>';
+ });
  s=s.replace(/&lt;br\s*\/?&gt;/gi,'<br>');
  return s.replace(/\\\|/g,'|');
 }
