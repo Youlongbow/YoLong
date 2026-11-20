@@ -1,7 +1,7 @@
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const pathParts = location.pathname.split('/').filter(Boolean);
-const section = ['security','journal','about','experience','contact','training'].includes(pathParts[0]) ? pathParts[0] : 'home';
+const section = ['security','journal','about','experience','contact','training','capabilities'].includes(pathParts[0]) ? pathParts[0] : 'home';
 const lang = section==='home' ? (pathParts[0]==='en'?'en':'zh') : (pathParts[1]==='en'?'en':'zh');
 const slug = section==='home' ? '' : (pathParts[2] || '');
 const oldHome = {zh:'https://www.ravenlong.com/p/2f83102210ef8055896fcecd3254a5a6',en:'https://www.ravenlong.com/p/2f53102210ef8047931acda0fd9bf6dd'};
@@ -34,7 +34,7 @@ const phrases={
   featured:'Core capabilities',legacy:'Legacy site',download:'Original link',area:'Expertise',platforms:'Resources & tools'
  }
 };
-let site, securityData, researchData, pagesData, trainingData, pdfData, mediaMap={branding:{},images:{}};
+let site, securityData, researchData, pagesData, trainingData, pdfData, capabilityData, mediaMap={branding:{},images:{}};
 let currentMatches=[], visible=18;
 const txt=phrases[lang];
 
@@ -43,6 +43,7 @@ function activeUrl(target){
  if(!slug) return '/'+section+'/'+target+'/';
  if(section==='security') return '/security/'+target+'/'+slug+'/';
  if(section==='training') return '/training/'+target+'/'+slug+'/';
+ if(section==='capabilities') return '/capabilities/'+target+'/'+slug+'/';
  const translations=researchData?.articles || [];
  if(section==='journal' && target===lang) return '/journal/'+target+'/'+slug+'/';
  if(section==='journal' && target!==lang && slug==='pakistan-drc-mining-comparison') return '/journal/'+target+'/'+slug+'/';
@@ -88,12 +89,12 @@ function homeHero(s){
    '<a class="gateway gateway-'+card.kind+'" href="'+card.href+'"><div class="gateway-top"><span>'+card.count+' / RAVEN</span><span aria-hidden="true" class="gateway-arrow">↗</span></div><div class="gateway-copy"><h2>'+esc(card.name)+'</h2><p>'+esc(card.description)+'</p></div></a>').join('')+'</section>';
 }
 function expertise(s){
- const list=site.profile[lang==='zh'?'expertiseZh':'expertiseEn'];
+ const items=capabilityData?.items||[];
  return '<section class="sec shell expertise-editorial" id="expertise">'+
   '<div class="editorial-section-top"><span class="over">'+(lang==='zh'?'业务能力':'CAPABILITIES')+'</span><span class="section-index">01 / 04</span></div>'+
   '<div class="expertise-title-line"><h2 class="'+(lang==='zh'?'zh-h':'')+'">'+esc(s.capabilitiesTitle)+'</h2><p>'+esc(s.capabilitiesLead)+'</p></div>'+
-  '<div class="expertise-list">'+list.map((item,i)=>
-   '<div class="expertise-item"><span class="expertise-number">'+String(i+1).padStart(2,'0')+'</span><h3>'+esc(item)+'</h3><span class="expertise-stroke" aria-hidden="true">↗</span></div>').join('')+'</div>'+
+  '<div class="expertise-list">'+items.map((item,i)=>
+   '<a class="expertise-item" href="/capabilities/'+lang+'/'+item.slug+'/"><span class="expertise-number">'+String(i+1).padStart(2,'0')+' / '+esc(item.eyebrow)+'</span><h3>'+esc(item.title)+'</h3><p>'+esc(item.summary)+'</p><span class="expertise-stroke" aria-hidden="true">↗</span></a>').join('')+'</div>'+
   '</section>';
 }
 function platforms(s){
@@ -230,6 +231,28 @@ function researchDetail(){
  '<div class="article-end"><a href="/journal/'+lang+'/">'+txt.journal+' ←</a></div></div></article>';
 }
 
+function capabilityIndex(s){
+ const entries=capabilityData?.items||[];
+ return articleHero('RAVEN / CAPABILITIES',lang==='zh'?'专业能力与服务领域':'Security Capabilities','/'+lang+'/',lang==='zh'?'返回首页':'Back to home')+
+ '<section class="sec shell capability-directory"><p class="capability-lead">'+esc(lang==='zh'?'从业务风险出发，结合项目现场条件、组织责任和可落实的资源，形成安全体系、执行流程与决策支持。':'Practical security management across high-risk operations, protective planning, security coordination, crisis response and corporate governance.')+'</p>'+
+ '<div class="capability-directory-grid">'+entries.map((x,i)=>'<a class="capability-directory-card" href="/capabilities/'+lang+'/'+x.slug+'/"><span>'+String(i+1).padStart(2,'0')+' / '+esc(x.eyebrow)+'</span><h2>'+esc(x.title)+'</h2><p>'+esc(x.summary)+'</p><b aria-hidden="true">↗</b></a>').join('')+'</div></section>';
+}
+function capabilityDetail(s){
+ const item=capabilityData?.items.find(x=>x.slug===slug);
+ if(!item)return '<section class="sec shell"><h2>404</h2><a href="/capabilities/'+lang+'/">'+(lang==='zh'?'返回专业领域':'Back to capabilities')+'</a></section>';
+ document.title=item.title+' · RAVEN';
+ const back=lang==='zh'?'全部专业领域':'All capabilities';
+ const title=(en,zh)=>lang==='zh'?zh:en;
+ return articleHero('RAVEN / '+item.eyebrow,item.title,'/capabilities/'+lang+'/',back)+
+ '<section class="shell capability-detail"><div class="capability-detail-intro"><div class="capability-intro-tag">'+esc(item.eyebrow)+'</div><p class="capability-lead">'+esc(item.lead)+'</p>'+
+ item.intro.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>'+
+ '<div class="capability-section"><div class="capability-section-head"><span>01 / '+title('Approach','工作方法')+'</span><h2>'+title('How the work is organised','如何开展工作')+'</h2></div>'+
+ '<div class="capability-steps">'+item.approach.map((step,i)=>'<article class="capability-step"><span>'+String(i+1).padStart(2,'0')+'</span><h3>'+esc(step.title)+'</h3><p>'+esc(step.text)+'</p></article>').join('')+'</div></div>'+
+ '<div class="capability-bottom"><section><span class="capability-small-label">02 / '+title('Deliverables','成果交付')+'</span><h2>'+title('What this produces','具体交付内容')+'</h2><ul>'+item.deliverables.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></section>'+
+ '<section><span class="capability-small-label">03 / '+title('Application','适用场景')+'</span><h2>'+title('Where it applies','适用业务与场景')+'</h2><ul>'+item.contexts.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></section></div>'+
+ '<nav class="capability-related" aria-label="'+title('Related pages','相关内容')+'"><span>'+title('Related work','延伸了解')+'</span>'+item.links.map(x=>'<a href="'+x.href+'">'+esc(x.label)+' ↗</a>').join('')+'</nav>'+
+ '</section>';
+}
 function staticContentPage(){
  const record=pagesData?.pages.find(x=>x.slug===section);
  if(!record)return '<section class="sec shell"><h2>404</h2></section>';
@@ -320,6 +343,7 @@ try{
  if(section==='journal')needed.push('/content/journal-attachments.json');
  if(['about','experience','contact','training'].includes(section))needed.push('/content/pages-'+lang+'.json');
  if(section==='training')needed.push('/content/training-'+lang+'.json');
+ if(section==='home'||section==='capabilities')needed.push('/content/capabilities-'+lang+'.json');
  const values=await Promise.all(needed.map(async(url)=>{const res=await fetch(url);if(!res.ok)throw Error(url+' HTTP '+res.status);return res.json()}));
  site=values[0]; let cursor=1;
  mediaMap=await fetch('/content/media-map.json').then(r=>r.ok?r.json():null).catch(()=>null)||{branding:{},images:{}};
@@ -328,6 +352,7 @@ try{
  if(section==='journal')pdfData=values[cursor++];
  if(['about','experience','contact','training'].includes(section))pagesData=values[cursor++];
  if(section==='training')trainingData=values[cursor++];
+ if(section==='home'||section==='capabilities')capabilityData=values[cursor++];
  document.documentElement.lang=lang==='zh'?'zh-CN':'en';
  const s=site.sections[lang];
  document.title='RAVEN — '+(lang==='zh'?'安全架构与风险治理':'Security Architecture & Risk Governance');
@@ -335,6 +360,7 @@ try{
  if(section==='security')content=slug?securityDetail():securityList(s);
  else if(section==='journal')content=slug?researchDetail():researchList(s);
  else if(section==='training')content=slug?trainingDetail():trainingList();
+ else if(section==='capabilities')content=slug?capabilityDetail(s):capabilityIndex(s);
  else if(['about','experience','contact'].includes(section))content=staticContentPage();
  else content=homeHero(s)+expertise(s)+securityList(s,true)+researchList(s,true)+platforms(s);
  $('#app').innerHTML=header()+'<main class="'+(section==='home'?'home-layout':'interior-layout')+'">'+content+'</main>'+footer(s);
