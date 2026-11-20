@@ -9,9 +9,19 @@
 <title>RAVEN — Security Architecture & Risk Governance</title>
 <link rel="stylesheet" href="/assets/styles.css">
 <link rel="stylesheet" href="/assets/editorial.css">
+<link rel="stylesheet" href="/assets/transition.css">
+<link rel="preload" as="image" href="/assets/media/brand/raven-mark-light.png">
 </head>
 <body>
-<div id="app"><div class="boot">RAVEN<span class="bootline"></span></div></div>
+<div class="site-transition" id="site-transition" role="status" aria-label="RAVEN loading">
+  <div class="transition-lockup">
+    <img src="/assets/media/brand/raven-mark-light.png" alt="" width="68" height="68" decoding="async" class="transition-mark">
+    <span class="transition-wordmark">RAVEN</span>
+    <span class="transition-rule" aria-hidden="true"></span>
+  </div>
+</div>
+<div id="app"></div>
+<noscript><main style="min-height:50vh;color:#eee;text-align:center;padding:8rem 1rem;background:#0b0e11"><h1>RAVEN</h1><p>Enable JavaScript to view this website. / 请启用 JavaScript 访问网站。</p></main></noscript>
 <script type="module" src="/assets/app.js"></script>
 </body>
 </html>
