@@ -29,6 +29,14 @@ try{
  assert((await desktop.locator('h1').innerText()).includes('安全研究'),'Chinese editorial headline is rendered');
  assert(await desktop.locator('.editorial-hero').isVisible(),'Editorial homepage hero is visible');
  assert(await desktop.locator('.gateway').count()===3,'Three contrasting editorial section cards render');
+ const gatewayPictures=await desktop.locator('.gateway-media img').evaluateAll(imgs=>imgs.map(img=>{
+  const r=img.parentElement.getBoundingClientRect();
+  return {loaded:img.complete&&img.naturalWidth>0,aspect:r.width/r.height};
+ }));
+ assert(gatewayPictures.length===3&&gatewayPictures.every(x=>x.loaded),'All three editorial gateways show real archived media');
+ assert(gatewayPictures.every(x=>Math.abs(x.aspect-16/9)<.06),'All section images keep a consistent 16:9 cover ratio');
+ assert(await desktop.locator('.gateway-action').count()===3,'Each editorial gateway has a clear action');
+
  assert(await desktop.locator('.expertise-item[href^="/capabilities/zh/"]').count()===5,'Five homepage expertise cards are real links');
  assert(await desktop.locator('.expertise-item p').count()===5,'Each expertise card has a meaningful summary');
  const transitionLayout=await desktop.evaluate(()=>{
@@ -62,6 +70,9 @@ try{
  const stylesheet=await desktop.request.get(base+'/assets/editorial.css');
  assert(stylesheet.ok(),'Editorial CSS design system is deployed');
  assert(await desktop.locator('.paper').count()>=4,'Migrated research cards render');
+ assert(await desktop.locator('#journal .paper-media img').count()>=4,'Research cards show linked research cover images');
+ assert(await desktop.locator('#journal .paper-read').count()>=4,'Research cards include explicit read links');
+
  console.log('RAVEN_DESKTOP_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:56})).toString('base64'));
  await desktop.locator('.editorial-gateways').scrollIntoViewIfNeeded();
  console.log('RAVEN_CARDS_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
@@ -90,11 +101,24 @@ try{
  await desktop.goto(base+'/security/zh/2026-11-17-001/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).includes('事实摘要'),'Full Chinese event analysis renders');
  assert((await desktop.locator('.article-content a[href^="https://"]').count())>=1,'Incident sources remain clickable');
+
+ await desktop.goto(base+'/journal/zh/',{waitUntil:'networkidle',timeout:60000});
+ assert(await desktop.locator('#journal .paper-media img').count()>=5,'Full research directory has thematic cover artwork');
+ const researchMeasure=await desktop.locator('#journal .paper-media').first().evaluate(el=>{
+  const r=el.getBoundingClientRect();return r.width/r.height;
+ });
+ assert(Math.abs(researchMeasure-16/9)<.08,'Research cover images consistently use 16:9 frames');
+ console.log('RAVEN_RESEARCH_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:48})).toString('base64'));
  await desktop.goto(base+'/journal/zh/bla-strategy-analysis/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>6000,'Long research report migrated in full');
  assert(await desktop.locator('.article-figure img').count()>=10,'All ten BLA vector figures render as local image elements');
  const firstFigure=desktop.locator('.article-figure img').first();
  assert(await firstFigure.evaluate(img=>img.complete&&img.naturalWidth>0),'BLA original vector figure loads from Cloudflare local media');
+ const figureLayout=await desktop.locator('.article-diagram img').first().evaluate(img=>{
+  const r=img.getBoundingClientRect();return {width:r.width,height:r.height,native:img.naturalWidth/img.naturalHeight};
+ });
+ assert(Math.abs(figureLayout.width/figureLayout.height-figureLayout.native)<.08,'Original research diagrams retain intrinsic aspect ratio');
+
 
  await desktop.goto(base+'/journal/en/pakistan-drc-mining-comparison/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>6000,'English research report renders');
@@ -108,6 +132,13 @@ try{
  assert((await desktop.locator('.article-content').innerText()).length>200,'Contact page migrated');
  await desktop.goto(base+'/training/zh/',{waitUntil:'networkidle',timeout:60000});
  assert(await desktop.locator('.course-card').count()===11,'Full HEAT curriculum displays ten modules plus review');
+ assert(await desktop.locator('.course-card-media img').count()>=10,'HEAT course cards use module-specific scenario images');
+ const courseRatios=await desktop.locator('.course-card-media').evaluateAll(cards=>cards.map(el=>{
+  const r=el.getBoundingClientRect();return r.width/r.height;
+ }));
+ assert(courseRatios.every(r=>Math.abs(r-1.6)<.07),'HEAT card image proportions remain 16:10');
+ console.log('RAVEN_TRAINING_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:48})).toString('base64'));
+
  assert(await desktop.locator('.course-intro img').count()>=1,'HEAT introduction displays locally preserved certificate or illustration');
 
  await desktop.goto(base+'/training/en/01/',{waitUntil:'networkidle',timeout:60000});
