@@ -130,9 +130,13 @@ function richInline(input){
  return s.replace(/\\\|/g,'|');
 }
 function richBody(markdown,sourceLink){
- const savedTables=[];
- let cleaned=String(markdown??'')
-  .replace(/<\/?(?:columns|column|toggle|synced-block-reference)(?:\s+[^>]*)?>/gi,'')
+ const savedTables=[],savedToggles=[];
+ let cleaned=String(markdown??'').replace(/<toggle(?:\s+[^>]*)?>([\s\S]*?)<\/toggle>/gi,(_,body)=>{
+  const lines=body.trim().split(/\n/);
+  const title=lines.shift()?.trim()|| (lang==='zh'?'展开阅读':'Read more');
+  const index=savedToggles.push({title,body:lines.join('\n').trim()})-1;
+  return '\n\n%%RAVEN_TOGGLE_'+index+'%%\n\n';
+ }).replace(/<\/?(?:columns|column|synced-block-reference)(?:\s+[^>]*)?>/gi,'')
   .replace(/<p(?:\s+[^>]*)?>/gi,'').replace(/<\/p>/gi,'');
  cleaned=cleaned.replace(/<table\b[\s\S]*?<\/table>/gi,table=>{
   const index=savedTables.push(table)-1;
@@ -141,6 +145,12 @@ function richBody(markdown,sourceLink){
  const blocks=cleaned.trim().split(/\n\s*\n/).filter(Boolean);
  return blocks.map(chunk=>{
   const first=chunk.split('\n')[0].trim();
+  const toggle=first.match(/^%%RAVEN_TOGGLE_(\d+)%%$/);
+  if(toggle){
+   const note=savedToggles[Number(toggle[1])];
+   return '<details class="article-details"><summary>'+richInline(note.title)+'</summary><div class="article-details-body">'+richBody(note.body,sourceLink)+'</div></details>';
+  }
+  if(/^(---|___|\*\*\*)$/.test(chunk.trim()))return '<hr class="article-divider">';
   const marker=first.match(/^%%RAVEN_TABLE_(\d+)%%$/);
   if(marker){
    let html=richInline(savedTables[Number(marker[1])]||'');
