@@ -20,6 +20,8 @@ try{
  assert(stylesheet.ok(),'Editorial CSS design system is deployed');
  assert(await desktop.locator('.paper').count()>=4,'Migrated research cards render');
  console.log('RAVEN_DESKTOP_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:56})).toString('base64'));
+ await desktop.locator('.editorial-gateways').scrollIntoViewIfNeeded();
+ console.log('RAVEN_CARDS_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
  await desktop.locator('.switch a[href="/en/"]').click();
  await desktop.waitForURL('**/en/',{timeout:15000});
  assert((await desktop.locator('h1').innerText()).includes('Security Research'),'English homepage language switch works');
