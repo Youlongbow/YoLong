@@ -1,0 +1,258 @@
+{
+  "lang": "en",
+  "version": 1,
+  "source": "Grounded in RAVEN About and Experience pages",
+  "updated": "2026-11-20",
+  "items": [
+    {
+      "slug": "security-architecture",
+      "title": "Security Architecture in High-Threat Environments",
+      "eyebrow": "Security Architecture",
+      "summary": "Integrated protection for people, sites, contractors and essential operations—from initial site planning to day-to-day delivery.",
+      "lead": "Start with actual threats, operational exposure and available resources. Design a security system that works across facilities, movement and essential business activities.",
+      "intro": [
+        "Security in a high-risk project begins with the way the project is designed and operated. Camps, mines, remote worksites, logistics corridors and essential utilities have distinct exposure profiles. Protective resources must reflect business importance and actual operating conditions.",
+        "My focus is a working security architecture: clear controls, realistic staffing, defined coordination with external stakeholders and decisions that can be adjusted as conditions change."
+      ],
+      "approach": [
+        {
+          "title": "Map assets, people and critical operations",
+          "text": "Assess where personnel work and travel, which dependencies sustain operations and where disruption would have serious consequences for safety or continuity."
+        },
+        {
+          "title": "Design layered protective controls",
+          "text": "Bring perimeter measures, access control, identity checks, monitoring, guards and journey security into one design based on threat and vulnerability assessment."
+        },
+        {
+          "title": "Embed accountability in operations",
+          "text": "Link contractor requirements, security resources, incident escalation, emergency support and handover responsibilities to daily management."
+        },
+        {
+          "title": "Validate performance and adapt",
+          "text": "Use inspections, exercises, event reviews and audits to test the controls and refine the design when business activities or threats change."
+        }
+      ],
+      "deliverables": [
+        "Security risk and exposure assessment",
+        "Layered security design and facility control baseline",
+        "Operational responsibilities, staffing and procedures",
+        "Exercise, audit and continuous improvement plan"
+      ],
+      "contexts": [
+        "Mining and resource operations",
+        "Energy, power and large EPC projects",
+        "Remote camps, factories and fixed sites"
+      ],
+      "links": [
+        {
+          "label": "Relevant project experience",
+          "href": "/experience/en/"
+        },
+        {
+          "label": "Security research",
+          "href": "/journal/en/"
+        }
+      ]
+    },
+    {
+      "slug": "protective-security",
+      "title": "Protective Security and Movement Planning",
+      "eyebrow": "Protective Security",
+      "summary": "Planning for personnel movement, route exposure, protective resources and emergency support across high-risk journeys.",
+      "lead": "Treat every significant journey as a managed operation, with preparation, execution standards and clear authority to change or stop the task.",
+      "intro": [
+        "Risk changes when people leave a protected facility and enter roads, airports, hotels and public areas. Business visits, daily commuting and cross-border project logistics call for different levels of protective planning.",
+        "Effective movement security links current information, disciplined execution, communication and contingency support. The team should know who can authorise a departure, reroute, pause or cancellation."
+      ],
+      "approach": [
+        {
+          "title": "Plan the journey",
+          "text": "Confirm the purpose, travellers, transport options, schedule, communications, destination arrangements and medical or reception support before departure."
+        },
+        {
+          "title": "Assess routes and activity points",
+          "text": "Evaluate route conditions, stops, destination exposure and viable alternatives, with defined criteria for changing the plan."
+        },
+        {
+          "title": "Coordinate people and resources",
+          "text": "Clarify the roles of drivers, protective staff, coordinators and receiving teams. Establish check-ins and a common method for handling changes."
+        },
+        {
+          "title": "Prepare practical contingencies",
+          "text": "Set responses for road disruption, loss of communications, criminal incidents, missing personnel and urgent medical requirements."
+        }
+      ],
+      "deliverables": [
+        "Journey management procedure and approval format",
+        "Route and activity risk assessments",
+        "Team responsibilities and communications plan",
+        "Pause, reroute, emergency and medical support procedures"
+      ],
+      "contexts": [
+        "High-risk business visits and site inspections",
+        "Project commuting and regional transport",
+        "Protective support for key personnel and delegations"
+      ],
+      "links": [
+        {
+          "label": "Field experience",
+          "href": "/experience/en/"
+        },
+        {
+          "label": "HEAT journey-safety training",
+          "href": "/training/en/"
+        }
+      ]
+    },
+    {
+      "slug": "armed-coordination",
+      "title": "Security Force Coordination",
+      "eyebrow": "Security Force Coordination",
+      "summary": "Operational coordination between public security forces, contracted providers and the project security function.",
+      "lead": "Ensure government security forces, contractors and business leaders share a clear understanding of responsibilities, incident escalation and support arrangements.",
+      "intro": [
+        "In certain high-threat environments, effective security requires sustained cooperation with police, border forces, local authorities and contracted providers. The availability and role of those resources must match the protection tasks on the ground.",
+        "The starting point is an agreed operating system: responsibilities, warning arrangements, support requests, escalation authority and continuity decisions during incidents."
+      ],
+      "approach": [
+        {
+          "title": "Define duties and coordination interfaces",
+          "text": "Document responsibilities, contacts, reporting requirements and the interface between public forces, contractors and company security leadership."
+        },
+        {
+          "title": "Align protection resources with operations",
+          "text": "Review fixed-site, journey and temporary worksite support needs and establish a regular planning process with relevant stakeholders."
+        },
+        {
+          "title": "Set joint incident procedures",
+          "text": "Agree how serious threats, movement restrictions and urgent protection or evacuation requests are communicated, tracked and handed over."
+        },
+        {
+          "title": "Monitor and improve performance",
+          "text": "Review coverage, responsiveness, deviations and corrective actions as part of contractor oversight and security management."
+        }
+      ],
+      "deliverables": [
+        "Security-force coordination and accountability matrix",
+        "Joint communication and escalation procedures",
+        "Resource and task coordination plan",
+        "Provider performance and compliance review criteria"
+      ],
+      "contexts": [
+        "Mining projects supported by public security forces",
+        "Facilities with multiple security providers",
+        "Multi-agency response and emergency coordination"
+      ],
+      "links": [
+        {
+          "label": "Relevant experience",
+          "href": "/experience/en/"
+        },
+        {
+          "label": "Discuss a coordination framework",
+          "href": "/contact/en/"
+        }
+      ]
+    },
+    {
+      "slug": "crisis-response",
+      "title": "Crisis Response and Evacuation",
+      "eyebrow": "Crisis Response",
+      "summary": "Clear decision-making and operational arrangements for violent incidents, movement disruptions, loss of contact and medical emergencies.",
+      "lead": "Connect early warning, incident command, personal protection, evacuation and business recovery in one coherent response process.",
+      "intro": [
+        "Effective crisis response starts before an incident. Leaders need to understand the scenarios that matter, the protections already in place and the thresholds for changing business activity.",
+        "Field procedures should address information verification, personnel accountability, alternative communications, external assistance, evacuation options and the restoration of critical services."
+      ],
+      "approach": [
+        {
+          "title": "Define scenarios and decision triggers",
+          "text": "Translate relevant security, social, transport, communications and medical threats into response levels and practical action conditions."
+        },
+        {
+          "title": "Protect and account for personnel",
+          "text": "Establish arrangements for headcounts, sheltering or assembly, emergency materials, medical support and information to families."
+        },
+        {
+          "title": "Maintain command and communications",
+          "text": "Assign incident command roles, reporting formats, alternative communications and an escalation sequence that supports timely decisions."
+        },
+        {
+          "title": "Exercise evacuation and recovery",
+          "text": "Test internal relocation, wider evacuation, external transport coordination and the recovery of essential operations. Update plans from the results."
+        }
+      ],
+      "deliverables": [
+        "Crisis management plan and incident classification",
+        "Command, reporting and communications procedures",
+        "Assembly, medical support and evacuation plans",
+        "Scenario exercises and corrective action reports"
+      ],
+      "contexts": [
+        "High-risk sites, camps and expatriate facilities",
+        "Multi-location construction and engineering projects",
+        "Violence, route closures and major operational disruption"
+      ],
+      "links": [
+        {
+          "label": "Crisis-management experience",
+          "href": "/experience/en/"
+        },
+        {
+          "label": "HEAT emergency lessons",
+          "href": "/training/en/"
+        }
+      ]
+    },
+    {
+      "slug": "security-governance",
+      "title": "Corporate Security Governance and Risk Assessment",
+      "eyebrow": "Security Governance",
+      "summary": "Common group standards, regional accountability, contractor oversight and risk decisions across international business operations.",
+      "lead": "Turn field-level risk assessments into a security management system that headquarters can govern, regional teams can support and local operations can execute.",
+      "intro": [
+        "Global businesses operate across different regulatory environments, threat levels and security markets. Their minimum control standards, accountability and authority to accept risk need to remain consistent.",
+        "My approach joins risk assessment, group standards, operational measures, audits and leadership decisions so security resources are connected to personnel exposure and business continuity."
+      ],
+      "approach": [
+        {
+          "title": "Set group policies and tiered standards",
+          "text": "Establish a consistent risk methodology, minimum controls, incident categories, contractor requirements and a process for exceptions."
+        },
+        {
+          "title": "Define governance at every level",
+          "text": "Separate head-office oversight, regional coordination and site execution, with clear reporting, audit and escalation responsibilities."
+        },
+        {
+          "title": "Evaluate risk and control options",
+          "text": "Consider threats, exposure, vulnerabilities and impact, then assess control effectiveness, residual risk and feasible alternatives."
+        },
+        {
+          "title": "Close the audit and performance loop",
+          "text": "Use inspection findings, incident trends, KPIs, corrective actions and management review to maintain consistency across markets."
+        }
+      ],
+      "deliverables": [
+        "Group security policies and minimum standards",
+        "Global, regional and site operating responsibilities",
+        "Risk registers, reporting and acceptance governance",
+        "Contractor performance, audit and improvement framework"
+      ],
+      "contexts": [
+        "International automotive offices, sales sites and factories",
+        "Mining, energy and infrastructure portfolios",
+        "Overseas contractor and supply-chain security"
+      ],
+      "links": [
+        {
+          "label": "Professional and project experience",
+          "href": "/experience/en/"
+        },
+        {
+          "label": "Discuss a group security framework",
+          "href": "/contact/en/"
+        }
+      ]
+    }
+  ]
+}
