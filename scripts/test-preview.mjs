@@ -200,7 +200,15 @@ try{
  assert(await mobile.locator('#menu').isVisible(),'Mobile navigation control is visible');
  await mobile.locator('#menu').click();
  assert(await mobile.locator('#nav').isVisible(),'Mobile navigation opens');
- const width=await mobile.evaluate(()=>({scroll:document.documentElement.scrollWidth,inner:window.innerWidth}));
+ const width=await mobile.evaluate(()=>{
+  const inner=window.innerWidth,scroll=document.documentElement.scrollWidth;
+  const offenders=[...document.querySelectorAll('body *')].map(el=>{
+   const r=el.getBoundingClientRect();
+   return {tag:el.tagName,cls:String(el.className||'').slice(0,90),left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width)};
+  }).filter(o=>o.right>inner+2||o.left < -5).filter(o=>o.width<3000).slice(0,14);
+  return {scroll,inner,offenders};
+ });
+ console.log('RAVEN_MOBILE_OVERFLOW_DIAGNOSTIC:'+JSON.stringify(width));
  assert(width.scroll<=width.inner+1,'No horizontal overflow on mobile');
  assert(errors.length===0,'No unhandled JavaScript errors: '+errors.join('; '));
  console.log('BROWSER PREVIEW TEST SUCCESS');
