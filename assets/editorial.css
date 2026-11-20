@@ -1827,3 +1827,108 @@ html[lang=zh] .profile-design .profile-book h2{
 .editorial-hero .btns a {
   white-space: nowrap;
 }
+
+
+/* RAVEN visible language selector 2026-11
+   High-contrast utility control in the header; persistent on mobile. */
+.top .header-tools { display: none; }
+.top .switch {
+ display: inline-flex;
+ align-items: center;
+ flex: 0 0 auto;
+ gap: 3px;
+ padding: 3px;
+ margin: 0;
+ border: 1px solid #868f92;
+ border-radius: 5px;
+ background: #181f23;
+ box-shadow: inset 0 0 0 1px #252d32,0 2px 12px #0006;
+}
+.top .nav .switch.switch-desktop {
+ border-left: 1px solid #868f92;
+ padding: 3px;
+ margin-left: 2px;
+ gap: 3px;
+}
+.top .switch .switch-option,
+.top .nav .switch .switch-option {
+ position: relative;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ min-height: 34px;
+ min-width: 35px;
+ padding: 8px 11px;
+ border: 1px solid transparent;
+ border-radius: 3px;
+ background: transparent;
+ color: #e2e6e5;
+ font: 700 12px/1.2 var(--body);
+ text-transform: none;
+ letter-spacing: .015em;
+ text-decoration: none;
+ transition: background-color .18s ease,color .18s ease,border-color .18s ease;
+}
+.top .switch .switch-option:hover,
+.top .nav .switch .switch-option:hover {
+ color: #fff;
+ background: #3b454b;
+}
+.top .switch .switch-option.on,
+.top .nav .switch .switch-option.on {
+ background: #b52c34;
+ border-color: #d04e55;
+ color: #fff;
+ box-shadow: 0 1px 6px #05080b66;
+}
+.top .switch .switch-option.on:hover {background:#c93b44}
+.top .switch .switch-option:focus-visible {
+ outline: 2px solid #f6f5ee;
+ outline-offset: 3px;
+}
+@media (min-width:961px) and (max-width:1230px) {
+ .top .nav { gap: clamp(8px,1.1vw,15px); }
+ .top .switch .switch-option { padding-inline: 8px; }
+}
+@media (max-width:960px) {
+ .top .header-tools {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-left: auto;
+  flex: 0 0 auto;
+ }
+ .top .nav .switch-desktop { display: none; }
+ .top .mobile {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  border-color: #6f797e;
+  min-height: 42px;
+ }
+ .top .switch-mobile {display: inline-flex}
+ .top .switch .switch-option {
+  min-height: 34px;
+  min-width: 36px;
+ }
+}
+@media (max-width:690px) {
+ .top {gap:9px}
+ .top .logo {flex:0 1 auto;min-width:0;gap:8px}
+ .top .header-tools {gap:7px}
+ .top .switch {padding:2px;gap:2px}
+ .top .switch .switch-option {padding:7px 9px;min-height:34px;font-size:12px;min-width:30px}
+ .top .mobile {padding:7px 9px;min-height:40px;font-size:11px;gap:5px}
+}
+@media (max-width:420px) {
+ .top .logotxt {font-size:20px;letter-spacing:.1em}
+ .top .logotxt small {font-size:6px;letter-spacing:.015em}
+ .top .logomark.logo-loaded {width:32px;height:32px}
+ .top .header-tools {gap:5px}
+ .top .switch .switch-option {padding:7px 8px;font-size:11px;min-width:28px}
+ .top .mobile {font-size:10px;padding:7px;gap:4px}
+}
+@media (max-width:355px) {
+ .top .logotxt small {display:none}
+ .top .logotxt {font-size:19px;letter-spacing:.08em}
+ .top .switch .switch-option {padding-inline:7px}
+}
