@@ -1,6 +1,10 @@
 import { chromium } from 'playwright';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 const base='https://yolong.bournelong511.workers.dev';
+const cssRevision=createHash('sha256').update(readFileSync('assets/editorial.css')).digest('hex').slice(0,12);
+const expectedCSS='/assets/editorial.'+cssRevision+'.css';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const assert=(ok,message)=>{if(!ok)throw Error(message);console.log('PASS:',message)};
 const errors=[];
@@ -9,13 +13,19 @@ try{
  desktop.on('pageerror',error=>errors.push('desktop: '+error.message));
  await desktop.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  for(let attempt=0;attempt<30;attempt++){
-  const linked=await desktop.locator('link[rel="stylesheet"][href*="editorial."]').count();
+  const linked=await desktop.locator('link[rel="stylesheet"][href="'+expectedCSS+'"]').count();
   const current=await desktop.locator('.hero-photo').evaluate(el=>getComputedStyle(el).backgroundImage).catch(()=>'');
   if(linked && current.includes('raven-original-4x-3240.webp'))break;
   await desktop.waitForTimeout(1500);
   await desktop.reload({waitUntil:'networkidle',timeout:60000});
  }
- assert(await desktop.locator('link[rel="stylesheet"][href*="editorial."]').count()===1,'Versioned editorial stylesheet prevents stale hero caching');
+ assert(await desktop.locator('link[rel="stylesheet"][href="'+expectedCSS+'"]').count()===1,'Versioned editorial stylesheet prevents stale hero caching');
+ const slot=await desktop.locator('.hero-photo').evaluate(el=>{
+   const r=el.getBoundingClientRect();
+   return {left:r.left,width:r.width,viewport:innerWidth,backgroundSize:getComputedStyle(el).backgroundSize};
+ });
+ assert(slot.left>slot.viewport*.25,'Desktop photo is positioned in the right-side art slot');
+ assert(slot.backgroundSize==='contain','Desktop photo preserves the full original frame without cropping');
  assert((await desktop.locator('h1').innerText()).includes('安全研究'),'Chinese editorial headline is rendered');
  assert(await desktop.locator('.editorial-hero').isVisible(),'Editorial homepage hero is visible');
  assert(await desktop.locator('.gateway').count()===3,'Three contrasting editorial section cards render');
