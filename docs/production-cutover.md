@@ -1,6 +1,26 @@
 # RAVEN production cutover — controlled migration runbook
 
-_Last reviewed: 2026-11-20. This document records the pre-cutover conditions, not authorization to change production DNS._
+## 2026-11-20 launch authorization and current blocker
+
+The site owner authorized moving the public website to `www.ravenlong.com` and enabling public search indexing. The canonical domain and search-discovery build are prepared in `scripts/seo.mjs`, with English/Chinese per-page HTML, sitemap, robots, social metadata and JSON-LD. `wrangler.production.jsonc` contains the isolated production-domain configuration.
+
+**Domain is NOT YET switched.** A domain configuration check returned authoritative name servers `launch1.spaceship.net` and `launch2.spaceship.net`. Cloudflare Workers Custom Domains require the zone to be configured in the Cloudflare account serving `yolong`. There is no connected Spaceship or Cloudflare DNS editor, so the DNS change cannot be executed from the current session.
+
+**Current Vercel overlap:** `ravenlong-heat-quizzes` still has `www.ravenlong.com` and apex `ravenlong.com` attached, in addition to `quiz.ravenlong.com`. Preserve the quiz app and its `quiz` hostname. Remove the main-domain associations from this Vercel project only during the verified Cloudflare cutover.
+
+### Exact cutover sequence
+
+1. Add `ravenlong.com` to the Cloudflare account containing `yolong`; copy the entire Spaceship DNS zone, including `careers`, `ops`, `quiz`, MX and email-verification TXT records. Keep the existing mail routing intact.
+2. Change the apex domain nameservers in Spaceship to the exact pair shown by this Cloudflare zone and confirm activation. Do not change registrar ownership.
+3. Deploy using `npx wrangler deploy --config wrangler.production.jsonc` or bind `www.ravenlong.com` to `yolong` in Workers → Domains & Routes → Custom Domain. Validate TLS and the response from the actual `www` hostname.
+4. Redirect `https://ravenlong.com/*` to `https://www.ravenlong.com/*` with a 301 rule. Preserve all other subdomains. Remove old `www` and apex bindings from `ravenlong-heat-quizzes` when the new hostname is serving successfully.
+5. Verify redirects from old `/p/<id>` links, all bilingual pages, PDF/image assets, email links, and the first automated security-news publication. The existing news-monitoring automation still targets Notion and must be switched or dual-published to GitHub before retiring its original destination.
+6. Verify `https://www.ravenlong.com/robots.txt` and `https://www.ravenlong.com/sitemap.xml`, then submit the XML sitemap to Google Search Console and Bing Webmaster Tools. Confirm successful crawl/indexing in each console.
+
+**Photo status:** An image was supplied inline in the conversation but did not expose a downloadable original asset to the current repository editing environment. The exact photograph was not committed. Obtain an attachable full-resolution image before replacing profile imagery.
+
+
+_Last reviewed: 2026-11-20. Public launch authorized; DNS transfer and publication-pipeline cutover remain outstanding._
 
 ## Current production and preview
 
