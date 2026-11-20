@@ -73,5 +73,7 @@ for(const lang of ['zh','en']){
 writeFileSync('dist/_redirects',redirects.join('\n')+'\n');
 
 writeFileSync('dist/robots.txt','User-agent: *\nDisallow: /\n');
+// Produce crawlable per-route HTML, canonical URLs, structured data and sitemap.
+execFileSync(process.execPath,['scripts/seo.mjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['scripts/media-audit.mjs'],{stdio:'inherit'});
 console.log(JSON.stringify({status:'preview-built',routes:routes.length,securityRecords:security.zh.events.length,localizedResearchPages:research.zh.articles.length+research.en.articles.length,trainingModules:training.zh.modules.length+training.en.modules.length,legacyRedirects:redirects.length,styleRevision:cssHash}));
