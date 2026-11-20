@@ -8,6 +8,14 @@ try{
  const desktop=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
  desktop.on('pageerror',error=>errors.push('desktop: '+error.message));
  await desktop.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
+ for(let attempt=0;attempt<30;attempt++){
+  const linked=await desktop.locator('link[rel="stylesheet"][href*="editorial."]').count();
+  const current=await desktop.locator('.hero-photo').evaluate(el=>getComputedStyle(el).backgroundImage).catch(()=>'');
+  if(linked && current.includes('raven-original-4x-3240.webp'))break;
+  await desktop.waitForTimeout(1500);
+  await desktop.reload({waitUntil:'networkidle',timeout:60000});
+ }
+ assert(await desktop.locator('link[rel="stylesheet"][href*="editorial."]').count()===1,'Versioned editorial stylesheet prevents stale hero caching');
  assert((await desktop.locator('h1').innerText()).includes('安全研究'),'Chinese editorial headline is rendered');
  assert(await desktop.locator('.editorial-hero').isVisible(),'Editorial homepage hero is visible');
  assert(await desktop.locator('.gateway').count()===3,'Three contrasting editorial section cards render');
