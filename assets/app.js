@@ -415,7 +415,7 @@ function trainingDetail(){
 }
 
 function footer(s){
- return '<footer class="footer shell"><div class="over">'+esc(s.kicker)+'</div><div class="footer-brand">RAVEN</div><div class="footerline"><span>© '+new Date().getFullYear()+' RAVEN · '+esc(s.siteNote)+'</span><span><a href="'+oldHome[lang]+'" target="_blank" rel="noopener">'+txt.legacy+' ↗</a> / <a href="/contact/'+lang+'/">'+txt.contact+' ↗</a></span></div></footer>';
+ return '<footer class="footer shell"><div class="over">'+esc(s.kicker)+'</div><div class="footer-brand">RAVEN</div><div class="footerline"><span>© '+new Date().getFullYear()+' RAVEN · '+esc(s.siteNote)+'</span><span><a href="/contact/'+lang+'/">'+txt.contact+' ↗</a></span></div></footer>';
 }
 function bind(){
  const menu=$('#menu');
