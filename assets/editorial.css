@@ -1040,3 +1040,39 @@ html[lang=en] .section-training .article-hero h1{
     font-size:clamp(30px,7vw,38px);
   }
 }
+
+
+/* Notion narrative sections are semantic: author notes expand on demand. */
+.article-details{
+  margin:28px 0 37px;
+  background:#20272a;border:1px solid #525c60;
+}
+.article-details summary{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:17px 22px;list-style:none;cursor:pointer;
+  font:600 14px/1.6 var(--body);color:#e5e6e4;
+}
+.article-details summary::-webkit-details-marker{display:none}
+.article-details summary:after{
+  content:"+";font:400 24px/1 var(--body);color:#c65761;
+  margin-left:20px;flex:none;
+}
+.article-details[open] summary:after{content:"−"}
+.article-details-body{
+  border-top:1px solid #485155;padding:22px;
+}
+.article-details-body p{
+  font:14px/1.95 var(--body);color:#cdd2d2;margin:0 0 19px;
+}
+.article-details-body p:last-child{margin-bottom:0}
+.article-divider{
+  border:0;border-top:1px solid #424b4e;margin:39px 0;
+}
+.article-details summary:focus-visible{
+  outline:2px solid #d0a1a7;outline-offset:3px;
+}
+@media(max-width:700px){
+ .article-details{margin:24px 0 30px}
+ .article-details summary{padding:14px 16px}
+ .article-details-body{padding:18px 16px}
+}
