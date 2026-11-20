@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 :root{color-scheme:dark;--black:#090b0d;--paper:#e6e8e8;--sub:#9da5ac;--red:#e52b30;--line:#30353b;--panel:#14181d;--mono:'IBM Plex Mono',monospace;--display:'Barlow Condensed','Noto Sans SC',sans-serif;--body:'Noto Sans SC',Arial,sans-serif}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--black);color:var(--paper);font-family:var(--body)}a{color:inherit;text-decoration:none}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--red);outline-offset:4px}button,input,select{font:inherit}button{cursor:pointer}
 ::selection{background:var(--red);color:white}
