@@ -2054,3 +2054,24 @@ html[lang=zh] .profile-design .profile-book h2{
   object-position:26% 51%;
   filter:brightness(.99) contrast(1.015) saturate(.94);
 }
+
+
+/* Final approved About photo treatment — 2026-11-21
+   Retain the chosen three-part layout. Adjust only the first two photos;
+   preserve the existing third perimeter-site image. */
+.profile-about .profile-story:first-child .profile-story-photo img {
+  object-position:50% 46%;
+  filter:brightness(1.025) contrast(.985) saturate(.90);
+}
+.profile-about .profile-story:nth-child(2) .profile-story-photo img {
+  object-position:50% 49%;
+  filter:brightness(1.075) contrast(.925) saturate(.81);
+}
+@media (max-width:820px) {
+  .profile-about .profile-story:first-child .profile-story-photo img {
+    object-position:47% 47%;
+  }
+  .profile-about .profile-story:nth-child(2) .profile-story-photo img {
+    object-position:52% 50%;
+  }
+}
