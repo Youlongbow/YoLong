@@ -2145,7 +2145,7 @@ html[lang=zh] .profile-design .profile-book h2{
 }
 .profile-experience .profile-story {
   min-height:0;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-columns:minmax(0,1.07fr) minmax(0,.93fr);
   align-items:stretch;
   border:1px solid var(--profile-hairline);
   background:#10171b;
@@ -2156,23 +2156,30 @@ html[lang=zh] .profile-design .profile-book h2{
 .profile-experience .profile-story-copy,
 .profile-experience .profile-story:nth-child(even) .profile-story-copy {
   min-width:0;
-  padding:clamp(30px,3.3vw,52px);
+  padding:clamp(28px,2.9vw,44px);
 }
 .profile-experience .profile-story h3 {
-  margin:15px 0 18px;
-  max-width:23ch;
-  font-size:clamp(27px,2.5vw,37px);
-  line-height:1.32;
+  margin:14px 0 20px;
+  max-width:100%;
+  font-size:clamp(27px,2.3vw,35px);
+  line-height:1.4;
+  text-wrap:pretty;
+  word-break:normal;
+  overflow-wrap:normal;
 }
 html[lang=zh] .profile-experience .profile-story h3 {
-  font-size:clamp(27px,2.25vw,34px);
-  line-height:1.45;
+  font-size:clamp(27px,2.1vw,32px);
+  line-height:1.5;
+  letter-spacing:-.035em;
 }
 .profile-experience .profile-story p {
-  max-width:56ch;
-  margin:0 0 13px;
+  max-width:42em;
+  margin:0 0 14px;
   font-size:clamp(14px,1.08vw,15px);
-  line-height:1.83;
+  line-height:1.9;
+  text-wrap:pretty;
+  overflow-wrap:normal;
+  word-break:normal;
 }
 .profile-experience .profile-story p:last-child {margin-bottom:0}
 .profile-experience .profile-story-visual {
@@ -2324,4 +2331,39 @@ html[lang=zh] .profile-experience .profile-recognition-copy h2{font-family:var(-
 /* Fill the wide desktop photographic field; retain the complete frame on mobile. */
 @media (min-width:821px){
  .profile-experience .profile-recognition-art img{object-fit:cover;object-position:50% 50%}
+}
+
+/* Experience narrative phrasing: balanced reading measure, semantic heading breaks. */
+.profile-experience .profile-narrative .profile-section-head{
+  grid-template-columns:minmax(0,1fr);
+  gap:11px;
+}
+.profile-experience .profile-narrative .profile-section-head > p{
+  max-width:760px;
+  line-height:1.85;
+  text-wrap:pretty;
+}
+.profile-experience .profile-story-title-part{
+  display:inline-block;
+  white-space:nowrap;
+  max-width:100%;
+}
+@supports (word-break:auto-phrase){
+  html[lang=zh] .profile-experience .profile-story h3,
+  html[lang=zh] .profile-experience .profile-story p,
+  html[lang=zh] .profile-experience .profile-narrative .profile-section-head > p{
+    word-break:auto-phrase;
+  }
+}
+@media(max-width:1120px){
+  .profile-experience .profile-story p{max-width:68ch;}
+}
+@media(max-width:640px){
+  .profile-experience .profile-narrative .profile-section-head > p{
+    max-width:100%;font-size:13px;line-height:1.82;
+  }
+  .profile-experience .profile-story h3{line-height:1.48;}
+  .profile-experience .profile-story p{
+    max-width:100%;font-size:14px;line-height:1.88;
+  }
 }
