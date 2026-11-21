@@ -321,8 +321,8 @@ function professionalContentPage(record){
  const p=record.presentation;
  const refs=[...String(record.body||'').matchAll(/<image\b[^>]*source="([^"]+)"/gi)].map(m=>m[1]);
  const photos=refs.map(ref=>mediaMap.images?.[ref]||'');
- const photo=(index,caption,klass='')=>{
-  const src=photos[index]||'';
+ const photo=(index,caption,klass='',override='')=>{
+  const src=override||photos[index]||'';
   return src
    ?'<figure class="profile-photo '+klass+'"><img src="'+esc(src)+'" alt="'+esc(caption||record.title)+'" loading="lazy" decoding="async"><figcaption>'+esc(caption||'RAVEN / FIELD WORK')+'</figcaption></figure>'
    :'<div class="profile-photo profile-photo-fallback '+klass+'" aria-hidden="true"><span>R / RAVEN</span></div>';
@@ -330,9 +330,7 @@ function professionalContentPage(record){
  const stats=(p.metrics||[]).map(entry=>'<div class="profile-stat"><strong>'+esc(entry.value)+'</strong><span>'+esc(entry.label)+'</span></div>').join('');
  const stories=(p.chapters||[]).map((chapter,i)=>{
   const paragraphs=(chapter.paragraphs||[]).map(x=>'<p>'+esc(x)+'</p>').join('');
-  const visual=i===0
-   ?'<aside class="profile-index-art" aria-hidden="true"><span>R / '+String(i+1).padStart(2,'0')+'</span><strong>'+String(i+1).padStart(2,'0')+'</strong><small>'+esc(chapter.caption||'FIELD OPERATIONS')+'</small></aside>'
-   :photo(chapter.image,chapter.caption,'profile-story-photo');
+  const visual=photo(chapter.image,chapter.caption,'profile-story-photo',chapter.artwork||'');
   return '<article class="profile-story">'+
    '<div class="profile-story-copy"><div class="profile-kicker">'+esc(chapter.tag)+'</div><h3>'+esc(chapter.title)+'</h3>'+paragraphs+'</div>'+
    '<div class="profile-story-visual">'+visual+'</div>'+
@@ -358,7 +356,9 @@ function professionalContentPage(record){
   :[];
  const purchaseSection=section==='about' && shop && shopOptions.length
   ?'<section class="profile-book shell" aria-labelledby="profile-book-title">'+
-   '<div class="profile-book-art" aria-hidden="true"><span>RAVEN / PUBLISHED WORK</span><strong>R</strong><small>RISK / GOVERNANCE / OPERATIONS</small></div>'+
+   '<div class="profile-book-art" aria-label="'+esc(shop.artLabel||'Beyond Risk, Chinese and English editions')+'">'+
+   (shop.artwork?'<img class="profile-book-cover-photo" src="'+esc(shop.artwork)+'" loading="lazy" decoding="async" alt="'+esc(shop.artLabel||'Beyond Risk book covers')+'">'
+    :'<span>RAVEN / PUBLISHED WORK</span><strong>R</strong><small>RISK / GOVERNANCE / OPERATIONS</small>')+'</div>'+
    '<div class="profile-book-content"><span class="profile-kicker">'+esc(shop.eyebrow||'PUBLISHED WORK')+'</span>'+
    '<h2 id="profile-book-title">'+esc(shop.title)+'</h2><p class="profile-book-subtitle">'+esc(shop.subtitle||'')+'</p>'+
    '<p class="profile-book-description">'+esc(shop.description||'')+'</p>'+
@@ -372,7 +372,7 @@ function professionalContentPage(record){
   '<header class="profile-hero shell"><div class="profile-hero-copy"><span class="profile-kicker">'+esc(p.eyebrow)+'</span>'+
   '<h1>'+esc(p.title)+'</h1><p class="profile-lead">'+esc(p.lead)+'</p><p class="profile-strap">'+esc(p.strap||'')+'</p>'+
   '<div class="profile-hero-actions"><a href="'+esc(p.primaryLink)+'">'+esc(p.primaryLabel)+' <span aria-hidden="true">↗</span></a><a href="'+esc(p.secondaryLink)+'">'+esc(p.secondaryLabel)+' <span aria-hidden="true">↗</span></a></div></div>'+
-  '<div class="profile-hero-visual">'+photo(0,section==='about'?'RAVEN / FIELD ORIGINS':'RAVEN / HIGH-RISK OPERATIONS','profile-hero-photo')+
+  '<div class="profile-hero-visual">'+photo(0,section==='about'?'RAVEN / FIELD ORIGINS':'RAVEN / HIGH-RISK OPERATIONS','profile-hero-photo',p.heroArtwork||'')+
   '<div class="profile-art-corner" aria-hidden="true">R / '+esc(section.toUpperCase())+'</div></div></header>'+
   '<div class="profile-stats shell">'+stats+'</div>'+
   '<section class="profile-narrative shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.sectionEyebrow)+'</span><h2>'+esc(p.sectionTitle)+'</h2><p>'+esc(p.sectionLead||'')+'</p></div><div class="profile-stories">'+stories+'</div></section>'+
