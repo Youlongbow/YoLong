@@ -154,8 +154,15 @@ try{
  await desktop.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.profile-design.profile-about').innerText()).length>850,'Chinese About uses the dedicated editorial profile layout');
  assert(await desktop.locator('.profile-story').count()===3,'About page presents three editorial career chapters');
- assert(await desktop.locator('.profile-photo img').count()===3,'About photo assets render in balanced feature and chapter slots');
+ assert(await desktop.locator('.profile-photo img').count()===4,'About photo assets render in hero plus all three chapter slots');
  assert(await desktop.locator('.profile-photo img').first().evaluate(img=>img.complete&&img.naturalWidth>0),'Local About-page hero photograph is loaded');
+ assert(await desktop.locator('.profile-story').first().locator('img[src$="/field-origins.avif"]').count()===1,'Field-origins photograph replaces empty 01 panel');
+ assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/security-architecture.avif"]').count()===1,'Security architecture chapter uses the new artwork');
+ assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/security-continuity.avif"]').count()===1,'Continuity chapter uses the approved guard-post artwork');
+ assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
+ const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,loaded:x.complete&&x.naturalWidth>=900&&x.naturalHeight>600})));
+ assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded),'All four editorial AVIF images load at high resolution');
+
  const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
   const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
   const image=el.querySelector('.profile-hero-visual').getBoundingClientRect();
