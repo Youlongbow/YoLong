@@ -30,14 +30,14 @@
         ],
         "sectionEyebrow": "CAREER / PRACTICE",
         "sectionTitle": "Career Path & Approach",
-        "sectionLead": "My career developed from protective operations to managing security across major overseas projects, with a consistent focus on operational delivery.",
+        "sectionLead": "My approach to security was shaped in special operations and developed further through overseas project management, security architecture and risk decisions.",
         "chapters": [
           {
             "tag": "01 / FOUNDATION",
             "title": "My Start in Special Operations",
             "paragraphs": [
-              "I began my career in a special operations unit. Early missions and training showed me how preparation, intelligence, discipline and judgement shape the outcome of security operations.",
-              "That experience still defines my approach: understand the threat and the operating environment first, then decide what protection, coordination and resources are required."
+              "I began my career in a special operations unit. On every mission, security affected whether people came home safely. Those early field experiences gave me a direct understanding of risk, uncertainty and the consequences of decisions.",
+              "That is still where my approach begins: understand the threat and the operating environment, then decide how protection, people and resources should be organised."
             ],
             "image": 0,
             "caption": "FIELD ORIGINS",
@@ -47,8 +47,8 @@
             "tag": "02 / EVOLUTION",
             "title": "From Direct Execution to System Design",
             "paragraphs": [
-              "As I moved into overseas projects and corporate security, my responsibilities expanded to management, security architecture, external force coordination and decision support.",
-              "On large projects, effective security must work alongside construction schedules, contractors, logistics and budgets. Procedures need a clear owner, and plans need people who can execute them."
+              "As my work moved from frontline execution into project management and advisory roles, I repeatedly saw the same failure: some security systems looked complete on paper but only worked under ideal conditions.",
+              "Since then, I have focused more on security architecture, governance and decision support, so that protective measures work under the conditions a project actually faces."
             ],
             "image": 1,
             "caption": "SECURITY ARCHITECTURE",
@@ -58,8 +58,8 @@
             "tag": "03 / PHILOSOPHY",
             "title": "Security as an Operational System",
             "paragraphs": [
-              "In demanding environments, security performance depends on threat understanding, timely information, command authority and response capability. Leaders need clear triggers to adapt operations, reduce exposure or evacuate.",
-              "I focus on executable standards, defined accountability, tested response capabilities and decision-making that holds up under pressure."
+              "I do not see security as a product, a checklist or a certification exercise. To me, it is a dynamic system that must keep working under pressure. Its effectiveness depends on leadership, the flow of information and the timing of decisions.",
+              "A system that fails as soon as pressure rises is not secure. My role is to help organisations keep operating when assumptions break down and the consequences are real."
             ],
             "image": 2,
             "caption": "PERIMETER SECURITY / FIELD SITE",
