@@ -2128,3 +2128,144 @@ html[lang=zh] .profile-design .profile-book h2{
     overflow-wrap:break-word;
   }
 }
+
+
+/* Experience editorial gallery: consistent proportions and responsive image/text rhythm.
+   Source photos are preserved; each crop is chosen for its original framing. */
+.profile-experience .profile-hero {
+  min-height:clamp(540px,45vw,670px);
+}
+.profile-experience .profile-hero-photo img {
+  object-position:53% 69%;
+}
+.profile-experience .profile-stories {
+  display:grid;
+  gap:clamp(18px,2.5vw,32px);
+  border-top:0;
+}
+.profile-experience .profile-story {
+  min-height:0;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  align-items:stretch;
+  border:1px solid var(--profile-hairline);
+  background:#10171b;
+}
+.profile-experience .profile-story:last-child {
+  border-bottom:1px solid var(--profile-hairline);
+}
+.profile-experience .profile-story-copy,
+.profile-experience .profile-story:nth-child(even) .profile-story-copy {
+  min-width:0;
+  padding:clamp(30px,3.3vw,52px);
+}
+.profile-experience .profile-story h3 {
+  margin:15px 0 18px;
+  max-width:23ch;
+  font-size:clamp(27px,2.5vw,37px);
+  line-height:1.32;
+}
+html[lang=zh] .profile-experience .profile-story h3 {
+  font-size:clamp(27px,2.25vw,34px);
+  line-height:1.45;
+}
+.profile-experience .profile-story p {
+  max-width:56ch;
+  margin:0 0 13px;
+  font-size:clamp(14px,1.08vw,15px);
+  line-height:1.83;
+}
+.profile-experience .profile-story p:last-child {margin-bottom:0}
+.profile-experience .profile-story-visual {
+  min-width:0;
+  min-height:0;
+  height:auto;
+  aspect-ratio:8 / 5;
+  position:relative;
+  overflow:hidden;
+  border-left:1px solid var(--profile-hairline);
+  background:#182025;
+}
+.profile-experience .profile-story-visual>.profile-photo {
+  position:absolute;
+  inset:0;
+  height:100%;
+  min-height:0;
+  width:100%;
+}
+.profile-experience .profile-story-visual img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:contrast(1.015) saturate(.90) brightness(.96);
+}
+.profile-experience .profile-story:nth-child(1) .profile-story-visual img {
+  object-position:50% 78%;
+}
+.profile-experience .profile-story:nth-child(2) .profile-story-visual img {
+  object-position:50% 47%;
+}
+.profile-experience .profile-story:nth-child(3) .profile-story-visual img {
+  object-position:50% 49%;
+}
+.profile-experience .profile-story:nth-child(4) .profile-story-visual img {
+  object-position:61% 50%;
+}
+.profile-experience .profile-story:nth-child(even) .profile-story-visual {
+  order:-1;
+  border-left:0;
+  border-right:1px solid var(--profile-hairline);
+}
+/* On tablets the text needs a full line measure; stop compressing it into
+   two narrow columns well before the generic 820px page breakpoint. */
+@media (max-width:1120px) {
+  .profile-experience .profile-story {
+    grid-template-columns:minmax(0,1fr);
+  }
+  .profile-experience .profile-story-copy,
+  .profile-experience .profile-story:nth-child(even) .profile-story-copy {
+    order:0;
+    padding:clamp(25px,4.2vw,42px);
+  }
+  .profile-experience .profile-story-visual,
+  .profile-experience .profile-story:nth-child(even) .profile-story-visual {
+    order:1;
+    width:100%;
+    min-height:0;
+    height:auto;
+    aspect-ratio:8 / 5;
+    border:0;
+    border-top:1px solid var(--profile-hairline);
+  }
+  .profile-experience .profile-story h3 {
+    max-width:100%;
+  }
+}
+@media (max-width:640px) {
+  .profile-experience .profile-stories {gap:18px}
+  .profile-experience .profile-story-copy,
+  .profile-experience .profile-story:nth-child(even) .profile-story-copy {
+    padding:27px 23px 25px;
+  }
+  .profile-experience .profile-story-visual,
+  .profile-experience .profile-story:nth-child(even) .profile-story-visual {
+    aspect-ratio:3 / 2;
+    height:auto;
+  }
+  .profile-experience .profile-story h3 {
+    margin:12px 0 15px;
+    font-size:clamp(25px,6.4vw,31px);
+  }
+  html[lang=zh] .profile-experience .profile-story h3 {
+    font-size:clamp(24px,6.1vw,29px);
+  }
+  .profile-experience .profile-story p {
+    font-size:14px;
+    line-height:1.83;
+  }
+  .profile-experience .profile-story-visual .profile-photo figcaption {
+    bottom:13px;left:14px;right:14px;
+    font-size:9px;
+    letter-spacing:.08em;
+    overflow-wrap:anywhere;
+  }
+}
