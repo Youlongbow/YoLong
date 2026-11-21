@@ -330,9 +330,12 @@ function professionalContentPage(record){
  const stats=(p.metrics||[]).map(entry=>'<div class="profile-stat"><strong>'+esc(entry.value)+'</strong><span>'+esc(entry.label)+'</span></div>').join('');
  const stories=(p.chapters||[]).map((chapter,i)=>{
   const paragraphs=(chapter.paragraphs||[]).map(x=>'<p>'+esc(x)+'</p>').join('');
+  const heading=Array.isArray(chapter.titleParts) && chapter.titleParts.join('')===chapter.title
+   ?chapter.titleParts.map(part=>'<span class="profile-story-title-part">'+esc(part)+'</span>').join('')
+   :esc(chapter.title);
   const visual=photo(chapter.image,chapter.caption,'profile-story-photo',chapter.artwork||'');
   return '<article class="profile-story">'+
-   '<div class="profile-story-copy"><div class="profile-kicker">'+esc(chapter.tag)+'</div><h3>'+esc(chapter.title)+'</h3>'+paragraphs+'</div>'+
+   '<div class="profile-story-copy"><div class="profile-kicker">'+esc(chapter.tag)+'</div><h3>'+heading+'</h3>'+paragraphs+'</div>'+
    '<div class="profile-story-visual">'+visual+'</div>'+
    '</article>';
  }).join('');
