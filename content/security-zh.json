@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
   "snapshotDate": "2026-11-21",
-  "total": 129,
+  "total": 130,
   "events": [
     {
       "slug": "2026-11-19-chagai-los-mining-site-seizure",
@@ -31,6 +31,20 @@
       "sourceUrls": [
         "https://provinces26rdc.com/haut-uele-un-ressortissant-chinois-et-un-policier-tues-dans-une-attaque-armee-dans-un-carre-minier/",
         "https://www.forumdesas.cd/index.php/haut-uele-un-chinois-et-un-policier-tues-dans-une-attaque-armee"
+      ]
+    },
+    {
+      "slug": "2026-11-19-gwadar-ormara-makran-coastal-highway-lpg-crash",
+      "date": "2026-11-19",
+      "region": "巴基斯坦 / Balochistan / Gwadar / Ormara",
+      "category": "transport",
+      "title": "巴基斯坦Gwadar：Ormara海岸公路客车与LPG罐车相撞致10死27伤",
+      "summary": "11月19日，Makran Coastal Highway的Basol—Ormara路段发生客车与液化石油气罐车相撞起火事故。警方确认10人死亡；后续报道列出27人受伤，事故导致公路中断数小时。",
+      "body": "事实：11月19日，一辆从Turbat驶往Karachi的客车在Gwadar地区Ormara附近Basol路段与LPG罐车相撞，两车起火。Dawn引述Makran Coastal Highway警方负责人Muhammad Aslam Bangulzai确认至少10人死亡、多人烧伤，道路中断数小时；Hum English后续引述警方报告27人受伤。事故发生在N-10海岸公路，与Chagai/Nok Kundi的N-40不属于同一路段。\n分析与判断：这起事故直接暴露危险品运输与客运车辆混行的高后果碰撞风险。当地今年已发生多起严重道路事故，反映该走廊的行车行为、危险品运输管理与医疗救援能力值得项目方重新审视。警方调查将决定事故责任，现阶段应将其归类为重大交通安全及短时物流中断事件，而非武装袭击。对Gwadar、Ormara、Pasni、Turbat及Karachi间开展人员和货物运输的企业，最直接的影响是行程时间、车辆类型选择、应急医疗转运与危险品交会风险；目前报道仅确认事发时封路数小时，后续恢复状态应以当地交警实时公告为准。\n行动参考：涉及N-10的出行计划核对当天通行公告和事故路段位置，要求承运商提供车辆技术状态、驾驶员工时与危险品隔离安排；对Ormara—Pasni段的长途行程设置医疗转运联系人及备用停靠点。后续观察三项指标：警方事故原因认定、N-10通行与清障公告、受伤人员最终统计及对客运/危险品运输监管的调整。\n来源：https://www.dawn.com/news/2045668；https://humenglish.com/latest/10-killed-27-injured-as-bus-collides-with-lpg-tanker-on-makran-coastal-highway/",
+      "eventDate": "2026-11-19",
+      "sourceUrls": [
+        "https://www.dawn.com/news/2045668",
+        "https://humenglish.com/latest/10-killed-27-injured-as-bus-collides-with-lpg-tanker-on-makran-coastal-highway/"
       ]
     },
     {

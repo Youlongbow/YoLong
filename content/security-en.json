@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-21",
-  "total": 129,
+  "total": 130,
   "events": [
     {
       "slug": "2026-11-19-chagai-los-mining-site-seizure",
@@ -31,6 +31,20 @@
       "sourceUrls": [
         "https://provinces26rdc.com/haut-uele-un-ressortissant-chinois-et-un-policier-tues-dans-une-attaque-armee-dans-un-carre-minier/",
         "https://www.forumdesas.cd/index.php/haut-uele-un-chinois-et-un-policier-tues-dans-une-attaque-armee"
+      ]
+    },
+    {
+      "slug": "2026-11-19-gwadar-ormara-makran-coastal-highway-lpg-crash",
+      "date": "2026-11-19",
+      "region": "Pakistan / Balochistan / Gwadar / Ormara",
+      "category": "transport",
+      "title": "Pakistan Gwadar: Ten killed and 27 injured in Ormara coastal highway LPG tanker crash",
+      "summary": "On 19 November, a passenger coach collided with an LPG tanker near Basol and Ormara on the Makran Coastal Highway, causing a fire that killed ten people and reportedly injured 27. Traffic was suspended for several hours.",
+      "body": "Facts: On 19 November, a passenger coach travelling from Turbat to Karachi collided with an LPG tanker near Basol in the Ormara area of Gwadar district. Both vehicles caught fire. Dawn cited Makran Coastal Highway police chief Muhammad Aslam Bangulzai confirming at least ten deaths, burn injuries and a highway closure lasting several hours. Hum English subsequently reported 27 injured, citing police. The N-10 coastal highway is geographically distinct from the N-40 route through Chagai and Nok Kundi.\nAssessment: This is a high-consequence road transport incident involving mixed passenger and hazardous-material traffic. Repeated severe crashes on this corridor make driver conduct, hazardous cargo movement and medical response capability relevant operational concerns. The cause remains under police investigation; the incident is classified as transport safety and temporary logistics disruption, not an armed attack. Companies moving staff and freight between Gwadar, Ormara, Pasni, Turbat and Karachi face exposure through journey delays, vehicle selection, emergency evacuation arrangements and interaction with LPG tankers. Reports establish several hours of closure at the time, not an ongoing highway shutdown.\nOperational response: Check current N-10 traffic notices and the precise incident location before dispatch; review contractor vehicle condition, driver hours and hazardous cargo separation practices; identify medical transfer contacts and alternate safe stops for the Ormara–Pasni section. Track three verifiable indicators: police findings on crash causation, official road clearance and reopening notices, and final casualty figures or regulatory changes affecting coach and tanker operations.\nSources: https://www.dawn.com/news/2045668; https://humenglish.com/latest/10-killed-27-injured-as-bus-collides-with-lpg-tanker-on-makran-coastal-highway/",
+      "eventDate": "2026-11-19",
+      "sourceUrls": [
+        "https://www.dawn.com/news/2045668",
+        "https://humenglish.com/latest/10-killed-27-injured-as-bus-collides-with-lpg-tanker-on-makran-coastal-highway/"
       ]
     },
     {
