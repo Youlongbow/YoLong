@@ -163,10 +163,10 @@ try{
  assert(heroPresentation.fit==='contain'&&heroPresentation.backdrop.includes('723223d1-ceb8-46d1-92c3-729d03b290b4.webp'),'About hero preserves original full-frame photo over coordinated backdrop');
  assert(await desktop.locator('.profile-story').first().locator('img[src$="/field-origins.avif"]').count()===1,'Field-origins photograph replaces empty 01 panel');
  assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/security-architecture.avif"]').count()===1,'Security architecture chapter uses the new artwork');
- assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/security-continuity.avif"]').count()===1,'Continuity chapter uses the approved guard-post artwork');
+ assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/raven-perimeter-drone-unlabeled.webp"]').count()===1,'Continuity chapter uses the approved wide-angle perimeter photograph');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
  const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,loaded:x.complete&&x.naturalWidth>=900&&x.naturalHeight>600})));
- assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded),'All four editorial AVIF images load at high resolution');
+ assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded),'All four editorial images load at high resolution');
 
  const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
   const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
@@ -277,6 +277,20 @@ try{
  });
  assert(aboutMobile.copyBottom<=aboutMobile.imageTop+2,'Mobile About stacks the hero photograph below the copy');
  assert(aboutMobile.docWidth<=aboutMobile.viewport+2,'Mobile About has no horizontal overflow');
+
+ const mobileMetrics=await mobile.locator('.profile-about .profile-stat').evaluateAll(items=>items.map(el=>{
+  const title=el.querySelector('strong'),label=el.querySelector('span');
+  const a=title.getBoundingClientRect(),b=label.getBoundingClientRect();
+  return {title:title.textContent.trim(),titleBottom:a.bottom,labelTop:b.top,
+   titleRight:a.right,labelRight:b.right,viewport:innerWidth,
+   direction:getComputedStyle(el).flexDirection};
+ }));
+ assert(mobileMetrics.length===3&&mobileMetrics.some(x=>x.title==='GOVERNANCE'),
+  'About page retains all three metrics including GOVERNANCE');
+ assert(mobileMetrics.every(x=>x.direction==='column' && x.titleBottom+1<x.labelTop
+  && x.titleRight<=x.viewport+1 && x.labelRight<=x.viewport+1),
+  'Mobile About metric titles stack above descriptions with no overlap');
+
  await mobile.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
  const experienceMobile=await mobile.evaluate(()=>({docWidth:document.documentElement.scrollWidth,viewport:innerWidth}));
  assert(experienceMobile.docWidth<=experienceMobile.viewport+2,'Mobile Experience has no horizontal overflow');
@@ -325,6 +339,17 @@ try{
  assert(narrow.brandRight<=narrow.choiceLeft+1 && narrow.choiceRight<=narrow.menuLeft+1
   && narrow.menuRight<=narrow.viewport && narrow.scroll<=narrow.viewport+1,
   'Small 320px phone keeps language switch visible without overlap');
+
+ await mobile.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
+ const narrowMetrics=await mobile.locator('.profile-about .profile-stat').evaluateAll(items=>items.map(el=>{
+  const t=el.querySelector('strong').getBoundingClientRect();
+  const l=el.querySelector('span').getBoundingClientRect();
+  return {titleBottom:t.bottom,labelTop:l.top,titleRight:t.right,labelRight:l.right,viewport:innerWidth};
+ }));
+ assert(narrowMetrics.length===3&&narrowMetrics.every(x=>x.titleBottom<x.labelTop
+  && x.titleRight<=x.viewport+1&&x.labelRight<=x.viewport+1),
+  '320px About metric titles and Chinese descriptions remain separated');
+
 
  assert(errors.length===0,'No unhandled JavaScript errors: '+errors.join('; '));
  console.log('BROWSER PREVIEW TEST SUCCESS');
