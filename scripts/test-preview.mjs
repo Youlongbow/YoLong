@@ -223,6 +223,7 @@ try{
   return {text:el.textContent.trim(),height:r.height,lineHeight:parseFloat(s.lineHeight),
    clientWidth:el.clientWidth,scrollWidth:el.scrollWidth,wrap:s.whiteSpace};
  });
+ console.log('RAVEN_EXPERIENCE_CLOSING_1440:'+JSON.stringify(closing1440));
  assert(closing1440.text==='安全工作的价值，最终由现场执行、人员保护与业务连续性体现。'
   &&closing1440.wrap==='nowrap'&&closing1440.height<=closing1440.lineHeight+2
   &&closing1440.scrollWidth<=closing1440.clientWidth+2,
@@ -243,6 +244,7 @@ try{
   const r=el.getBoundingClientRect();return {height:r.height,lineHeight:parseFloat(getComputedStyle(el).lineHeight),
    overflow:el.scrollWidth-el.clientWidth,nowrap:getComputedStyle(el).whiteSpace==='nowrap'};
  });
+ console.log('RAVEN_EXPERIENCE_CLOSING_1024:'+JSON.stringify(closing1024));
  assert(closing1024.nowrap&&closing1024.height<=closing1024.lineHeight+2&&closing1024.overflow<=2,
   'Chinese Experience closing remains one line without overflow at 1024px');
 
