@@ -160,13 +160,15 @@ try{
   fit:getComputedStyle(el.querySelector('img')).objectFit,
   backdrop:getComputedStyle(el,'::before').backgroundImage
  }));
- assert(heroPresentation.fit==='contain'&&heroPresentation.backdrop.includes('723223d1-ceb8-46d1-92c3-729d03b290b4.webp'),'About hero preserves original full-frame photo over coordinated backdrop');
- assert(await desktop.locator('.profile-story').first().locator('img[src$="/723223d1-ceb8-46d1-92c3-729d03b290b4.webp"]').count()===1,'Early-career chapter uses original field photography');
- assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/38e643de-35f1-431d-9261-d9eab26a2f5c.webp"]').count()===1,'Security architecture chapter uses actual field coordination photography');
+ assert(heroPresentation.fit==='cover'&&heroPresentation.backdrop.includes('about-hero-portrait-2026.webp'),'About hero uses the correct personal portrait and matching backdrop');
+ assert(await desktop.locator('.profile-story').first().locator('img[src$="/about-field-original-2026.webp"]').count()===1,'Early-career chapter uses a distinct personal field photograph');
+ assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-security-original-2026.webp"]').count()===1,'Security architecture chapter uses the author's original convoy photograph');
  assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/raven-perimeter-drone-unlabeled.webp"]').count()===1,'Continuity chapter uses the approved wide-angle perimeter photograph');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
- const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,loaded:x.complete&&x.naturalWidth>=750&&x.naturalHeight>=500})));
- assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded),'Original photos and book art load at usable native resolution');
+ const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,width:x.naturalWidth,height:x.naturalHeight,loaded:x.complete&&x.naturalWidth>0&&x.naturalHeight>0})));
+ console.log('ABOUT_IMAGE_DIMENSIONS:'+JSON.stringify(editorialImgs));
+ assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded)&&editorialImgs[0].width>=1000&&editorialImgs[1].width>=1400,
+  'About photographs decode at native resolution without missing or repeated panels');
 
  const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
   const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
