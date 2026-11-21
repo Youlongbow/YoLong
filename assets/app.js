@@ -328,6 +328,15 @@ function professionalContentPage(record){
    :'<div class="profile-photo profile-photo-fallback '+klass+'" aria-hidden="true"><span>R / RAVEN</span></div>';
  };
  const stats=(p.metrics||[]).map(entry=>'<div class="profile-stat"><strong>'+esc(entry.value)+'</strong><span>'+esc(entry.label)+'</span></div>').join('');
+ const philosophy=p.philosophy;
+ const philosophySection=section==='about' && philosophy?.statement
+  ?'<section class="profile-belief shell" aria-labelledby="profile-belief-heading">'+
+   '<div class="profile-belief-label"><span class="profile-kicker">'+esc(philosophy.eyebrow||'SECURITY / PHILOSOPHY')+'</span>'+
+   '<h2 id="profile-belief-heading">'+esc(philosophy.heading||'How I See Security')+'</h2></div>'+
+   '<div class="profile-belief-body"><p class="profile-belief-statement">'+esc(philosophy.statement)+'</p>'+
+   '<p>'+esc(philosophy.explanation||'')+'</p>'+
+   '<p class="profile-belief-role">'+esc(philosophy.role||'')+'</p></div></section>'
+  :'';
  const stories=(p.chapters||[]).map((chapter,i)=>{
   const paragraphs=(chapter.paragraphs||[]).map(x=>'<p>'+esc(x)+'</p>').join('');
   const heading=Array.isArray(chapter.titleParts) && chapter.titleParts.join('')===chapter.title
@@ -387,7 +396,7 @@ function professionalContentPage(record){
   '<div class="profile-hero-actions"><a href="'+esc(p.primaryLink)+'">'+esc(p.primaryLabel)+' <span aria-hidden="true">↗</span></a><a href="'+esc(p.secondaryLink)+'">'+esc(p.secondaryLabel)+' <span aria-hidden="true">↗</span></a></div></div>'+
   '<div class="profile-hero-visual">'+photo(0,section==='about'?'RAVEN / FIELD ORIGINS':'RAVEN / HIGH-RISK OPERATIONS','profile-hero-photo',p.heroArtwork||'')+
   '<div class="profile-art-corner" aria-hidden="true">R / '+esc(section.toUpperCase())+'</div></div></header>'+
-  '<div class="profile-stats shell">'+stats+'</div>'+
+  '<div class="profile-stats shell">'+stats+'</div>'+philosophySection+
   '<section class="profile-narrative shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.sectionEyebrow)+'</span><h2>'+esc(p.sectionTitle)+'</h2><p>'+esc(p.sectionLead||'')+'</p></div><div class="profile-stories">'+stories+'</div></section>'+
   featureSection+recognitionSection+archiveSection+purchaseSection+
   '<section class="profile-closing shell"><span class="profile-kicker">RAVEN / SECURITY & OPERATIONS</span><h2>'+esc(p.closing)+'</h2>'+
