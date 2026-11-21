@@ -131,8 +131,9 @@ jobs:
               const photo=page?.chapters||[];
               verified=page?.closing===closing &&
                 page?.heroArtwork==='/assets/media/editorial/about-hero-portrait-2026.webp' &&
-                photo[0]?.artwork==='/assets/media/editorial/about-field-original-2026.webp' &&
-                photo[1]?.artwork==='/assets/media/editorial/about-security-original-2026.webp';
+                photo[0]?.artwork==='/assets/media/editorial/about-career-reference-risk-2026.webp' &&
+                photo[1]?.artwork==='/assets/media/editorial/about-career-reference-operations-2026.webp' &&
+                photo[2]?.artwork==='/assets/media/editorial/about-career-reference-coordination-2026.webp';
               console.log('ABOUT_LIVE',lang,'attempt',attempt,'status',res.status,'current',verified,
                 'closing',JSON.stringify(page?.closing||''),'heroArtwork',JSON.stringify(page?.heroArtwork||''),
                 'etag',res.headers.get('etag'),'cf-cache',res.headers.get('cf-cache-status'));
