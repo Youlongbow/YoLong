@@ -112,6 +112,38 @@ jobs:
             console.log('All live Cloudflare endpoints responded with expected content.');
           }
           NODE
+      - name: Verify GA4 Measurement ID is deployed to production
+        run: |
+          node --input-type=module <<'NODE'
+          const base='https://www.ravenlong.com';
+          const expected='G-SGPRXMX1E2';
+          let ok=false;
+          for(let attempt=1;attempt<=16;attempt++){
+            try{
+              const [res,code,app]=await Promise.all([
+                fetch(base+'/content/site.json?ga4_check='+attempt,{cache:'no-store',signal:AbortSignal.timeout(12000)}),
+                fetch(base+'/assets/analytics.js',{cache:'no-store',signal:AbortSignal.timeout(12000)}),
+                fetch(base+'/assets/app.js',{cache:'no-store',signal:AbortSignal.timeout(12000)})
+              ]);
+              const json=res.ok?await res.json():{};
+              const script=code.ok?await code.text():'';
+              const appCode=app.ok?await app.text():'';
+              ok=json.analytics?.measurementId===expected &&
+                Array.isArray(json.analytics?.enabledHosts) &&
+                json.analytics.enabledHosts.includes('www.ravenlong.com') &&
+                script.includes('googletagmanager.com/gtag/js?id=') &&
+                script.includes('page_view') &&
+                appCode.includes('initGoogleAnalytics(site.analytics');
+              console.log('GA4_PRODUCTION_CHECK',JSON.stringify({attempt,ok,
+                measurementId:json.analytics?.measurementId||null,
+                analyticsModuleReady:script.includes('googletagmanager.com/gtag/js?id='),
+                initializedByApp:appCode.includes('initGoogleAnalytics(site.analytics')}));
+              if(ok)break;
+            }catch(err){console.log('GA4_PRODUCTION_RETRY',attempt,String(err).slice(0,200));}
+            await new Promise(resolve=>setTimeout(resolve,3000));
+          }
+          if(!ok)throw Error('Production GA4 ID or tracking module is not current');
+          NODE
       - name: Confirm latest About narrative is actually published
         run: |
           node --input-type=module <<'NODE'
