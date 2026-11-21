@@ -185,7 +185,7 @@
   ],
   "analytics": {
     "provider": "google_analytics_4",
-    "measurementId": "",
+    "measurementId": "G-SGPRXMX1E2",
     "enabledHosts": [
       "www.ravenlong.com",
       "ravenlong.com"
