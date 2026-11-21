@@ -161,14 +161,14 @@ try{
   backdrop:getComputedStyle(el,'::before').backgroundImage
  }));
  assert(heroPresentation.fit==='cover'&&heroPresentation.backdrop.includes('about-hero-portrait-2026.webp'),'About hero uses the correct personal portrait and matching backdrop');
- assert(await desktop.locator('.profile-story').first().locator('img[src$="/about-field-original-2026.webp"]').count()===1,'Early-career chapter uses a distinct personal field photograph');
- assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-security-original-2026.webp"]').count()===1,'Security architecture chapter uses the original convoy photograph');
- assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/raven-perimeter-drone-unlabeled.webp"]').count()===1,'Continuity chapter uses the approved wide-angle perimeter photograph');
+ assert(await desktop.locator('.profile-story').first().locator('img[src$="/about-career-reference-risk-2026.webp"]').count()===1,'First About panel uses approved risk assessment reference');
+ assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-career-reference-operations-2026.webp"]').count()===1,'Second About panel uses approved convoy reference');
+ assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/about-career-reference-coordination-2026.webp"]').count()===1,'Third About panel uses approved coordination reference');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
- const editorialImgs=await desktop.locator('.profile-story img').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,width:x.naturalWidth,height:x.naturalHeight,loaded:x.complete&&x.naturalWidth>0&&x.naturalHeight>0})));
+ const editorialImgs=await desktop.locator('.profile-story img').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,width:x.naturalWidth,height:x.naturalHeight,fit:getComputedStyle(x).objectFit,loaded:x.complete&&x.naturalWidth>0&&x.naturalHeight>0})));
  console.log('ABOUT_IMAGE_DIMENSIONS:'+JSON.stringify(editorialImgs));
- assert(editorialImgs.length===3&&editorialImgs.every(x=>x.loaded)&&editorialImgs[0].width>=1000&&editorialImgs[1].width>=1400,
-  'About photographs decode at native resolution without missing or repeated panels');
+ assert(editorialImgs.length===3&&editorialImgs.every(x=>x.loaded&&x.width>=500&&x.height>=430&&x.fit==='cover'),
+  'All three temporary reference photographs decode and fill their frames');
 
  const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
   const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
