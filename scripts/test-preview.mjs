@@ -156,6 +156,11 @@ try{
  assert(await desktop.locator('.profile-story').count()===3,'About page presents three editorial career chapters');
  assert(await desktop.locator('.profile-photo img').count()===4,'About photo assets render in hero plus all three chapter slots');
  assert(await desktop.locator('.profile-photo img').first().evaluate(img=>img.complete&&img.naturalWidth>0),'Local About-page hero photograph is loaded');
+ const heroPresentation=await desktop.locator('.profile-about .profile-hero-visual').evaluate(el=>({
+  fit:getComputedStyle(el.querySelector('img')).objectFit,
+  backdrop:getComputedStyle(el,'::before').backgroundImage
+ }));
+ assert(heroPresentation.fit==='contain'&&heroPresentation.backdrop.includes('723223d1-ceb8-46d1-92c3-729d03b290b4.webp'),'About hero preserves original full-frame photo over coordinated backdrop');
  assert(await desktop.locator('.profile-story').first().locator('img[src$="/field-origins.avif"]').count()===1,'Field-origins photograph replaces empty 01 panel');
  assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/security-architecture.avif"]').count()===1,'Security architecture chapter uses the new artwork');
  assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/security-continuity.avif"]').count()===1,'Continuity chapter uses the approved guard-post artwork');
@@ -175,6 +180,9 @@ try{
  await aboutChapterImage.evaluate(img=>img.decode());
  assert(await aboutChapterImage.evaluate(img=>img.naturalWidth>0),'Second About chapter image decodes correctly');
  console.log('RAVEN_ABOUT_STORY_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
+ await desktop.locator('.profile-book').scrollIntoViewIfNeeded();
+ assert(await desktop.locator('.profile-book-cover-photo').evaluate(img=>img.complete&&img.naturalWidth>=1000),'Supplied Chinese and English book cover composite stays sharp');
+ console.log('RAVEN_BOOK_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:54})).toString('base64'));
  await desktop.goto(base+'/experience/en/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.profile-design.profile-experience').innerText()).length>1800,'English experience page renders redesigned copy and projects');
  assert(await desktop.locator('.profile-story').count()===4,'Experience page presents four project categories');
