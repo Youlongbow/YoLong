@@ -335,8 +335,22 @@ try{
  assert(mobileExperienceGallery.length===4&&mobileExperienceGallery.every(x=>
    x.loaded&&x.imageTop>=x.copyBottom-2&&Math.abs(x.aspect-1.5)<.12&&x.imageRight<=x.viewport+1),
    '390px mobile Experience stacks four 3:2 photographs below readable copy');
- await mobile.locator('.profile-experience .profile-story').nth(1).scrollIntoViewIfNeeded();
- console.log('RAVEN_EXPERIENCE_MOBILE_SECOND_PANEL_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:53})).toString('base64'));
+ const experienceSecondPhoto=mobile.locator('.profile-experience .profile-story').nth(1).locator('img');
+ await experienceSecondPhoto.scrollIntoViewIfNeeded();
+ await experienceSecondPhoto.evaluate(img=>img.decode());
+ await mobile.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+ const mobilePhotoPaint=await experienceSecondPhoto.evaluate(img=>{
+   const r=img.getBoundingClientRect(),v=getComputedStyle(img);
+   return {src:img.currentSrc,loaded:img.complete&&img.naturalWidth>0,
+    width:r.width,height:r.height,display:v.display,visibility:v.visibility,
+    opacity:v.opacity,aspect:r.width/r.height};
+ });
+ assert(mobilePhotoPaint.loaded&&mobilePhotoPaint.width>250
+   &&mobilePhotoPaint.height>160&&mobilePhotoPaint.visibility==='visible'
+   &&mobilePhotoPaint.opacity==='1',
+   'Mobile second Experience photograph is decoded and fully visible in its frame');
+ console.log('RAVEN_EXPERIENCE_MOBILE_PHOTO_LAYOUT:'+JSON.stringify(mobilePhotoPaint));
+ console.log('RAVEN_EXPERIENCE_MOBILE_SECOND_PANEL_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:58})).toString('base64'));
 
  assert(await mobile.locator('.profile-assignment').count()===4,'Mobile Experience retains all selected projects');
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
