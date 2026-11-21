@@ -335,7 +335,7 @@ function professionalContentPage(record){
    '<h2 id="profile-belief-heading">'+esc(philosophy.heading||'How I See Security')+'</h2></div>'+
    '<div class="profile-belief-body"><p class="profile-belief-statement">'+esc(philosophy.statement)+'</p>'+
    '<p>'+esc(philosophy.explanation||'')+'</p>'+
-   '<p class="profile-belief-role">'+esc(philosophy.role||'')+'</p></div></section>'
+   (philosophy.role?'<p class="profile-belief-role">'+esc(philosophy.role)+'</p>':'')+'</div></section>'
   :'';
  const stories=(p.chapters||[]).map((chapter,i)=>{
   const paragraphs=(chapter.paragraphs||[]).map(x=>'<p>'+esc(x)+'</p>').join('');
