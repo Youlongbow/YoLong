@@ -182,5 +182,13 @@
       "actionZh": "重点核查延布装船计划、管道实际流量与替代供应合同。",
       "actionEn": "Check Yanbu loading schedules, actual pipeline throughput and supply contingency clauses."
     }
-  ]
+  ],
+  "analytics": {
+    "provider": "google_analytics_4",
+    "measurementId": "",
+    "enabledHosts": [
+      "www.ravenlong.com",
+      "ravenlong.com"
+    ]
+  }
 }
