@@ -350,6 +350,16 @@ function professionalContentPage(record){
  const featureSection=p.highlights?.length
   ?'<section class="profile-featured shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.qualEyebrow)+'</span><h2>'+esc(p.qualTitle)+'</h2><p>'+esc(p.qualLead||'')+'</p></div><div class="profile-assignments">'+highlights+'</div></section>'
   :'<section class="profile-featured shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.qualEyebrow)+'</span><h2>'+esc(p.qualTitle)+'</h2><p>'+esc(p.qualLead||'')+'</p></div><div class="profile-credentials">'+qualifications+'</div></section>';
+ // Award display follows the work, before the wider project archive.
+ const recognition=p.recognition;
+ const recognitionSection=section==='experience' && recognition?.artwork
+  ?'<section class="profile-recognition shell" aria-label="'+esc(recognition.title||'Professional recognition')+'">'+
+   '<div class="profile-recognition-frame"><div class="profile-recognition-art">'+
+   '<img src="'+esc(recognition.artwork)+'" alt="'+esc(recognition.alt||recognition.title)+'" loading="lazy" decoding="async">'+
+   '</div><div class="profile-recognition-copy"><span class="profile-kicker">'+esc(recognition.eyebrow||'PROFESSIONAL RECOGNITION')+'</span>'+
+   '<h2>'+esc(recognition.title)+'</h2><p class="profile-recognition-years">'+esc(recognition.years||'')+'</p>'+
+   '<p class="profile-recognition-desc">'+esc(recognition.description||'')+'</p></div></div></section>'
+  :'';
  const shop=p.purchase;
  const shopOptions=Array.isArray(shop?.options)
   ?shop.options.filter(x=>typeof x.url==='string' && /^https:\/\//i.test(x.url))
@@ -376,7 +386,7 @@ function professionalContentPage(record){
   '<div class="profile-art-corner" aria-hidden="true">R / '+esc(section.toUpperCase())+'</div></div></header>'+
   '<div class="profile-stats shell">'+stats+'</div>'+
   '<section class="profile-narrative shell"><div class="profile-section-head"><span class="profile-kicker">'+esc(p.sectionEyebrow)+'</span><h2>'+esc(p.sectionTitle)+'</h2><p>'+esc(p.sectionLead||'')+'</p></div><div class="profile-stories">'+stories+'</div></section>'+
-  featureSection+archiveSection+purchaseSection+
+  featureSection+recognitionSection+archiveSection+purchaseSection+
   '<section class="profile-closing shell"><span class="profile-kicker">RAVEN / SECURITY & OPERATIONS</span><h2>'+esc(p.closing)+'</h2>'+
   '<p>'+esc(p.book||'')+'</p><div class="profile-hero-actions"><a href="'+esc(p.primaryLink)+'">'+esc(p.primaryLabel)+' ↗</a><a href="'+esc(p.secondaryLink)+'">'+esc(p.secondaryLabel)+' ↗</a></div></section>'+
   '</main>';
