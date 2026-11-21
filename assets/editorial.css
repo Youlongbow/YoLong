@@ -2367,3 +2367,27 @@ html[lang=zh] .profile-experience .profile-recognition-copy h2{font-family:var(-
     max-width:100%;font-size:14px;line-height:1.88;
   }
 }
+
+
+/* About / career path: original project photographs, documentary color and framing.
+   Preserve intrinsic documentary detail; no cinematic retouching. */
+.profile-about .profile-story:nth-child(1) .profile-story-photo,
+.profile-about .profile-story:nth-child(2) .profile-story-photo{
+  background:#14181b;
+}
+.profile-about .profile-story:nth-child(1) .profile-story-photo img{
+  object-fit:cover;
+  object-position:46% 42%;
+  filter:none;
+  image-rendering:auto;
+}
+.profile-about .profile-story:nth-child(2) .profile-story-photo img{
+  object-fit:cover;
+  object-position:74% 50%;
+  filter:none;
+  image-rendering:auto;
+}
+@media(max-width:820px){
+ .profile-about .profile-story:nth-child(1) .profile-story-photo img{object-position:47% 43%}
+ .profile-about .profile-story:nth-child(2) .profile-story-photo img{object-position:72% 50%}
+}
