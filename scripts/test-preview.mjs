@@ -161,12 +161,12 @@ try{
   backdrop:getComputedStyle(el,'::before').backgroundImage
  }));
  assert(heroPresentation.fit==='contain'&&heroPresentation.backdrop.includes('723223d1-ceb8-46d1-92c3-729d03b290b4.webp'),'About hero preserves original full-frame photo over coordinated backdrop');
- assert(await desktop.locator('.profile-story').first().locator('img[src$="/field-origins.avif"]').count()===1,'Field-origins photograph replaces empty 01 panel');
- assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/security-architecture.avif"]').count()===1,'Security architecture chapter uses the new artwork');
+ assert(await desktop.locator('.profile-story').first().locator('img[src$="/723223d1-ceb8-46d1-92c3-729d03b290b4.webp"]').count()===1,'Early-career chapter uses original field photography');
+ assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/38e643de-35f1-431d-9261-d9eab26a2f5c.webp"]').count()===1,'Security architecture chapter uses actual field coordination photography');
  assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/raven-perimeter-drone-unlabeled.webp"]').count()===1,'Continuity chapter uses the approved wide-angle perimeter photograph');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
- const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,loaded:x.complete&&x.naturalWidth>=900&&x.naturalHeight>600})));
- assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded),'All four editorial images load at high resolution');
+ const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,loaded:x.complete&&x.naturalWidth>=750&&x.naturalHeight>=500})));
+ assert(editorialImgs.length===4&&editorialImgs.every(x=>x.loaded),'Original photos and book art load at usable native resolution');
 
  const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
   const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
