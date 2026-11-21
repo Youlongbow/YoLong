@@ -2086,3 +2086,45 @@ html[lang=zh] .profile-design .profile-book h2{
   object-position:center;
   filter:contrast(1.025) saturate(.93);
 }
+
+
+/* Mobile About/Experience metric rows: prevent long English titles
+   (notably GOVERNANCE) from overlapping the Chinese description. */
+@media (max-width:760px) {
+  .profile-design .profile-stats {
+    grid-template-columns:minmax(0,1fr);
+  }
+  .profile-design .profile-stat {
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    gap:8px;
+    margin:0;
+    padding:22px 0 23px;
+    border-right:0;
+    border-bottom:1px solid #303a3d;
+  }
+  .profile-design .profile-stat:last-child {
+    border-bottom:0;
+  }
+  .profile-design .profile-stat strong {
+    display:block;
+    max-width:100%;
+    margin:0;
+    font-size:clamp(28px,7.8vw,39px);
+    line-height:1.12;
+    letter-spacing:-.025em;
+    white-space:normal;
+    overflow-wrap:anywhere;
+  }
+  .profile-design .profile-stat span {
+    display:block;
+    min-width:0;
+    max-width:100%;
+    font-size:clamp(13px,3.35vw,15px);
+    line-height:1.65;
+    overflow-wrap:break-word;
+  }
+}
