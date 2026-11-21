@@ -14,7 +14,11 @@ jobs:
         with:
           node-version: '22'
       - name: Check browser JavaScript syntax
-        run: node --input-type=module --check < assets/app.js
+        run: |
+          node --input-type=module --check < assets/app.js
+          node --input-type=module --check < assets/analytics.js
+      - name: Check GA4 integration and safe activation
+        run: node scripts/test-analytics.mjs
       - name: Check bilingual publisher transaction rules
         run: node scripts/test-publish.mjs
       - name: Build static website
