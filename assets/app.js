@@ -1,3 +1,4 @@
+import { initGoogleAnalytics } from './analytics.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const pathParts = location.pathname.split('/').filter(Boolean);
@@ -530,6 +531,7 @@ try{
  $('#app').innerHTML=header()+'<main class="'+(section==='home'?'home-layout':'interior-layout')+' section-'+section+'">'+content+'</main>'+footer(s);
  if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
+ initGoogleAnalytics(site.analytics, {lang, section});
  window.requestAnimationFrame(finishBrandTransition);
 }catch(error){
  console.error('RAVEN preview failed:',error);
