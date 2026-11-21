@@ -117,24 +117,27 @@ jobs:
           node --input-type=module <<'NODE'
           const origin='https://yolong.bournelong511.workers.dev';
           const cases=[
-            {lang:'zh',expected:'一旦压力上升就失效的系统，本质上并不安全。'},
-            {lang:'en',expected:'A system that fails as soon as pressure rises is not secure.'}
+            {lang:'zh',closing:'我的角色，是在既有假设失效、后果真实存在的环境中，帮助组织持续运作。'},
+            {lang:'en',closing:'My role is to help organisations keep operating when assumptions break down and the consequences are real.'}
           ];
-          for(const {lang,expected} of cases){
+          for(const {lang,closing} of cases){
             const url=origin+'/content/pages-'+lang+'.json';
             let verified=false;
-            for(let attempt=1;attempt<=8;attempt++){
+            for(let attempt=1;attempt<=16;attempt++){
               const res=await fetch(url+'?about_rev=09758965-'+attempt,{cache:'no-store',headers:{'cache-control':'no-cache'},signal:AbortSignal.timeout(20000)});
               const raw=await res.text();
               let page=null;
               try{page=JSON.parse(raw).pages.find(p=>p.slug==='about')?.presentation;}catch{}
-              const paragraphs=page?.chapters?.flatMap(c=>c.paragraphs||[])||[];
-              verified=paragraphs.some(p=>p.includes(expected));
+              const photo=page?.chapters||[];
+              verified=page?.closing===closing &&
+                page?.heroArtwork==='/assets/media/editorial/about-hero-portrait-2026.webp' &&
+                photo[0]?.artwork==='/assets/media/editorial/about-field-original-2026.webp' &&
+                photo[1]?.artwork==='/assets/media/editorial/about-security-original-2026.webp';
               console.log('ABOUT_LIVE',lang,'attempt',attempt,'status',res.status,'current',verified,
-                'sectionLead',JSON.stringify(page?.sectionLead||''),'lastParagraph',JSON.stringify(paragraphs.at(-1)||''),
+                'closing',JSON.stringify(page?.closing||''),'heroArtwork',JSON.stringify(page?.heroArtwork||''),
                 'etag',res.headers.get('etag'),'cf-cache',res.headers.get('cf-cache-status'));
               if(verified)break;
-              await new Promise(resolve=>setTimeout(resolve,2000));
+              await new Promise(resolve=>setTimeout(resolve,3000));
             }
             if(!verified)throw Error('LIVE ABOUT STALE: '+lang+' is still serving old content');
           }
