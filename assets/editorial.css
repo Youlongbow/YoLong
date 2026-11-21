@@ -2458,3 +2458,41 @@ html[lang=en] .profile-about .profile-belief-statement{
   .profile-about .profile-belief-body>p:not(.profile-belief-statement){font-size:14px;line-height:1.85}
   .profile-about .profile-closing h2{font-size:clamp(26px,6.8vw,32px)}
 }
+
+
+/* About photography corrective pass: authentic photos supplied by the author.
+   Each image has a deliberate native crop matching its panel aspect. */
+.profile-about .profile-hero-visual{
+  background:#11181b;
+}
+.profile-about .profile-hero-visual::before{
+  background-image:linear-gradient(180deg,#1017190d,#10171922),
+    url('/assets/media/editorial/about-hero-portrait-2026.webp');
+  background-position:center,center 50%;
+  background-size:cover;
+  filter:blur(23px) brightness(.52);
+}
+.profile-about .profile-hero-photo img{
+  object-fit:cover;
+  object-position:center center;
+  filter:none;
+}
+.profile-about .profile-story:nth-child(1) .profile-story-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  filter:none;
+}
+.profile-about .profile-story:nth-child(2) .profile-story-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center center;
+  filter:none;
+}
+@media(max-width:820px){
+ .profile-about .profile-hero-photo img{object-position:50% 50%}
+ .profile-about .profile-story:nth-child(1) .profile-story-photo img{object-position:center center}
+ .profile-about .profile-story:nth-child(2) .profile-story-photo img{object-position:center center}
+}
