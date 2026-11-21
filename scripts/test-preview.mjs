@@ -195,6 +195,36 @@ try{
  await experienceChapterImage.evaluate(img=>img.decode());
  assert(await experienceChapterImage.evaluate(img=>img.naturalWidth>0),'Second Experience chapter image decodes correctly');
  console.log('RAVEN_EXPERIENCE_STORY_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
+
+ const desktopExperienceGallery=await desktop.locator('.profile-experience .profile-story').evaluateAll(rows=>rows.map(row=>{
+  const c=row.querySelector('.profile-story-copy').getBoundingClientRect();
+  const v=row.querySelector('.profile-story-visual').getBoundingClientRect();
+  const img=row.querySelector('img');
+  return {copyLeft:c.left,copyRight:c.right,copyBottom:c.bottom,
+    imageLeft:v.left,imageRight:v.right,imageTop:v.top,imageBottom:v.bottom,
+    aspect:v.width/v.height,loaded:img.complete&&img.naturalWidth>0};
+ }));
+ assert(desktopExperienceGallery.length===4&&desktopExperienceGallery.every(x=>x.loaded),
+  'All four Experience photographs decode in desktop gallery');
+ assert(desktopExperienceGallery.every(x=>Math.abs(x.aspect-1.6)<.14),
+  'Desktop Experience photograph frames have consistent 8:5 proportions');
+ assert(desktopExperienceGallery.every(x=>x.imageRight<=x.copyLeft+3||x.copyRight<=x.imageLeft+3),
+  'Desktop Experience copy and photography occupy separate columns');
+ await desktop.locator('.profile-experience .profile-story').first().scrollIntoViewIfNeeded();
+ console.log('RAVEN_EXPERIENCE_FIRST_PANEL_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
+ await desktop.setViewportSize({width:1024,height:820});
+ await desktop.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
+ const tabletExperience=await desktop.locator('.profile-experience .profile-story').evaluateAll(rows=>rows.map(row=>{
+  const text=row.querySelector('.profile-story-copy').getBoundingClientRect();
+  const img=row.querySelector('.profile-story-visual').getBoundingClientRect();
+  return {top:img.top,copyBottom:text.bottom,aspect:img.width/img.height,
+   width:img.width,overflow:document.documentElement.scrollWidth-innerWidth};
+ }));
+ assert(tabletExperience.length===4&&tabletExperience.every(x=>
+  x.top>=x.copyBottom-2 && Math.abs(x.aspect-1.6)<.1 && x.overflow<=2),
+  '1024px tablet Experience displays text above consistently proportioned images');
+ await desktop.setViewportSize({width:1440,height:900});
+
  await desktop.goto(base+'/contact/zh/',{waitUntil:'networkidle',timeout:60000});
  assert((await desktop.locator('.article-content').innerText()).length>200,'Contact page migrated');
  await desktop.goto(base+'/training/zh/',{waitUntil:'networkidle',timeout:60000});
@@ -294,6 +324,20 @@ try{
  await mobile.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
  const experienceMobile=await mobile.evaluate(()=>({docWidth:document.documentElement.scrollWidth,viewport:innerWidth}));
  assert(experienceMobile.docWidth<=experienceMobile.viewport+2,'Mobile Experience has no horizontal overflow');
+
+ const mobileExperienceGallery=await mobile.locator('.profile-experience .profile-story').evaluateAll(rows=>rows.map(row=>{
+  const c=row.querySelector('.profile-story-copy').getBoundingClientRect();
+  const v=row.querySelector('.profile-story-visual').getBoundingClientRect();
+  const img=row.querySelector('img');
+  return {copyBottom:c.bottom,imageTop:v.top,aspect:v.width/v.height,
+   loaded:img.complete&&img.naturalWidth>0,viewport:innerWidth,imageRight:v.right};
+ }));
+ assert(mobileExperienceGallery.length===4&&mobileExperienceGallery.every(x=>
+   x.loaded&&x.imageTop>=x.copyBottom-2&&Math.abs(x.aspect-1.5)<.12&&x.imageRight<=x.viewport+1),
+   '390px mobile Experience stacks four 3:2 photographs below readable copy');
+ await mobile.locator('.profile-experience .profile-story').nth(1).scrollIntoViewIfNeeded();
+ console.log('RAVEN_EXPERIENCE_MOBILE_SECOND_PANEL_JPEG_BASE64:'+(await mobile.screenshot({type:'jpeg',quality:53})).toString('base64'));
+
  assert(await mobile.locator('.profile-assignment').count()===4,'Mobile Experience retains all selected projects');
  await mobile.goto(base+'/zh/',{waitUntil:'networkidle',timeout:60000});
  const mobileLockup=await mobile.evaluate(()=>{
@@ -349,6 +393,18 @@ try{
  assert(narrowMetrics.length===3&&narrowMetrics.every(x=>x.titleBottom<x.labelTop
   && x.titleRight<=x.viewport+1&&x.labelRight<=x.viewport+1),
   '320px About metric titles and Chinese descriptions remain separated');
+ await mobile.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
+ const narrowGallery=await mobile.locator('.profile-experience .profile-story').evaluateAll(rows=>rows.map(row=>{
+  const a=row.querySelector('.profile-story-copy').getBoundingClientRect();
+  const b=row.querySelector('.profile-story-visual').getBoundingClientRect();
+  return {textBottom:a.bottom,photoTop:b.top,aspect:b.width/b.height,
+   photoRight:b.right,viewport:innerWidth,overflow:document.documentElement.scrollWidth-innerWidth};
+ }));
+ assert(narrowGallery.length===4&&narrowGallery.every(x=>
+  x.photoTop>=x.textBottom-2&&Math.abs(x.aspect-1.5)<.12
+  &&x.photoRight<=x.viewport+1&&x.overflow<=2),
+  '320px mobile Experience keeps four photos uncropped by layout and text unobstructed');
+
 
 
  assert(errors.length===0,'No unhandled JavaScript errors: '+errors.join('; '));
