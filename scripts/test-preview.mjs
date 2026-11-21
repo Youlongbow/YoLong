@@ -177,11 +177,28 @@ try{
  });
  assert(aboutColumns.copyRight<aboutColumns.imageLeft && aboutColumns.copyWidth>350 && aboutColumns.imageWidth>350,'Desktop About uses genuinely separate readable copy and image columns');
  console.log('RAVEN_ABOUT_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
+ await desktop.locator('.profile-story').first().scrollIntoViewIfNeeded();
+ await desktop.locator('.profile-story').first().locator('img').evaluate(img=>img.decode());
+ console.log('RAVEN_ABOUT_FIRST_PHOTO_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:48})).toString('base64'));
  await desktop.locator('.profile-story').nth(1).scrollIntoViewIfNeeded();
  const aboutChapterImage=desktop.locator('.profile-story').nth(1).locator('img');
  await aboutChapterImage.evaluate(img=>img.decode());
  assert(await aboutChapterImage.evaluate(img=>img.naturalWidth>0),'Second About chapter image decodes correctly');
  console.log('RAVEN_ABOUT_STORY_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
+ const mobileAbout=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
+ await mobileAbout.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
+ const aboutHeroMobile=await mobileAbout.locator('.profile-about .profile-hero-photo img').evaluate(img=>({
+   currentSrc:img.currentSrc,loaded:img.complete&&img.naturalWidth>=1600,
+   objectFit:getComputedStyle(img).objectFit,viewport:innerWidth,overflow:document.documentElement.scrollWidth-innerWidth
+ }));
+ console.log('ABOUT_MOBILE_HERO:'+JSON.stringify(aboutHeroMobile));
+ assert(aboutHeroMobile.currentSrc.endsWith('/about-hero-mobile-2026.webp')&&aboutHeroMobile.loaded&&aboutHeroMobile.overflow<=2,
+  'About mobile hero uses uncropped author landscape photo without horizontal overflow');
+ console.log('RAVEN_ABOUT_MOBILE_JPEG_BASE64:'+(await mobileAbout.screenshot({type:'jpeg',quality:48})).toString('base64'));
+ await mobileAbout.locator('.profile-story').first().scrollIntoViewIfNeeded();
+ await mobileAbout.locator('.profile-story').first().locator('img').evaluate(img=>img.decode());
+ console.log('RAVEN_ABOUT_MOBILE_FIRST_JPEG_BASE64:'+(await mobileAbout.screenshot({type:'jpeg',quality:48})).toString('base64'));
+ await mobileAbout.close();
  await desktop.locator('.profile-book').scrollIntoViewIfNeeded();
  assert(await desktop.locator('.profile-book-cover-photo').evaluate(img=>img.complete&&img.naturalWidth>=1000),'Supplied Chinese and English book cover composite stays sharp');
  console.log('RAVEN_BOOK_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:54})).toString('base64'));
