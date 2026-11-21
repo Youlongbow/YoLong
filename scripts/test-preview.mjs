@@ -162,7 +162,7 @@ try{
  }));
  assert(heroPresentation.fit==='cover'&&heroPresentation.backdrop.includes('about-hero-portrait-2026.webp'),'About hero uses the correct personal portrait and matching backdrop');
  assert(await desktop.locator('.profile-story').first().locator('img[src$="/about-field-original-2026.webp"]').count()===1,'Early-career chapter uses a distinct personal field photograph');
- assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-security-original-2026.webp"]').count()===1,'Security architecture chapter uses the author's original convoy photograph');
+ assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-security-original-2026.webp"]').count()===1,'Security architecture chapter uses the original convoy photograph');
  assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/raven-perimeter-drone-unlabeled.webp"]').count()===1,'Continuity chapter uses the approved wide-angle perimeter photograph');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
  const editorialImgs=await desktop.locator('.profile-story img,.profile-book-cover-photo').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,width:x.naturalWidth,height:x.naturalHeight,loaded:x.complete&&x.naturalWidth>0&&x.naturalHeight>0})));
