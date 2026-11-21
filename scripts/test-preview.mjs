@@ -180,7 +180,7 @@ try{
  assert(await desktop.locator('.profile-story').count()===4,'Experience page presents four project categories');
  assert(await desktop.locator('.profile-assignment').count()===4,'Selected project roles are presented as four legible cards');
  assert(await desktop.locator('.profile-archive').count()===3,'Additional project archive remains accessible');
- assert(await desktop.locator('.profile-photo img').count()===4,'Project photography uses local assets in structured slots');
+ assert(await desktop.locator('.profile-photo img').count()===5,'Experience photography includes hero plus all four project categories');
  console.log('RAVEN_EXPERIENCE_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
  await desktop.locator('.profile-story').nth(1).scrollIntoViewIfNeeded();
  const experienceChapterImage=desktop.locator('.profile-story').nth(1).locator('img');
