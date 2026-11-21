@@ -3,8 +3,8 @@
   "lang": "zh",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
-  "snapshotDate": "2026-11-20",
-  "total": 128,
+  "snapshotDate": "2026-11-21",
+  "total": 129,
   "events": [
     {
       "slug": "2026-11-19-chagai-los-mining-site-seizure",
@@ -17,6 +17,20 @@
       "eventDate": "2026-11-19",
       "sourceUrls": [
         "https://thebalochistanpost.net/2026/11/armed-men-attack-mining-site-in-chagai-and-block-highway-in-khuzdar/"
+      ]
+    },
+    {
+      "slug": "2026-11-19-drc-haut-uele-watsa-ndiyo-chinese-killed",
+      "date": "2026-11-19",
+      "region": "刚果（金） / Haut-Uélé / Watsa / Ndiyo",
+      "category": "personnel",
+      "title": "刚果（金）Haut-Uélé：Watsa金矿武装袭击致一名中国公民与一名警察死亡",
+      "summary": "11月16日Watsa辖区Ndiyo金矿区发生武装袭击，当地媒体19日报道一名中国公民与一名刚果（金）警察遇害，疑似黄金被劫。",
+      "body": "事实：Provinces 26和Forum des As于2026年11月19日报道，11月16日约07:00，Haut-Uélé省Watsa辖区Mari-Minza的Ndiyo采金区发生武装袭击，一名中国公民和一名刚果（金）警察遇害。两家媒体均引述当地民间组织负责人Célestin Kolongbe，称袭击者带走一箱黄金。分析：黄金被劫与人员遇害同时出现，倾向于有组织矿区暴力抢劫假设；针对特定人员的选择性袭击需在调查中排除或证实。经营影响：金矿现场、黄金交接环节和人员固定行程可能形成高后果暴露。建议核对Watsa周边项目中方员工与承包商位置，专项审批涉事区域黄金转运和外勤，调整可预测的交接时间及保护方式。指标：警方调查、被劫黄金数量与经营主体、同类案件频率、警力与黄金运输安排变化。核实等级：两家媒体报道，均基于同一民间组织线索。来源：https://provinces26rdc.com/haut-uele-un-ressortissant-chinois-et-un-policier-tues-dans-une-attaque-armee-dans-un-carre-minier/；https://www.forumdesas.cd/index.php/haut-uele-un-chinois-et-un-policier-tues-dans-une-attaque-armee",
+      "eventDate": "2026-11-16",
+      "sourceUrls": [
+        "https://provinces26rdc.com/haut-uele-un-ressortissant-chinois-et-un-policier-tues-dans-une-attaque-armee-dans-un-carre-minier/",
+        "https://www.forumdesas.cd/index.php/haut-uele-un-chinois-et-un-policier-tues-dans-une-attaque-armee"
       ]
     },
     {

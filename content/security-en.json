@@ -3,8 +3,8 @@
   "lang": "en",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
-  "snapshotDate": "2026-11-20",
-  "total": 128,
+  "snapshotDate": "2026-11-21",
+  "total": 129,
   "events": [
     {
       "slug": "2026-11-19-chagai-los-mining-site-seizure",
@@ -17,6 +17,20 @@
       "eventDate": "2026-11-19",
       "sourceUrls": [
         "https://thebalochistanpost.net/2026/11/armed-men-attack-mining-site-in-chagai-and-block-highway-in-khuzdar/"
+      ]
+    },
+    {
+      "slug": "2026-11-19-drc-haut-uele-watsa-ndiyo-chinese-killed",
+      "date": "2026-11-19",
+      "region": "DR Congo / Haut-Uélé / Watsa / Ndiyo",
+      "category": "personnel",
+      "title": "DR Congo Haut-Uélé: Chinese national and police officer killed in Watsa gold-mine attack",
+      "summary": "Local media reported on 19 November that an armed attack at Ndiyo in Watsa on 16 November killed one Chinese national and one Congolese police officer; gold was reportedly stolen.",
+      "body": "Facts: Provinces 26 and Forum des As reported on 19 November 2026 that armed men attacked the Ndiyo gold-mining area in Mari-Minza chiefdom, Watsa territory, Haut-Uélé, around 07:00 on 16 November, killing one Chinese national and one Congolese police officer. Both reports cite local civil-society coordinator Célestin Kolongbe, who said the attackers removed a container of gold. Assessment: The reported theft alongside the killings favors the working hypothesis of organized mine-site robbery; deliberately targeting particular personnel remains an alternative for investigators. Operational impact: Gold custody and handover arrangements, predictable personnel movement and site protection are relevant exposures. Management: Account for Chinese employees and contractors near Watsa, subject gold transfers and non-essential visits in the affected area to special approval, review custody handovers and local police information. Indicators: Investigative findings, quantity stolen and mine operator, recurrence at nearby sites, changes in policing and gold transport practices. Verification: Two local reports citing the same civil-society source. Sources: https://provinces26rdc.com/haut-uele-un-ressortissant-chinois-et-un-policier-tues-dans-une-attaque-armee-dans-un-carre-minier/; https://www.forumdesas.cd/index.php/haut-uele-un-chinois-et-un-policier-tues-dans-une-attaque-armee",
+      "eventDate": "2026-11-16",
+      "sourceUrls": [
+        "https://provinces26rdc.com/haut-uele-un-ressortissant-chinois-et-un-policier-tues-dans-une-attaque-armee-dans-un-carre-minier/",
+        "https://www.forumdesas.cd/index.php/haut-uele-un-chinois-et-un-policier-tues-dans-une-attaque-armee"
       ]
     },
     {
