@@ -112,6 +112,33 @@ jobs:
             console.log('All live Cloudflare endpoints responded with expected content.');
           }
           NODE
+      - name: Confirm latest About narrative is actually published
+        run: |
+          node --input-type=module <<'NODE'
+          const origin='https://yolong.bournelong511.workers.dev';
+          const cases=[
+            {lang:'zh',expected:'一旦压力上升就失效的系统，本质上并不安全。'},
+            {lang:'en',expected:'A system that fails as soon as pressure rises is not secure.'}
+          ];
+          for(const {lang,expected} of cases){
+            const url=origin+'/content/pages-'+lang+'.json';
+            let verified=false;
+            for(let attempt=1;attempt<=8;attempt++){
+              const res=await fetch(url+'?about_rev=09758965-'+attempt,{cache:'no-store',headers:{'cache-control':'no-cache'},signal:AbortSignal.timeout(20000)});
+              const raw=await res.text();
+              let page=null;
+              try{page=JSON.parse(raw).pages.find(p=>p.slug==='about')?.presentation;}catch{}
+              const paragraphs=page?.chapters?.flatMap(c=>c.paragraphs||[])||[];
+              verified=paragraphs.some(p=>p.includes(expected));
+              console.log('ABOUT_LIVE',lang,'attempt',attempt,'status',res.status,'current',verified,
+                'sectionLead',JSON.stringify(page?.sectionLead||''),'lastParagraph',JSON.stringify(paragraphs.at(-1)||''),
+                'etag',res.headers.get('etag'),'cf-cache',res.headers.get('cf-cache-status'));
+              if(verified)break;
+              await new Promise(resolve=>setTimeout(resolve,2000));
+            }
+            if(!verified)throw Error('LIVE ABOUT STALE: '+lang+' is still serving old content');
+          }
+          NODE
   diagnose-domain:
     runs-on: ubuntu-latest
     permissions:
