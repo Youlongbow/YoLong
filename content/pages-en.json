@@ -12,7 +12,7 @@
       "presentation": {
         "eyebrow": "RAVEN / ABOUT",
         "title": "From Field Operations to Security Governance",
-        "lead": "I design and lead security systems for organisations working in high-risk environments, turning threat assessments into practical operations, clear standards and timely decisions.",
+        "lead": "My path has taken me from frontline special operations to security governance for overseas projects. The question has stayed the same: when risks become real, can people return safely and can the organisation keep operating?",
         "strap": "15+ years · High-risk security operations and management",
         "metrics": [
           {
@@ -58,8 +58,8 @@
             "tag": "03 / PHILOSOPHY",
             "title": "Security as an Operational System",
             "paragraphs": [
-              "I do not see security as a product, a checklist or a certification exercise. To me, it is a dynamic system that must keep working under pressure. Its effectiveness depends on leadership, the flow of information and the timing of decisions.",
-              "A system that fails as soon as pressure rises is not secure. My role is to help organisations keep operating when assumptions break down and the consequences are real."
+              "On site, I look at how information reaches decision-makers, who has the authority to change a plan, and whether command and response resources can keep up with events.",
+              "That is why I value clear responsibilities, timely communication and practical response measures. A security system needs to work during normal operations and hold together when an incident occurs."
             ],
             "image": 2,
             "caption": "PERIMETER SECURITY / FIELD SITE",
@@ -130,6 +130,13 @@
           ],
           "artwork": "/assets/media/editorial/book-editions-official.avif",
           "artLabel": "Official Chinese and English Beyond Risk book covers"
+        },
+        "philosophy": {
+          "eyebrow": "SECURITY / PHILOSOPHY",
+          "heading": "How I See Security",
+          "statement": "A system that fails as soon as pressure rises is not secure.",
+          "explanation": "I do not see security as a product, a checklist or a certification exercise. To me, it is a dynamic system that must keep working under pressure. Its effectiveness depends on leadership, the flow of information and the timing of decisions.",
+          "role": "My role is to help organisations keep operating when assumptions break down and the consequences are real."
         }
       }
     },
