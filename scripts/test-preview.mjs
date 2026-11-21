@@ -212,6 +212,21 @@ try{
   'Desktop Experience copy and photography occupy separate columns');
  await desktop.locator('.profile-experience .profile-story').first().scrollIntoViewIfNeeded();
  console.log('RAVEN_EXPERIENCE_FIRST_PANEL_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
+
+ await desktop.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
+ const visitorCopy=await desktop.locator('.profile-experience .profile-section-head>p').allInnerTexts();
+ assert(visitorCopy.length===2&&visitorCopy.every(t=>
+  !/避免重复|按照真实业务场景展示|重点展示承担的职责|项目按照业务领域归档/.test(t)),
+  'Experience section introductions are written for visitors, not as editorial instructions');
+ const closing1440=await desktop.locator('.profile-experience .profile-closing h2').evaluate(el=>{
+  const s=getComputedStyle(el);const r=el.getBoundingClientRect();
+  return {text:el.textContent.trim(),height:r.height,lineHeight:parseFloat(s.lineHeight),
+   clientWidth:el.clientWidth,scrollWidth:el.scrollWidth,wrap:s.whiteSpace};
+ });
+ assert(closing1440.text==='安全工作的价值，最终由现场执行、人员保护与业务连续性体现。'
+  &&closing1440.wrap==='nowrap'&&closing1440.height<=closing1440.lineHeight+2
+  &&closing1440.scrollWidth<=closing1440.clientWidth+2,
+  'Chinese Experience closing is a single unclipped line at 1440px desktop');
  await desktop.setViewportSize({width:1024,height:820});
  await desktop.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
  const tabletExperience=await desktop.locator('.profile-experience .profile-story').evaluateAll(rows=>rows.map(row=>{
@@ -223,6 +238,14 @@ try{
  assert(tabletExperience.length===4&&tabletExperience.every(x=>
   x.top>=x.copyBottom-2 && Math.abs(x.aspect-1.6)<.1 && x.overflow<=2),
   '1024px tablet Experience displays text above consistently proportioned images');
+
+ const closing1024=await desktop.locator('.profile-experience .profile-closing h2').evaluate(el=>{
+  const r=el.getBoundingClientRect();return {height:r.height,lineHeight:parseFloat(getComputedStyle(el).lineHeight),
+   overflow:el.scrollWidth-el.clientWidth,nowrap:getComputedStyle(el).whiteSpace==='nowrap'};
+ });
+ assert(closing1024.nowrap&&closing1024.height<=closing1024.lineHeight+2&&closing1024.overflow<=2,
+  'Chinese Experience closing remains one line without overflow at 1024px');
+
  await desktop.setViewportSize({width:1440,height:900});
 
  await desktop.goto(base+'/contact/zh/',{waitUntil:'networkidle',timeout:60000});
@@ -335,6 +358,15 @@ try{
  assert(mobileExperienceGallery.length===4&&mobileExperienceGallery.every(x=>
    x.loaded&&x.imageTop>=x.copyBottom-2&&Math.abs(x.aspect-1.5)<.12&&x.imageRight<=x.viewport+1),
    '390px mobile Experience stacks four 3:2 photographs below readable copy');
+
+ const closingMobile=await mobile.locator('.profile-experience .profile-closing h2').evaluate(el=>({
+   wraps:getComputedStyle(el).whiteSpace!=='nowrap',
+   overflow:el.scrollWidth-el.clientWidth,
+   visible:el.getBoundingClientRect().width<=innerWidth
+ }));
+ assert(closingMobile.wraps&&closingMobile.overflow<=2&&closingMobile.visible,
+  '390px mobile Experience closing wraps naturally without horizontal clipping');
+
  const experienceSecondPhoto=mobile.locator('.profile-experience .profile-story').nth(1).locator('img');
  await experienceSecondPhoto.scrollIntoViewIfNeeded();
  await experienceSecondPhoto.evaluate(img=>img.decode());
