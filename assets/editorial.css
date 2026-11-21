@@ -2075,3 +2075,14 @@ html[lang=zh] .profile-design .profile-book h2{
     object-position:52% 50%;
   }
 }
+
+
+/* RAVEN aerial perimeter photograph — preserve full documentary framing */
+.profile-about .profile-story:nth-child(3) .profile-story-photo {
+  background:#12191d;
+}
+.profile-about .profile-story:nth-child(3) .profile-story-photo img {
+  object-fit:contain;
+  object-position:center;
+  filter:contrast(1.025) saturate(.93);
+}
