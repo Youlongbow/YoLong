@@ -213,7 +213,19 @@ try{
  await desktop.locator('.profile-experience .profile-story').first().scrollIntoViewIfNeeded();
  console.log('RAVEN_EXPERIENCE_FIRST_PANEL_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:52})).toString('base64'));
 
- await desktop.goto(base+'/experience/zh/',{waitUntil:'networkidle',timeout:60000});
+ await desktop.goto(base+'/experience/zh/?r='+cssRevision,{waitUntil:'networkidle',timeout:60000});
+ for(let attempt=0;attempt<12;attempt++){
+  if(await desktop.locator('link[rel="stylesheet"][href="'+expectedCSS+'"]').count())break;
+  await desktop.waitForTimeout(900);
+  await desktop.reload({waitUntil:'networkidle',timeout:60000});
+ }
+ const experienceStyleInfo=await desktop.evaluate(()=>({
+  lang:document.documentElement.lang,
+  stylesheet:[...document.querySelectorAll('link[rel="stylesheet"]')].map(x=>x.getAttribute('href'))
+ }));
+ console.log('RAVEN_EXPERIENCE_STYLESHEET:'+JSON.stringify(experienceStyleInfo));
+ assert(await desktop.locator('link[rel="stylesheet"][href="'+expectedCSS+'"]').count()===1,
+  'Experience Chinese page serves current versioned CSS rather than a cached layout');
  const visitorCopy=await desktop.locator('.profile-experience .profile-section-head>p').allInnerTexts();
  assert(visitorCopy.length===2&&visitorCopy.every(t=>
   !/避免重复|按照真实业务场景展示|重点展示承担的职责|项目按照业务领域归档/.test(t)),
