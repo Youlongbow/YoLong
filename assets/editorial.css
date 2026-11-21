@@ -2029,3 +2029,28 @@ html[lang=zh] .profile-design .profile-book h2{
  .profile-about .profile-hero-photo img{object-position:center}
  .profile-about .profile-hero-visual::before{filter:blur(23px) brightness(.48)}
 }
+
+
+/* Authentic field photographs in About editorial chapters.
+   Preserve documentary contrast and physical materials, without stylized
+   AI lighting, fake overlays, artificial grain or oversaturated sky. */
+.profile-about .profile-story-visual{
+  background:#141a1d;
+}
+.profile-about .profile-story-visual .profile-photo img{
+  object-fit:cover;
+  filter:none;
+  image-rendering:auto;
+}
+.profile-about .profile-story:first-child .profile-story-photo img{
+  object-position:70% 52%;
+  filter:brightness(.97) contrast(1.015) saturate(.93);
+}
+.profile-about .profile-story:nth-child(2) .profile-story-photo img{
+  object-position:50% 50%;
+  filter:brightness(1.1) contrast(.98) saturate(.94);
+}
+.profile-about .profile-story:nth-child(3) .profile-story-photo img{
+  object-position:26% 51%;
+  filter:brightness(.99) contrast(1.015) saturate(.94);
+}
