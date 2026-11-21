@@ -1,0 +1,35 @@
+name: Repair Approved Outpost Floodlight
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/retouch-outpost.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  retouch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install exact image-processing dependencies
+        run: python -m pip install --disable-pip-version-check 'pillow>=10' 'pillow-avif-plugin>=1.4' 'opencv-python-headless>=4.10' 'numpy>=2'
+      - name: Switch off daylight searchlight in approved photograph
+        run: python scripts/retouch-outpost-light.py
+      - name: Commit corrected asset
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/media/editorial/fortified-outpost-light-off.avif
+          if git diff --cached --quiet; then
+            echo 'Approved daylight version already in the repository'
+            exit 0
+          fi
+          git commit -m 'images: remove daytime floodlight glare in approved outpost photograph'
+          git push origin HEAD:main
