@@ -2320,3 +2320,8 @@ html[lang=zh] .profile-experience .profile-recognition-copy h2{font-family:var(-
  .profile-experience .profile-recognition-years{margin-bottom:13px}
  .profile-experience .profile-recognition-desc{font-size:13px;line-height:1.75}
 }
+
+/* Fill the wide desktop photographic field; retain the complete frame on mobile. */
+@media (min-width:821px){
+ .profile-experience .profile-recognition-art img{object-fit:cover;object-position:50% 50%}
+}
