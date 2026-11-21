@@ -130,7 +130,7 @@ jobs:
               try{page=JSON.parse(raw).pages.find(p=>p.slug==='about')?.presentation;}catch{}
               const photo=page?.chapters||[];
               verified=page?.closing===closing &&
-                page?.heroArtwork==='/assets/media/editorial/about-hero-portrait-2026.webp' &&
+                page?.heroArtwork==='/assets/media/notion/723223d1-ceb8-46d1-92c3-729d03b290b4.webp' &&
                 photo[0]?.artwork==='/assets/media/editorial/about-career-reference-risk-2026.webp' &&
                 photo[1]?.artwork==='/assets/media/editorial/about-career-reference-operations-2026.webp' &&
                 photo[2]?.artwork==='/assets/media/editorial/about-career-reference-coordination-2026.webp';
