@@ -4,8 +4,23 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-21",
-  "total": 130,
+  "total": 131,
   "events": [
+    {
+      "slug": "2026-11-21-oman-khasab-two-tanker-projectile-strikes",
+      "date": "2026-11-21",
+      "region": "Oman / Musandam / Strait of Hormuz",
+      "category": "maritime",
+      "title": "Oman Khasab: Two tanker projectile-strike reports in the Strait of Hormuz on 21 November",
+      "summary": "UKMTO issued two attack warnings on 21 November: at 0500 UTC an outbound tanker was struck on the stern 11 nautical miles north of Khasab, and at 0550 UTC an engine-room strike was reported 17 nautical miles east. No casualties were reported; whether these were separate ships remains unclear.",
+      "body": "Facts and attribution: UK Maritime Trade Operations warnings 215-26 and 216-26 record a projectile striking the stern of an outbound tanker 11 nautical miles north of Khasab at 0500 UTC and a separate report of an engine-room strike 17 nautical miles east at 0550 UTC on 21 November. Both advisories report no casualties and undetermined environmental impact. Reuters says it remains unclear whether the reports concern the same vessel. A tanker was also struck and caught fire in the area on 20 November. Neither the responsible actor nor weapon type is established.\nAssessment: The concentration of reports around the outbound Musandam passage exposes merchant shipping to direct hull damage and possible loss of propulsion even as vessels leave the strait. Engine-room damage could cascade into towing and rescue requirements, traffic restrictions and war-risk insurance costs. Repeated incidents may cause owners, charterers and insurers to revise assumptions about viable transit windows. Continued military coercion spilling into commercial navigation is a plausible explanation; unrelated maritime weapons incidents remain an alternative. Current advisories do not establish coordination or perpetrator.\nManagement implications: Energy, chemicals and logistics companies with Hormuz cargoes should verify vessel identity, carrier, cargo, expected transit window and war-risk cover on a voyage-by-voyage basis; obtain updated routing, emergency towing and crew-contact arrangements from ship managers. Procurement teams should quantify inventory and alternate-supply exposure to delayed arrivals. Indicators: UKMTO updates identifying vessels and damage in warnings 215/216, actual strait transit volumes, war-risk premium quotations, and shipping-line or port schedule changes. Verification: two official UKMTO maritime warnings plus Reuters reporting. Sources: https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_215-26.pdf ; https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_216-26.pdf ; https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_215-26.pdf",
+        "https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_216-26.pdf",
+        "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+      ]
+    },
     {
       "slug": "2026-11-19-chagai-los-mining-site-seizure",
       "date": "2026-11-19",
