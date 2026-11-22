@@ -17,6 +17,9 @@ jobs:
         run: |
           node --input-type=module --check < assets/app.js
           node --input-type=module --check < assets/analytics.js
+          node --input-type=module --check < assets/course-tables.js
+      - name: Audit every migrated HEAT table in both languages
+        run: node scripts/test-heat-tables.mjs
       - name: Check GA4 integration and safe activation
         run: node scripts/test-analytics.mjs
       - name: Check bilingual publisher transaction rules
