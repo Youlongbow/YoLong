@@ -60,7 +60,7 @@ jobs:
                 if (path.includes('capabilities-') && (data.items?.length !== 5 || data.items.some(x=>!x.approach?.length))) failed.push(path + ' security capabilities incomplete'); }
                 catch { failed.push(path + ' not JSON'); }
               }
-              if (!path.includes('/assets/') && !path.endsWith('.json') && (!body.includes('id="app"') || !body.includes('/assets/app.js'))) failed.push(path + ' app shell missing');
+              if (!path.includes('/assets/') && !path.endsWith('.json') && (!body.includes('id="app"') || !/\/assets\/app(?:\.[a-f0-9]{12})?\.js/.test(body))) failed.push(path + ' app shell missing');
             } catch (error) {
               failed.push(path + ' ' + String(error));
               console.log('ERROR', path, String(error));
