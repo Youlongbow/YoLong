@@ -160,15 +160,15 @@ try{
   fit:getComputedStyle(el.querySelector('img')).objectFit,
   backdrop:getComputedStyle(el,'::before').backgroundImage
  }));
- assert(heroPresentation.fit==='cover'&&heroPresentation.backdrop.includes('about-hero-orange-vest-original-2026.webp'),'About hero uses the author-supplied orange safety vest photograph');
+ assert(heroPresentation.fit==='contain'&&heroPresentation.backdrop.includes('about-hero-orange-vest-original-2026.webp'),'About hero shows the full original two-worker photograph without edge crop');
  assert(await desktop.locator('.profile-story').first().locator('img[src$="/723223d1-ceb8-46d1-92c3-729d03b290b4.webp"]').count()===1,'First career panel uses the former hero training photograph');
  assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-desert-hilux-original-2026.webp"]').count()===1,'Second career panel uses original field vehicle photo');
- assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/about-career-reference-coordination-2026.webp"]').count()===1,'Third About panel uses approved coordination reference');
+ assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/about-perimeter-aerial-2026.webp"]').count()===1,'Fourth About photo uses the supplied 16:9 aerial perimeter photograph');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
  const editorialImgs=await desktop.locator('.profile-story img').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,width:x.naturalWidth,height:x.naturalHeight,fit:getComputedStyle(x).objectFit,loaded:x.complete&&x.naturalWidth>0&&x.naturalHeight>0})));
  console.log('ABOUT_IMAGE_DIMENSIONS:'+JSON.stringify(editorialImgs));
- assert(editorialImgs.length===3&&editorialImgs.every(x=>x.loaded&&x.width>=500&&x.height>=430)&&editorialImgs[0].fit==='contain'&&editorialImgs.slice(1).every(x=>x.fit==='cover'),
-  'Three career photographs decode and retain deliberate noncropped training frame');
+ assert(editorialImgs.length===3&&editorialImgs.every(x=>x.loaded&&x.width>=500&&x.height>=430)&&editorialImgs[0].fit==='contain'&&editorialImgs[1].fit==='cover'&&editorialImgs[2].fit==='contain',
+  'Original photos decode at full proportions including the perimeter panorama');
 
  const aboutColumns=await desktop.locator('.profile-hero').evaluate(el=>{
   const copy=el.querySelector('.profile-hero-copy').getBoundingClientRect();
@@ -176,6 +176,17 @@ try{
   return {copyRight:copy.right,imageLeft:image.left,copyWidth:copy.width,imageWidth:image.width};
  });
  assert(aboutColumns.copyRight<aboutColumns.imageLeft && aboutColumns.copyWidth>350 && aboutColumns.imageWidth>350,'Desktop About uses genuinely separate readable copy and image columns');
+ const aboutHeroFit=await desktop.locator('.profile-about .profile-hero-photo img').evaluate(el=>{
+   const rect=el.getBoundingClientRect();
+   const naturalRatio=el.naturalWidth/el.naturalHeight;
+   const imageWidth=Math.min(rect.width,rect.height*naturalRatio);
+   return {fit:getComputedStyle(el).objectFit,naturalWidth:el.naturalWidth,naturalHeight:el.naturalHeight,
+     frameWidth:rect.width,displayedWidth:imageWidth};
+ });
+ console.log('ABOUT_HERO_FULL_FRAME:'+JSON.stringify(aboutHeroFit));
+ assert(aboutHeroFit.fit==='contain' && aboutHeroFit.naturalWidth>900 &&
+   aboutHeroFit.displayedWidth/aboutHeroFit.frameWidth>.87,
+   'About hero keeps both subjects visible at substantial display width');
  console.log('RAVEN_ABOUT_JPEG_BASE64:'+(await desktop.screenshot({type:'jpeg',quality:46})).toString('base64'));
  await desktop.locator('.profile-story').first().scrollIntoViewIfNeeded();
  await desktop.locator('.profile-story').first().locator('img').evaluate(img=>img.decode());
@@ -192,8 +203,8 @@ try{
    objectFit:getComputedStyle(img).objectFit,viewport:innerWidth,overflow:document.documentElement.scrollWidth-innerWidth
  }));
  console.log('ABOUT_MOBILE_HERO:'+JSON.stringify(aboutHeroMobile));
- assert(aboutHeroMobile.currentSrc.endsWith('/about-hero-orange-vest-original-2026.webp')&&aboutHeroMobile.loaded&&aboutHeroMobile.objectFit==='cover'&&aboutHeroMobile.overflow<=2,
-  'Mobile About hero displays orange-vest site photo without horizontal overflow');
+ assert(aboutHeroMobile.currentSrc.endsWith('/about-hero-orange-vest-original-2026.webp')&&aboutHeroMobile.loaded&&aboutHeroMobile.objectFit==='contain'&&aboutHeroMobile.overflow<=2,
+  'Mobile About hero retains both workers without crop or horizontal overflow');
  console.log('RAVEN_ABOUT_MOBILE_JPEG_BASE64:'+(await mobileAbout.screenshot({type:'jpeg',quality:48})).toString('base64'));
  await mobileAbout.locator('.profile-story').first().scrollIntoViewIfNeeded();
  await mobileAbout.locator('.profile-story').first().locator('img').evaluate(img=>img.decode());
