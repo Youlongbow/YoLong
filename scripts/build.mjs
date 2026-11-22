@@ -30,6 +30,31 @@ cpSync('assets','dist/assets',{recursive:true});
 cpSync('content','dist/content',{recursive:true});
 // IndexNow requires a public verification key at the domain root.
 copyFileSync('856c1a00e9bf46aaa0049b19d18aac90.txt','dist/856c1a00e9bf46aaa0049b19d18aac90.txt');
+
+// Content-addressed JSON and app script keep every bilingual release coherent,
+// even when a visitor's browser or Cloudflare has an earlier pages-zh/en.json cached.
+const revisions={};
+for(const lang of ['zh','en']){
+ const bytes=readFileSync('content/pages-'+lang+'.json');
+ const revision=createHash('sha256').update(bytes).digest('hex').slice(0,12);
+ revisions[lang]=revision;
+ writeFileSync(join('dist','content','pages-'+lang+'.'+revision+'.json'),bytes);
+}
+const appSource=readFileSync('assets/app.js','utf8');
+const marker="const CONTENT_DATA_REVISIONS={zh:'',en:''};";
+if(!appSource.includes(marker))throw Error('Missing versioned page data marker');
+const appContent=appSource.replace(marker,'const CONTENT_DATA_REVISIONS='+JSON.stringify(revisions)+';');
+const appRevision=createHash('sha256').update(appContent)
+ .update(readFileSync('content/site.json'))
+ .update(readFileSync('content/research-zh.json'))
+ .update(readFileSync('content/research-en.json'))
+ .update(readFileSync('content/security-zh.json'))
+ .update(readFileSync('content/security-en.json'))
+ .digest('hex').slice(0,12);
+const versionedApp='app.'+appRevision+'.js';
+writeFileSync(join('dist','assets',versionedApp),appContent);
+writeFileSync(join('dist','assets','app.js'),appContent);
+
 // Content-addressed stylesheet URLs keep CDN and browser caches from serving an old hero.
 const cssContent=readFileSync('assets/editorial.css');
 const cssHash=createHash('sha256').update(cssContent).digest('hex').slice(0,12);
@@ -42,7 +67,8 @@ const transitionFile='transition.'+transitionHash+'.css';
 writeFileSync(join('dist','assets',transitionFile),transitionCss);
 const html=readFileSync('index.html','utf8')
  .replace('/assets/editorial.css','/assets/'+versionedCss)
- .replace('/assets/transition.css','/assets/'+transitionFile);
+ .replace('/assets/transition.css','/assets/'+transitionFile)
+ .replace('/assets/app.js','/assets/'+versionedApp);
 writeFileSync('dist/index.html',html);
 
 const routes=['zh','en','journal/zh','journal/en','security/zh','security/en'];
