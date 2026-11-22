@@ -3,8 +3,8 @@
   "lang": "zh",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
-  "snapshotDate": "2026-11-21",
-  "total": 131,
+  "snapshotDate": "2026-11-22",
+  "total": 132,
   "events": [
     {
       "slug": "2026-11-21-oman-khasab-two-tanker-projectile-strikes",
@@ -19,6 +19,19 @@
         "https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_215-26.pdf",
         "https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_216-26.pdf",
         "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+      ]
+    },
+    {
+      "slug": "2026-11-21-sudan-sennar-night-curfew-blue-nile-advance",
+      "date": "2026-11-21",
+      "region": "苏丹／森纳尔州与青尼罗河州",
+      "category": "security",
+      "title": "苏丹森纳尔州：青尼罗河战事外溢，实施夜间宵禁与货运限制",
+      "summary": "11月21日森纳尔州发布2026年第6号紧急命令，城镇22:00至04:00禁止通行，货运车辆20:00至05:00禁止运行；背景为青尼罗河州武装推进及达马津周边局势恶化。",
+      "body": "事实｜Radio Tamazuj于2026年11月21日报道，森纳尔州州长Al-Zubair Hassan Al-Sayed签发2026年第6号紧急命令，规定城镇22:00—04:00禁止人员流动，全州货运车辆20:00—05:00停止运行；持许可的医疗及紧急救援等人员获得例外。与此同时，RSF与SPLM-N结盟部队据地方消息在青尼罗河州Bau、Geissan推进，Taga和Madina 11据报失守，达马津居民开始撤离。有关控制范围属地方消息报道。分析｜州政府在战事抵近前限制夜间人员及物流活动，意在压缩武装渗透和非正规运输的行动空间，同时也显示地方政府预期冲突可能跨州扩散。另一种解释是政府通过预防性管制向公众和军方展示控制力，即使短期并无直接攻城行动。运营传导｜森纳尔州境内夜间干线货运窗口被实质压缩，跨州燃料、粮食、医疗物资和项目补给须调整车次及装卸时间；东森纳尔民间动员与军事协作可能增加检查站及车辆盘查。管理层应将夜间跨州运输暂停并核算白天运力缺口，确认货车是否享有行业例外，审查达马津方向人员驻留及撤离路线。后续指标｜①第6号命令实际执法及例外许可证发放；②Bau与Geissan控制权的独立核实；③达马津人口外流与道路通行变化；④森纳尔州检查站和货运延误。来源：https://www.radiotamazuj.org/en/news/article/sennar-imposes-night-curfew-as-blue-nile-fighting-intensifies",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://www.radiotamazuj.org/en/news/article/sennar-imposes-night-curfew-as-blue-nile-fighting-intensifies"
       ]
     },
     {

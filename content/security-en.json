@@ -3,8 +3,8 @@
   "lang": "en",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
-  "snapshotDate": "2026-11-21",
-  "total": 131,
+  "snapshotDate": "2026-11-22",
+  "total": 132,
   "events": [
     {
       "slug": "2026-11-21-oman-khasab-two-tanker-projectile-strikes",
@@ -19,6 +19,19 @@
         "https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_215-26.pdf",
         "https://www.ukmto.org/-/media/ukmto/products/20261121-ukmto_warning_216-26.pdf",
         "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+      ]
+    },
+    {
+      "slug": "2026-11-21-sudan-sennar-night-curfew-blue-nile-advance",
+      "date": "2026-11-21",
+      "region": "Sudan / Sennar and Blue Nile states",
+      "category": "security",
+      "title": "Sudan / Sennar: Night curfew and freight restrictions as Blue Nile fighting approaches",
+      "summary": "Sennar authorities imposed a 22:00–04:00 urban curfew and a 20:00–05:00 freight-vehicle restriction on 21 November amid reported armed advances in neighbouring Blue Nile State.",
+      "body": "Facts | Radio Tamazuj reported on 21 November 2026 that Sennar Governor Al-Zubair Hassan Al-Sayed issued Emergency Order No. 6 of 2026, prohibiting movement in towns from 22:00 to 04:00 and goods-vehicle operations across the state from 20:00 to 05:00. Permitted medical and emergency responders are exempt. Local sources separately reported advances by RSF and SPLM-N-aligned forces in Bau and Geissan, including reported control of Taga and Madina 11; residents in Damazin have begun leaving. Territorial claims remain attributed to those local sources. Assessment | The curfew is a pre-emptive attempt to constrain night movement and possible armed infiltration as fighting moves closer to Sennar. An alternative interpretation is that the measure is primarily intended to demonstrate government control before any direct offensive against the state. Business transmission | The order materially reduces the night freight window for fuel, food, medical supplies and project logistics. Mobilisation in East Sennar may also increase checkpoints and inspections. Operators should reschedule cross-state freight to daylight, quantify lost capacity, confirm any permit exemptions and reassess personnel presence and evacuation options toward Damazin. Indicators | (1) Enforcement and exemptions under Order No. 6; (2) independently corroborated control changes in Bau and Geissan; (3) displacement and road access around Damazin; (4) checkpoint delays and freight throughput in Sennar. Source: https://www.radiotamazuj.org/en/news/article/sennar-imposes-night-curfew-as-blue-nile-fighting-intensifies",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://www.radiotamazuj.org/en/news/article/sennar-imposes-night-curfew-as-blue-nile-fighting-intensifies"
       ]
     },
     {
