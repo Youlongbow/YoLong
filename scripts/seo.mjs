@@ -56,7 +56,7 @@ function metadata(route){
    if(item){title=item.title;desc=item.summary||desc;}
   }
  }
- return {lang,title:short(title,120)+' | RAVEN',desc:short(desc,175),date,article};
+ return {lang,title:short(title,52)+' | RAVEN',desc:short(desc,158),date,article};
 }
 const routes=['zh','en','journal/zh','journal/en','security/zh','security/en'];
 for(const lang of ['zh','en']){
@@ -73,8 +73,8 @@ function extendedDescription(route,current){
  const segments=route.split('/');
  const lang=segments.includes('en')?'en':'zh';
  const extra=lang==='zh'?'RAVEN 聚焦海外复杂环境安全管理，结合真实项目实践、原创研究和运营经验，提供能够直接用于风险判断、安保体系建设及项目决策的专业内容。':'RAVEN publishes original field-informed research and practical security architecture guidance for overseas project leaders, corporate security teams and operators facing complex threat environments.';
- if(Array.from(current).length>=70)return short(current,175);
- return short(current+' '+extra,175);
+ if(Array.from(current).length>=70)return short(current,158);
+ return short(current+' '+extra,158);
 }
 function crawlableBody(route){
  const parts=route.split('/');
