@@ -9,6 +9,7 @@ jobs:
     permissions:
       contents: read
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -144,6 +145,8 @@ jobs:
           }
           if(!ok)throw Error('Production GA4 ID or tracking module is not current');
           NODE
+      - name: Check actual production About photo order and cache revisions
+        run: node scripts/check-live-about.mjs
       - name: Confirm latest About narrative is actually published
         run: |
           node --input-type=module <<'NODE'
