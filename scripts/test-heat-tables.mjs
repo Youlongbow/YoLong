@@ -34,6 +34,7 @@ for(const lang of ['zh','en']){
       assert.equal((html.match(/<td\b/g)||[]).length,grid.rows.length*grid.columnCount);
       assert.equal((html.match(/<tr>/g)||[]).length,grid.rows.length+1);
       assert.ok(html.includes('tabindex="0"') && html.includes('role="region"'));
+      assert.ok(html.includes('course-table-hint'),'Every wide grid provides mobile swipe guidance');
       assert.ok(html.includes('dir="auto"'),'Mixed Chinese, English and Arabic must preserve direction');
       for(const cell of [...grid.headers,...grid.rows.flat()]){
         assert.ok(html.includes(inline(cell)),'Cell missing from generated HTML: '+cell.slice(0,100));
