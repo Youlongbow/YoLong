@@ -168,7 +168,7 @@ jobs:
                 page?.heroArtwork==='/assets/media/editorial/about-hero-orange-vest-original-2026.webp' &&
                 photo[0]?.artwork==='/assets/media/notion/723223d1-ceb8-46d1-92c3-729d03b290b4.webp' &&
                 photo[1]?.artwork==='/assets/media/editorial/about-desert-hilux-original-2026.webp' &&
-                photo[2]?.artwork==='/assets/media/editorial/about-career-reference-coordination-2026.webp';
+                photo[2]?.artwork==='/assets/media/editorial/about-perimeter-aerial-2026.webp';
               console.log('ABOUT_LIVE',lang,'attempt',attempt,'status',res.status,'current',verified,
                 'closing',JSON.stringify(page?.closing||''),'heroArtwork',JSON.stringify(page?.heroArtwork||''),
                 'etag',res.headers.get('etag'),'cf-cache',res.headers.get('cf-cache-status'));
