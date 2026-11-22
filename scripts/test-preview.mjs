@@ -161,8 +161,8 @@ try{
   backdrop:getComputedStyle(el,'::before').backgroundImage
  }));
  assert(heroPresentation.fit==='contain'&&heroPresentation.backdrop.includes('723223d1-ceb8-46d1-92c3-729d03b290b4.webp'),'About hero restores the original full-frame training photograph');
- assert(await desktop.locator('.profile-story').first().locator('img[src$="/about-career-reference-risk-2026.webp"]').count()===1,'First About panel uses approved risk assessment reference');
- assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-career-reference-operations-2026.webp"]').count()===1,'Second About panel uses approved convoy reference');
+ assert(await desktop.locator('.profile-story').first().locator('img[src$="/about-career-reference-operations-2026.webp"]').count()===1,'First About panel uses approved operations reference');
+ assert(await desktop.locator('.profile-story').nth(1).locator('img[src$="/about-career-reference-risk-2026.webp"]').count()===1,'Second About panel uses approved field risk reference');
  assert(await desktop.locator('.profile-story').nth(2).locator('img[src$="/about-career-reference-coordination-2026.webp"]').count()===1,'Third About panel uses approved coordination reference');
  assert(await desktop.locator('.profile-book-cover-photo[src$="/book-editions-official.avif"]').count()===1,'Published-work section shows both supplied official book covers');
  const editorialImgs=await desktop.locator('.profile-story img').evaluateAll(imgs=>imgs.map(x=>({src:x.currentSrc,width:x.naturalWidth,height:x.naturalHeight,fit:getComputedStyle(x).objectFit,loaded:x.complete&&x.naturalWidth>0&&x.naturalHeight>0})));
