@@ -44,7 +44,8 @@ export function renderCourseTable(source,inline,lang='zh'){
   const ths=headers.map((cell,i)=>'<th scope="col" dir="auto" class="align-'+align[i]+'">'+inline(cell)+'</th>').join('');
   const trs=rows.map(row=>'<tr>'+row.map((cell,i)=>
     '<td dir="auto" class="align-'+align[i]+'">'+inline(cell)+'</td>').join('')+'</tr>').join('');
-  return '<div class="article-table course-table" role="region" tabindex="0" aria-label="'+escapeAttribute(label)+'">'+
+  const swipe=lang==='zh'?'← 左右滑动查看完整表格 →':'← Swipe to view all columns →';
+  return '<div class="course-table-group"><div class="article-table course-table" role="region" tabindex="0" aria-label="'+escapeAttribute(label)+'">'+
     '<table class="course-data-table" data-cols="'+columnCount+'"><thead><tr>'+ths+'</tr></thead>'+
-    '<tbody>'+trs+'</tbody></table></div>';
+    '<tbody>'+trs+'</tbody></table></div><p class="course-table-hint" aria-hidden="true">'+swipe+'</p></div>';
 }
