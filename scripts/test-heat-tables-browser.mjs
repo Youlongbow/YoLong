@@ -57,6 +57,9 @@ try{
     width:el.clientWidth,scrollWidth:el.scrollWidth,overflow:getComputedStyle(el).overflowX,
     tableWidth:el.querySelector('table').getBoundingClientRect().width
    })));
+   const hints=await phone.locator('.course-table-hint').evaluateAll(nodes=>nodes.map(el=>({text:el.textContent.trim(),visible:getComputedStyle(el).display!=='none'})));
+   assert.equal(hints.length,expected[lang][slug].length);
+   assert.ok(hints.every(h=>h.visible&&(lang==='zh'?h.text.includes('左右滑动'):h.text.includes('Swipe'))),'Mobile viewers can discover hidden table columns');
    const bodyOverflow=await phone.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
    assert.ok(measures.every(m=>m.overflow==='auto'&&m.scrollWidth>m.width&&m.tableWidth>m.width),
     'Mobile HEAT tables must scroll inside their own regions');
