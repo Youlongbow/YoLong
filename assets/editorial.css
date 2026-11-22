@@ -2700,3 +2700,28 @@ html[lang=en] .profile-about .profile-belief-statement{
     min-height:0;
   }
 }
+
+
+/* About documentary color balance — 2026-11-23.
+   Restrained grade on the four photographs only; all original image files,
+   subject framing, image ratios and surrounding sections remain untouched.
+   The orange safety vest retains its identifying colour. */
+.profile-about .profile-hero-photo img,
+.profile-about .profile-hero-photo picture>img{
+  filter:brightness(.94) contrast(1.025) saturate(.84);
+}
+.profile-about .profile-hero-visual::before{
+  filter:blur(12px) brightness(.67) saturate(.76);
+}
+.profile-about .profile-hero-visual::after{
+  background:linear-gradient(180deg,rgba(10,14,18,.025) 0%,transparent 65%,rgba(10,14,18,.13) 100%);
+}
+.profile-about .profile-narrative .profile-story:nth-child(1) .profile-story-photo img{
+  filter:brightness(.98) contrast(1.025) saturate(.85);
+}
+.profile-about .profile-narrative .profile-story:nth-child(2) .profile-story-photo img{
+  filter:brightness(.94) contrast(1.035) saturate(.81);
+}
+.profile-about .profile-narrative .profile-story:nth-child(3) .profile-story-photo img{
+  filter:brightness(.92) contrast(1.03) saturate(.81);
+}
