@@ -1,0 +1,32 @@
+name: Validate HEAT course tables in browser
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/heat-tables.yml'
+      - 'assets/course-tables.js'
+      - 'assets/app.js'
+      - 'assets/editorial.css'
+      - 'content/training-zh.json'
+      - 'content/training-en.json'
+      - 'scripts/test-heat-tables.mjs'
+      - 'scripts/test-heat-tables-browser.mjs'
+  workflow_dispatch:
+jobs:
+  heat-tables:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify all bilingual source tables and safe renderer
+        run: node scripts/test-heat-tables.mjs
+      - name: Install browser for actual HEAT table layout checks
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify real desktop/mobile table grids after deployment
+        run: node scripts/test-heat-tables-browser.mjs
