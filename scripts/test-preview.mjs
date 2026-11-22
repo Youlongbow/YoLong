@@ -188,12 +188,12 @@ try{
  const mobileAbout=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true});
  await mobileAbout.goto(base+'/about/zh/',{waitUntil:'networkidle',timeout:60000});
  const aboutHeroMobile=await mobileAbout.locator('.profile-about .profile-hero-photo img').evaluate(img=>({
-   currentSrc:img.currentSrc,loaded:img.complete&&img.naturalWidth>=1600,
+   currentSrc:img.currentSrc,loaded:img.complete&&img.naturalWidth>0,
    objectFit:getComputedStyle(img).objectFit,viewport:innerWidth,overflow:document.documentElement.scrollWidth-innerWidth
  }));
  console.log('ABOUT_MOBILE_HERO:'+JSON.stringify(aboutHeroMobile));
- assert(aboutHeroMobile.currentSrc.endsWith('/about-hero-mobile-2026.webp')&&aboutHeroMobile.loaded&&aboutHeroMobile.overflow<=2,
-  'About mobile hero uses uncropped author landscape photo without horizontal overflow');
+ assert(aboutHeroMobile.currentSrc.endsWith('/723223d1-ceb8-46d1-92c3-729d03b290b4.webp')&&aboutHeroMobile.loaded&&aboutHeroMobile.objectFit==='contain'&&aboutHeroMobile.overflow<=2,
+  'About mobile hero preserves the original training photograph without horizontal overflow');
  console.log('RAVEN_ABOUT_MOBILE_JPEG_BASE64:'+(await mobileAbout.screenshot({type:'jpeg',quality:48})).toString('base64'));
  await mobileAbout.locator('.profile-story').first().scrollIntoViewIfNeeded();
  await mobileAbout.locator('.profile-story').first().locator('img').evaluate(img=>img.decode());
