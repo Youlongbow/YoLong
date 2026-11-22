@@ -1,0 +1,18 @@
+name: Diagnose RAVEN crawler discoverability
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/check-index-discovery.mjs'
+      - '.github/workflows/index-discovery.yml'
+  workflow_dispatch:
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe Googlebot access, sitemap, robots and IndexNow key
+        run: node scripts/check-index-discovery.mjs
