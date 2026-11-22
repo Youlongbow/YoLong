@@ -63,6 +63,7 @@ try{
    assert.ok(bodyOverflow<=2,'No whole-page horizontal overflow '+lang+'/'+slug);
    console.log('HEAT_MOBILE_TABLES_OK',lang,slug,JSON.stringify({measures,bodyOverflow}));
    if(lang==='zh'&&slug==='02'){
+    await phone.locator('#site-transition.is-hidden').waitFor({state:'attached',timeout:12000});
     await phone.locator('.course-table').first().scrollIntoViewIfNeeded();
     console.log('HEAT_MOBILE_TABLE_PREVIEW_JPEG_BASE64:'+
       (await phone.screenshot({type:'jpeg',quality:43})).toString('base64'));
@@ -71,6 +72,7 @@ try{
  }
  await desktop.goto(base+'/training/zh/02/',{waitUntil:'domcontentloaded',timeout:60000});
  await desktop.waitForFunction(()=>document.querySelectorAll('.course-data-table').length===3);
+ await desktop.locator('#site-transition.is-hidden').waitFor({state:'attached',timeout:12000});
  await desktop.locator('.course-table').first().scrollIntoViewIfNeeded();
  console.log('HEAT_DESKTOP_TABLE_PREVIEW_JPEG_BASE64:'+
    (await desktop.screenshot({type:'jpeg',quality:43})).toString('base64'));
