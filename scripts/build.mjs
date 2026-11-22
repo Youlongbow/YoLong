@@ -71,6 +71,24 @@ const html=readFileSync('index.html','utf8')
  .replace('/assets/app.js','/assets/'+versionedApp);
 writeFileSync('dist/index.html',html);
 
+// Content always changes together with the displayed bilingual HTML.
+writeFileSync('dist/_headers',[
+  '# RAVEN editorial content should never remain stale after a release.',
+  '/content/*',
+  '  Cache-Control: no-store, max-age=0',
+  '/assets/app.js',
+  '  Cache-Control: no-cache, must-revalidate',
+  '/about/*',
+  '  Cache-Control: no-cache, must-revalidate',
+  '/experience/*',
+  '  Cache-Control: no-cache, must-revalidate',
+  '/zh/',
+  '  Cache-Control: no-cache, must-revalidate',
+  '/en/',
+  '  Cache-Control: no-cache, must-revalidate'
+].join('\n')+'\n');
+
+
 const routes=['zh','en','journal/zh','journal/en','security/zh','security/en'];
 for(const lang of ['zh','en']){
  for(const event of security[lang].events) routes.push('security/'+lang+'/'+event.slug);
