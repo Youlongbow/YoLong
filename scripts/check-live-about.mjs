@@ -4,7 +4,7 @@ const hero='/assets/media/editorial/about-hero-orange-vest-original-2026.webp';
 const order=[
  '/assets/media/notion/723223d1-ceb8-46d1-92c3-729d03b290b4.webp',
  '/assets/media/editorial/about-desert-hilux-original-2026.webp',
- '/assets/media/editorial/about-career-reference-coordination-2026.webp'
+ '/assets/media/editorial/about-perimeter-aerial-2026.webp'
 ];
 for(const origin of domains){
  for(const lang of ['zh','en']){
