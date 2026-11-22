@@ -1,6 +1,8 @@
 import { initGoogleAnalytics } from './analytics.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+// Replaced with content fingerprints during the Cloudflare build.
+const CONTENT_DATA_REVISIONS={zh:'',en:''};
 const pathParts = location.pathname.split('/').filter(Boolean);
 const section = ['security','journal','about','experience','contact','training','capabilities'].includes(pathParts[0]) ? pathParts[0] : 'home';
 const lang = section==='home' ? (pathParts[0]==='en'?'en':'zh') : (pathParts[1]==='en'?'en':'zh');
@@ -506,7 +508,7 @@ try{
  if(section==='security'||section==='home')needed.push('/content/security-'+lang+'.json');
  if(section==='journal'||section==='home')needed.push('/content/research-'+lang+'.json');
  if(section==='journal')needed.push('/content/journal-attachments.json');
- if(['about','experience','contact','training'].includes(section))needed.push('/content/pages-'+lang+'.json');
+ if(['about','experience','contact','training'].includes(section))needed.push('/content/pages-'+lang+(CONTENT_DATA_REVISIONS[lang]?'.'+CONTENT_DATA_REVISIONS[lang]:'')+'.json');
  if(section==='training')needed.push('/content/training-'+lang+'.json');
  if(section==='home'||section==='capabilities')needed.push('/content/capabilities-'+lang+'.json');
  const values=await Promise.all(needed.map(async(url)=>{const res=await fetch(url);if(!res.ok)throw Error(url+' HTTP '+res.status);return res.json()}));
