@@ -1,4 +1,5 @@
 import { initGoogleAnalytics } from './analytics.js';
+import { renderCourseTable } from './course-tables.js';
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 // Replaced with content fingerprints during the Cloudflare build.
@@ -168,6 +169,9 @@ function richBody(markdown,sourceLink){
    return '<details class="article-details"><summary>'+richInline(note.title)+'</summary><div class="article-details-body">'+richBody(note.body,sourceLink)+'</div></details>';
   }
   if(/^(---|___|\*\*\*)$/.test(chunk.trim()))return '<hr class="article-divider">';
+  // Migrated GFM pipe tables must preserve their actual row/column structure.
+  const markdownTable=renderCourseTable(chunk,richInline,lang);
+  if(markdownTable)return markdownTable;
   const marker=first.match(/^%%RAVEN_TABLE_(\d+)%%$/);
   if(marker){
    let html=richInline(savedTables[Number(marker[1])]||'');
