@@ -28,6 +28,8 @@ for(const lang of ['zh','en']){
 mkdirSync('dist',{recursive:true});
 cpSync('assets','dist/assets',{recursive:true});
 cpSync('content','dist/content',{recursive:true});
+// IndexNow requires a public verification key at the domain root.
+copyFileSync('856c1a00e9bf46aaa0049b19d18aac90.txt','dist/856c1a00e9bf46aaa0049b19d18aac90.txt');
 // Content-addressed stylesheet URLs keep CDN and browser caches from serving an old hero.
 const cssContent=readFileSync('assets/editorial.css');
 const cssHash=createHash('sha256').update(cssContent).digest('hex').slice(0,12);
