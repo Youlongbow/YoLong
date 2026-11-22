@@ -2725,3 +2725,77 @@ html[lang=en] .profile-about .profile-belief-statement{
 .profile-about .profile-narrative .profile-story:nth-child(3) .profile-story-photo img{
   filter:brightness(.92) contrast(1.03) saturate(.81);
 }
+
+
+/* HEAT migrated table alignment and mobile overflow.
+   The table remains one semantic grid; horizontal overflow stays inside its
+   own viewport instead of shifting headings and content rows on small screens. */
+.section-training .article-content .course-table{
+  width:100%;
+  max-width:100%;
+  margin:27px 0 38px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  overscroll-behavior-inline:contain;
+  border:1px solid #3b464a;
+  background:#10171a;
+  scrollbar-color:#656e71 #192126;
+  scrollbar-width:thin;
+}
+.section-training .article-content .course-table:focus-visible{
+  outline:2px solid #b94c52;
+  outline-offset:3px;
+}
+.section-training .article-content .course-table .course-data-table{
+  width:100%;
+  min-width:600px;
+  table-layout:fixed;
+  border-collapse:collapse;
+  border-spacing:0;
+  font:400 13.5px/1.72 var(--body);
+  color:#d7dddd;
+}
+.section-training .article-content .course-table .course-data-table[data-cols="3"]{
+  min-width:720px;
+}
+.section-training .article-content .course-table th,
+.section-training .article-content .course-table td{
+  box-sizing:border-box;
+  white-space:normal;
+  overflow-wrap:break-word;
+  word-break:normal;
+  vertical-align:top;
+  text-align:start;
+  border:1px solid #354145;
+  padding:14px 16px;
+  line-height:1.75;
+}
+.section-training .article-content .course-table th{
+  font-weight:650;
+  background:#20292d;
+  color:#f0f0ec;
+}
+.section-training .article-content .course-table tbody tr:nth-child(even) td{
+  background:#151d20;
+}
+.section-training .article-content .course-table tbody td:first-child{
+  color:#e7eae8;
+  font-weight:550;
+}
+.section-training .article-content .course-table [data-cols="2"] tr>*:first-child{
+  width:30%;
+}
+.section-training .article-content .course-table [data-cols="3"] tr>*:first-child{
+  width:26%;
+}
+.section-training .article-content .course-table .align-center{text-align:center}
+.section-training .article-content .course-table .align-right{text-align:right}
+@media(max-width:820px){
+  .section-training .article-content .course-table{margin:23px 0 31px}
+  .section-training .article-content .course-table th,
+  .section-training .article-content .course-table td{
+    padding:12px 13px;
+    font-size:13px;
+    line-height:1.7;
+  }
+}
