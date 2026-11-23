@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-23",
-  "total": 133,
+  "total": 134,
   "events": [
     {
       "slug": "2026-11-22-chagai-dalbandin-dhadar-cargo-vehicle-shooting",
@@ -17,6 +17,19 @@
       "eventDate": "2026-11-22",
       "sourceUrls": [
         "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
+    {
+      "slug": "2026-11-21-chagai-khargoshkan-roadside-explosion-three-killed",
+      "date": "2026-11-21",
+      "region": "Pakistan / Balochistan / Chagai / Khargoshkan",
+      "category": "security",
+      "title": "Pakistan Chagai: Roadside explosion kills three youths near Khargoshkan southwest of Dalbandin",
+      "summary": "A 21 November Urdu-language report says a motorcycle carrying three teenagers encountered a roadside explosive device near Khargoshkan, killing all three. A Dalbandin hospital official confirmed blast-related deaths.",
+      "body": "Reported facts: Daily Jasarat reported on 21 November 2026 that seven youths travelling on three motorcycles towards Khargoshkan southwest of Dalbandin encountered an explosive device beside the road. The motorcycle carrying three teenagers was caught in the explosion and all three died. A local hospital executive confirmed blast-related deaths; the victims were reportedly aged 16 to 19. The precise incident date was not separately stated, so the initial report date is used provisionally. The device's origin and placement history remain unknown.\nAssessment: The victims were civilian travellers, and the immediate significance is lethal explosive exposure on secondary routes around Dalbandin. Deliberate emplacement, unexploded remnants and other origins remain competing explanations. For commercial operations, the relevant pathways are village liaison travel, motorcycles used by community contacts, remote worksites and unpaved access tracks. This report alone does not establish any closure of the N40 highway. Discovery of further devices would materially change the assessment towards broader route contamination.\nOperational response: Obtain the precise Khargoshkan incident location and police examination findings through local security contacts. Avoid discretionary travel on uninspected tracks near the site and prioritize previously checked routes. Record suspicious-object reports from community liaison staff and drivers against exact locations. Follow indicators include police disposal findings, discovery of additional devices, and verified overlap with project travel routes.\nSource: https://jasarat.com/2026/11/21/three-youths-killed/",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://jasarat.com/2026/11/21/three-youths-killed/"
       ]
     },
     {

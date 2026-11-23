@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
   "snapshotDate": "2026-11-23",
-  "total": 133,
+  "total": 134,
   "events": [
     {
       "slug": "2026-11-22-chagai-dalbandin-dhadar-cargo-vehicle-shooting",
@@ -17,6 +17,19 @@
       "eventDate": "2026-11-22",
       "sourceUrls": [
         "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
+    {
+      "slug": "2026-11-21-chagai-khargoshkan-roadside-explosion-three-killed",
+      "date": "2026-11-21",
+      "region": "巴基斯坦／俾路支省／Chagai／Khargoshkan",
+      "category": "security",
+      "title": "巴基斯坦Chagai：Dalbandin西南Khargoshkan路边爆炸致三名青年死亡",
+      "summary": "11月21日乌尔都语报道，七名青年骑三辆摩托车前往Khargoshkan途中，一辆摩托车触发路边爆炸物，三名16至19岁青年死亡；当地医院确认死因为爆炸。",
+      "body": "事实：巴基斯坦《Daily Jasarat》2026年11月21日报道，Dalbandin西南Khargoshkan地区七名青年分乘三辆摩托车出行，其中载有三人的摩托车在路边遭遇爆炸物并发生爆炸，三人当场死亡。报道援引医院负责人确认死因为爆炸，并称遇难者年龄为16至19岁。报道未提供爆炸物来源或布设时间，事件实际发生日未单独说明，暂按首次报道日登记。\n独立分析：这起事件的直接受害者是民间出行人员，说明Dalbandin周边非主干路段存在致命爆炸物暴露。爆炸物可能源于有意布设、遗留未爆物或其他来源，现有信息无法区分。其运营意义集中在项目周边村庄接触、社区人员摩托车出行、偏远施工点与非铺装便道，而非直接证明N40交通封锁。若后续发现同区域其他爆炸物，风险性质将从单点事故转为路线污染，需要更大范围的通行管控。\n行动参考：要求当地安全联络渠道确认Khargoshkan具体位置和警方勘查结果；暂缓人员进入事故附近未经检查的便道和野外区域，现场通行优先采用已确认路线；将社区联络员及司机收到的可疑物报告纳入同一地理记录。后续核查警方排爆发现、是否存在第二处装置、事故地点与既定项目路线的实际重合程度。\n来源：https://jasarat.com/2026/11/21/three-youths-killed/",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://jasarat.com/2026/11/21/three-youths-killed/"
       ]
     },
     {
