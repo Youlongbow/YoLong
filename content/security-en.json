@@ -4,8 +4,22 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-23",
-  "total": 134,
+  "total": 135,
   "events": [
+    {
+      "slug": "2026-11-23-libya-benghazi-russian-corvette-drone-strike",
+      "date": "2026-11-23",
+      "region": "Libya / Benghazi / Mediterranean",
+      "category": "maritime",
+      "title": "Libya/Benghazi: Russian Naval Corvette Sunk in Drone-Boat Strike as Ukraine Acknowledges Operation",
+      "summary": "Reuters reported on 23 November that Ukraine said it sank the Russian corvette Mercury at Benghazi naval base using maritime drones. Eastern Libyan authorities also reported a drone-boat attack on a merchant vessel and requested a UN investigation.",
+      "body": "Facts: Reuters reports dated 22–23 November describe the Russian naval corvette Mercury (also rendered Merkury) capsizing and sinking after a maritime-drone strike at Benghazi naval base. President Volodymyr Zelenskiy said Ukraine used seven naval drones and destroyed a Russian Ka-27 helicopter. Eastern Libyan authorities reported ten minor injuries among Russian and Libyan personnel. A Maltese-flagged merchant vessel was separately struck off Benghazi; its crew was rescued. Eastern Libyan authorities requested a UN investigation into the drones' origins and alleged foreign involvement. Russia had not publicly commented at the time. Specific claims about attribution, launch location and battle damage remain attributed to the respective parties.\nAssessment: The significant change is the geographic extension of Russia–Ukraine maritime hostilities into North African port waters. Kyiv may be seeking to disrupt Russian Mediterranean logistics and increase the costs of Moscow's African military presence. An alternative explanation is a time-sensitive strike against a particular replenishment opportunity rather than a sustained new Libyan campaign. Eastern Libyan authorities, which maintain security ties with Moscow, now face pressure over port sovereignty, foreign military access and relations with rival western Libyan authorities. The reported merchant-vessel incident extends the immediate exposure beyond naval assets to commercial shipping, port calls, crews and war-risk insurance. There is no reported basis for treating all Benghazi port operations as suspended.\nOperational decisions: Operators planning Benghazi port calls, transshipment or offshore personnel movements should obtain current navigation notices, check war-risk cover and diversion costs, and confirm berth windows and crew-security arrangements with carriers. Track four indicators: formal port restrictions; repeat attacks on commercial vessels; follow-on Russian or Ukrainian actions and claims; and any escalation between eastern and western Libyan political actors. Repeated attacks affecting civilian sea lanes would justify revising route risk ratings and schedules.\nSources: https://www.reuters.com/world/europe/zelenskiy-says-ukraine-sank-russian-corvette-near-libyas-coast-hit-cargo-ship-2026-11-23/ ; https://www.reuters.com/world/middle-east/libyas-eastern-government-suspects-drone-attack-caused-explosion-russian-ship-2026-11-22/",
+      "eventDate": "2026-11-22",
+      "sourceUrls": [
+        "https://www.reuters.com/world/europe/zelenskiy-says-ukraine-sank-russian-corvette-near-libyas-coast-hit-cargo-ship-2026-11-23/",
+        "https://www.reuters.com/world/middle-east/libyas-eastern-government-suspects-drone-attack-caused-explosion-russian-ship-2026-11-22/"
+      ]
+    },
     {
       "slug": "2026-11-22-chagai-dalbandin-dhadar-cargo-vehicle-shooting",
       "date": "2026-11-22",
