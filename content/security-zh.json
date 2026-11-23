@@ -3,9 +3,22 @@
   "lang": "zh",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
-  "snapshotDate": "2026-11-22",
-  "total": 132,
+  "snapshotDate": "2026-11-23",
+  "total": 133,
   "events": [
+    {
+      "slug": "2026-11-22-chagai-dalbandin-dhadar-cargo-vehicle-shooting",
+      "date": "2026-11-22",
+      "region": "巴基斯坦／俾路支省／Chagai／Dalbandin",
+      "category": "transport",
+      "title": "巴基斯坦Chagai：Dalbandin附近货运车辆遭枪击，司机死亡三人受伤",
+      "summary": "11月22日报道，Quetta–Taftan公路Dalbandin附近Dhadar路段一辆从Taftan驶来的货运车辆遭武装人员射击，司机死亡、三人受伤；当地另有货车被焚。消息来自War Monitor援引警方的报道。",
+      "body": "事实：War Monitor于2026年11月22日18:41刊文，援引警方称，四人乘坐的货运车辆从Taftan向Dalbandin行驶，在Dhadar附近遭不明武装人员开火，司机当场死亡、另外三人受伤。同一区域另有货车遭纵火，报道指涉事车辆没有安全护送。11月23日The Balochistan Post乌尔都语报道也提到Dalbandin Dhadar货运车辆遭枪击、司机死亡和三人受伤。责任组织与袭击动机尚未确定。\n独立分析：袭击发生在连接Quetta、Dalbandin与Taftan边境贸易的公路走廊，暴露出商业货运在常规通行状态下遭遇直接暴力的风险。单次枪击与焚车既可能属于针对物流活动的经济胁迫，也可能涉及地方武装抢劫或报复；当前证据支持货运走廊安全风险上升这一运营判断，尚不足以确定组织性封锁。运输企业可能面临司机拒驶、临时停运、保险与护送成本上升及货物交付延期。应将涉事路段的车辆通行安排与项目人员行程分别评估，不据此宣布整条N40封闭。\n行动参考：对未来48小时经过Dalbandin–Taftan的非必要商业运输重新评估；向当地运输商和警方确认涉事公里点、货车焚毁位置、是否出现正式交通管制以及可用护送条件；在获得明确道路状态前保留可取消的发车安排。后续重点观察该路段72小时内是否再发货车袭击、警方是否发布交通限制、承运商是否集体停运，以及有无组织公开认领。\n来源：https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate",
+      "eventDate": "2026-11-22",
+      "sourceUrls": [
+        "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
     {
       "slug": "2026-11-21-oman-khasab-two-tanker-projectile-strikes",
       "date": "2026-11-21",

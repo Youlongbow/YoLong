@@ -3,9 +3,22 @@
   "lang": "en",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
-  "snapshotDate": "2026-11-22",
-  "total": 132,
+  "snapshotDate": "2026-11-23",
+  "total": 133,
   "events": [
+    {
+      "slug": "2026-11-22-chagai-dalbandin-dhadar-cargo-vehicle-shooting",
+      "date": "2026-11-22",
+      "region": "Pakistan / Balochistan / Chagai / Dalbandin",
+      "category": "transport",
+      "title": "Pakistan Chagai: Driver killed and three injured in cargo-vehicle shooting near Dalbandin",
+      "summary": "A 22 November report citing police says gunmen shot at a Taftan-to-Dalbandin cargo vehicle near Dhadar on the Quetta–Taftan highway, killing the driver and injuring three passengers; another truck was reportedly burned nearby.",
+      "body": "Reported facts: War Monitor published on 22 November 2026 at 18:41, citing police reports that unidentified gunmen opened fire on a goods vehicle carrying four people from Taftan towards Dalbandin near Dhadar. The driver died and three others were injured. Another truck was reportedly set ablaze in the area, and the outlet says the vehicles lacked security escorts. A 23 November Urdu-language report by The Balochistan Post also describes the fatal Dhadar shooting. Responsibility and motive have not been established.\nAssessment: This incident affects the commercial road corridor linking Quetta, Dalbandin and the Taftan border. The combination of gunfire and reported arson creates direct exposure for freight operators, although the evidence does not yet distinguish an organized economic interdiction campaign from localized armed criminality or retaliation. Potential operational transmission includes driver refusals, suspended dispatches, escort and insurance costs, and delayed deliveries. The incident does not establish closure of the entire N40 corridor.\nOperational response: Reassess discretionary freight movements through the Dalbandin–Taftan section over the next 48 hours. Obtain the precise incident kilometer point, location of the second burned truck, formal police traffic instructions and escort availability from local transport partners. Preserve dispatch flexibility pending route-specific confirmation. Watch for repeat truck attacks within 72 hours, official restrictions, carrier stoppages and any credible claim of responsibility.\nSource: https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate",
+      "eventDate": "2026-11-22",
+      "sourceUrls": [
+        "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
     {
       "slug": "2026-11-21-oman-khasab-two-tanker-projectile-strikes",
       "date": "2026-11-21",
