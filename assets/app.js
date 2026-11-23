@@ -1,3 +1,4 @@
+import { initSharing } from './share.js';
 import { initGoogleAnalytics } from './analytics.js';
 import { renderCourseTable } from './course-tables.js';
 const $ = selector => document.querySelector(selector);
@@ -257,7 +258,7 @@ function researchList(s,compact=false){
 function eventHref(e){return '/security/'+lang+'/'+e.slug+'/'}
 function eventCard(e){
  const summary=String(e.summary||'').slice(0,350);
- return '<article class="event"><div class="date">'+esc(e.date)+'<div>'+esc(e.region)+'</div></div><div><div class="meta">'+esc(txt.category[e.category]||txt.category.security)+' / RAVEN ARCHIVE</div><h3><a class="detail-link" href="'+eventHref(e)+'">'+esc(e.title)+'</a></h3><p>'+esc(summary)+'</p><a class="source detail-link" href="'+eventHref(e)+'">'+txt.detail+' ↗</a></div></article>';
+ return '<article class="event"><div class="date">'+esc(e.date)+'<div>'+esc(e.region)+'</div></div><div><div class="meta">'+esc(txt.category[e.category]||txt.category.security)+' / RAVEN ARCHIVE</div><h3><a class="detail-link" href="'+eventHref(e)+'">'+esc(e.title)+'</a></h3><p>'+esc(summary)+'</p><a class="source detail-link" href="'+eventHref(e)+'">'+txt.detail+' ↗</a><button class="event-share" data-share-event="'+esc(e.slug)+'">'+(lang==='zh'?'分享':'Share')+'</button></div></article>';
 }
 function securityList(s,compact=false){
  const records=securityData?.events || [];
@@ -537,6 +538,7 @@ try{
  $('#app').innerHTML=header()+'<main class="'+(section==='home'?'home-layout':'interior-layout')+' section-'+section+'">'+content+'</main>'+footer(s);
  if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
+ initSharing({lang,events:securityData?.events||[]});
  initGoogleAnalytics(site.analytics, {lang, section});
  window.requestAnimationFrame(finishBrandTransition);
 }catch(error){
