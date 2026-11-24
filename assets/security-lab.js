@@ -318,44 +318,63 @@ function initStudio(lang,library){
   const q=state(),detail=$('#studio-zone-detail');detail.replaceChildren();detail.append(make('h3',t(q.n)),make('p',t(scenes[scene].desc)),make('p',t(q.purpose)),make('label',z?'安保政策':'Security policy'),make('p',t(q.policy)),make('label',z?'管理责任':'Accountability'),make('p',t(q.owner)),make('label',z?'当前配置的运营规则':'Operating rule for this configuration'),make('p',t(q.profiles[config[zone]].rule)));
   host=$('#studio-config');host.replaceChildren();q.profiles.forEach((profile,i)=>btn(host,t(profile.n),()=>{config[zone]=i;selected=-1;renderControls();draw()},config[zone]===i));
   host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'当前配置 · 组件库关联':'Current configuration · linked components'));
-  keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span',t(library.models[i].n)),make('div',t(devices[k]||P('支持区域运营','Supports zone operation')),'studio-component-role'));row.append(txt);btn(row,z?'定位':'Locate',()=>{selected=j;draw()},selected===j);btn(row,z?'详情':'Details',()=>library.openModel(i));host.append(row)});
+  keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span','0'+(j+1)+' / '+t(library.models[i].n)),make('div',t(devices[k]||P('支持区域运营','Supports zone operation')),'studio-component-role'));row.append(txt);btn(row,z?'定位':'Locate',()=>{selected=j;draw()},selected===j);btn(row,z?'详情':'Details',()=>library.openModel(i));host.append(row)});
   host=$('#studio-roles');host.replaceChildren();host.className='studio-roles';host.append(make('label',z?'人员角色与授权示例':'Role and authorization example'));const select=make('select');select.setAttribute('aria-label',z?'人员角色':'Person role');[P('访客','Visitor'),P('普通员工','General employee'),P('指定业务责任人','Designated business owner')].forEach((a,i)=>{const opt=make('option',t(a));opt.value=i;select.append(opt)});select.value=String(role);select.onchange=()=>{role=Number(select.value);renderControls()};host.append(select,make('p',q.roles.includes(role)?(z?'该角色可按本区域规定办理正常业务。':'This role can conduct ordinary business under the zone policy.'):(z?'由区域责任人按业务需求另行办理授权。':'Separate authorization is arranged by the zone owner according to business need.')));
-  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'分区':'Zones',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'设备':'Devices',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'建筑与家具':'Architecture & furniture',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);
+  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'分区':'Zones',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'设备':'Devices',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'工业环境':'Industrial context',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);
   host=$('#studio-comparison');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>{const card=make('article');const label=make('div','ZONE 0'+(i+1),'over');card.append(label,make('h3',t(q.n)),make('p',t(q.policy)),make('p',t(q.profiles[config[i]].n)+' · '+t(q.profiles[config[i]].rule)),make('p',(z?'配置：':'Configuration: ')+keys(i).map(k=>{const j=find(k);return j>=0?t(library.models[j].n):k}).join(z?'、':', ')));btn(card,z?'查看分区':'Inspect zone',()=>{zone=i;selected=-1;renderControls();draw()},zone===i);host.append(card)});
-  $('#studio-legend').textContent=(z?'示意场景 · 非实际安装位置':'Illustrative scene · no installation specification')+' / '+t(scenes[scene].n);
+  $('#studio-legend').textContent=(z?'行业概念场景 · 设备展示区用于选型说明':'Industry vignette · separate equipment study strip')+' / '+t(scenes[scene].n);
  }
  const ctx=C.getContext('2d');if(!ctx)return;
  function box(x,y,z,w,h,d,k){return [x,y,z,w,h,d,k]}
  const zonesX=[-4.4,0,4.4],metal='#b8c1c4',wall='#84939a',wood='#a38c73',floor='#3c494e';
  function geometry(){
   const solids=[];
-  const put=(p,g=-1,device=-1)=>solids.push({p,g,device});
-  const B=(...a)=>put(box(...a));
-  B(0,-.35,0,13.65,.28,6.65,'#2c3439');
-  for(let i=0;i<3;i++){
-   const x=zonesX[i],col=showColors?palette[i]:floor;
-   put(box(x,-.07,0,4.3,.07,6.1,col),i);
-   for(let j=0;j<6;j++)B(x,-.009,-2.65+j*.96,4.25,.009,.018,'#a0a8a5');
-   for(let j=0;j<4;j++)B(x-1.6+j*1.05,-.009,0,.018,.009,6,'#a0a8a5');
-   if(showFurniture){
-    B(x,0,-3.03,4.26,1.7,.16,wall);B(x,.85,-2.93,2.8,.62,.045,'#506c7a');
-    B(x,1.47,-2.95,3,.10,.12,metal);
-    for(let j=0;j<3;j++)B(x-1.4+j*1.4,.85,-2.87,.045,.62,.04,metal);
-    B(x,0,-2.8,4.26,.12,.1,metal);
-    if(i===0){if(!showDevices){B(x-.9,0,-1.15,2.15,.7,.68,wood);B(x-.9,.7,-1.15,2.28,.07,.77,metal);}for(let j=0;j<3;j++){B(x-1.4+j*.72,0,.85,.61,.36,.66,'#4a565b');B(x-1.4+j*.72,.34,1.13,.61,.42,.12,'#647078')}}
-    if(i===1&&scene!==1){for(let j=0;j<2;j++){const tx=x-1+j*1.9;B(tx,0,-1,.12,.76,.6,metal);B(tx,.76,-1,1.5,.075,.78,wood);B(tx,.84,-1.18,.85,.45,.10,'#253138');B(tx,.92,-1.11,.73,.29,.025,'#526b7c');B(tx,0,-.35,.52,.42,.52,'#535f64')}}
-    if(i===1&&scene===1){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-.8,1.45,1.2,1.45,metal);B(tx,.4,-.04,.72,.55,.10,'#263238');B(tx,.5,.03,.57,.35,.025,'#506f7d');B(tx,1.2,-.8,1.25,.08,1.2,'#8d9a9e')}}
-    if(i===2&&!showDevices){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-1.45,1.55,1.55,.9,'#5c686e');for(let k=0;k<3;k++){B(tx,.16+k*.45,-.96,1.39,.39,.06,'#76858b');B(tx,.29+k*.45,-.91,.40,.04,.06,metal)}}}
-    if(i<2){B(x+2.15,0,-2.1,.10,1.3,1.7,metal);B(x+2.15,0,2.0,.10,1.3,1.7,metal)}
-   }
-   if(showDevices){const slots=[[-1.55,0,1.65],[-.55,0,1.65],[.55,0,1.65],[1.55,0,1.65]];
-    keys(i).forEach((k,j)=>{let index=find(k);if(index<0)return;let model=library.models[index],extent=Math.max(.5,...model.b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.6)));let slot=slots[j].slice(),size=.52;const fixtures={'visitor-service-counter':[-.8,0,-1.12,1.0],'visitor-kiosk':[1.48,0,-.28,.62],'dome-camera':[.8,1.35,-2.35,.36],'credential-reader':[1.63,.7,-.9,.25],'access-control':[1.32,0,-.9,.65],'glazed-partition':[0,0,.35,1.16],'secure-storage-cabinet':[-1.0,0,-1.7,.78],'document-safe':[.95,0,-1.65,.62],'equipment-enclosure':[1.43,0,-2.12,.62],'environmental-monitor':[.3,.9,-2.75,.28],'incident-management-workstation':[.6,0,.05,.85],'security-lighting':[1.65,0,1.9,.65],'mesh-tool-cage':[-1.0,0,-1.6,.85],'public-address-speaker':[-1.65,1.25,-2.7,.26],'protective-railing':[0,0,1.05,.96],'portable-crowd-barrier':[0,0,1.4,.8],'emergency-assistance-station':[1.62,0,1.55,.55]};if(fixtures[k]){const a=fixtures[k];slot=a.slice(0,3);size=a[3]}const scale=size/extent;
-     if(i===zone&&j===selected)put(box(x+slot[0],.008,slot[2],.92,.025,.92,'#d7b075'),i,j);
-     model.b.forEach(p=>{let v=p.slice();v[0]=x+slot[0]+p[0]*scale;v[1]=slot[1]+.03+(p[1])*scale;v[2]=slot[2]+p[2]*scale;for(let q=3;q<=5;q++)v[q]*=scale;put(v,i,j)});
-    });
+  const put=(p,g=-1,device=-1,tilt=0)=>solids.push({p,g,device,tilt});
+  const B=(x,y,z,w,h,d,k,shape)=>put([x,y,z,w,h,d,k,shape]);
+  const cyl=(x,y,z,w,h,d,k)=>B(x,y,z,w,h,d,k,'cylinder');
+  const dome=(x,y,z,w,h,d,k)=>B(x,y,z,w,h,d,k,'dome');
+  const shell='#a4adb0',roof='#5e6d74',glass='#405c68',sand='#8d8170',asphalt='#545c60';
+  const building=(x,z,w,d,h,col=shell)=>{B(x,0,z,w,h,d,col,'rounded');B(x,h,z,w+.12,.12,d+.12,roof);for(let j=0;j<Math.floor(w/.75);j++){const wx=x-w/2+.4+j*.75;B(wx,h*.49,z+d/2+.015,.43,.31,.035,glass);B(wx,h*.49,z+d/2+.04,.035,.31,.025,'#aebbc0')}};
+  const tree=(x,z)=>{cyl(x,0,z,.09,.5,.09,'#6a6250');dome(x,.45,z,.65,.5,.65,'#697d64')};
+  const tank=(x,z,w,h)=>{cyl(x,0,z,w+.17,.10,w+.17,'#747e80');cyl(x,.1,z,w,h,w,'#9da9ac');dome(x,h+.1,z,w,.22,w,'#c0c9c8');for(const y of [.24,h*.45,h*.86])cyl(x,y,z,w+.04,.045,w+.04,'#829195')};
+  const panel=(x,z)=>{cyl(x,0,z,.08,.55,.08,'#909da2');const p=[x,.50,z,1.10,.065,.77,'#29475f'];put(p,-1,-1,.26);for(let k=0;k<3;k++){const q=[x-.36+k*.36,.574,z,.014,.016,.73,'#91a5b3'];put(q,-1,-1,.26)}};
+  // An abstract industrial vignette plus a separate component-study strip. No deployment geometry.
+  B(0,-.30,0,12.7,.28,8.1,'#2b3338');
+  B(0,-.025,-.60,12.4,.025,6.6,scene===1?sand:asphalt);
+  if(showColors){put(box(0,.002,-.60,12.3,.012,6.5,palette[zone]),zone);B(0,.018,-.6,12.16,.009,6.36,scene===1?'#8f8472':'#626c6e')}
+  if(showFurniture){
+   if(zone===0){
+    if(scene===0){tank(-3.4,-1.0,2.1,1.45);tank(-.7,-1.6,1.8,1.25);tank(1.6,-.9,2.0,1.55);building(4.15,-1.25,2.1,1.8,1.02);}
+    else if(scene===1){for(let i=0;i<4;i++)B(-1.6,-.01+i*.20,-1.0,8.5-i*1.5,.20,4.6-i*.62,['#9d8b71','#ad9a7a','#b9a78a','#c0ae95'][i]);building(3.9,1.3,2.1,1.4,.82,'#b3a995');B(-2.9,.04,1.78,1.2,.50,.70,'#b9a06b');cyl(-3.15,.04,2.18,.27,.23,.27,'#434a4e');cyl(-2.55,.04,2.18,.27,.23,.27,'#434a4e')}
+    else if(scene===2){for(let i=0;i<3;i++)for(let j=0;j<5;j++)panel(-4.5+j*1.5,-2.2+i*1.25);building(4.35,-.9,2.0,2.0,.85)}
+    else{building(-1.6,-.75,4.4,3.0,1.65);for(let i=0;i<2;i++){let x=2.4+i*2;for(let j=0;j<7;j++)cyl(x,.28*j,-1.4,[1.50,1.30,1.12,1.04,1.05,1.18,1.40][j],.28,[1.50,1.30,1.12,1.04,1.05,1.18,1.40][j],'#a5adae')}building(-4.7,1.1,1.5,1.5,.85)}
+   }else if(zone===1){
+    B(0,.025,-.4,3.0,.025,6.0,'#3f474b');B(0,.05,-.4,.055,.009,5.8,'#c2bb9d');
+    B(-3.45,.025,-.45,3.25,.035,4.9,'#969f9d');B(3.55,.025,-.45,3.10,.035,4.9,'#909b9a');
+    building(-3.6,-1.45,2.6,1.8,1.1);building(3.65,-1.45,2.4,1.8,.95,scene===1?'#b7a68e':shell);
+    B(-3.6,0,.8,1.55,.12,1.25,'#687779');B(3.6,0,.8,1.55,.12,1.25,'#687779');
+    // Distinct industrial identity, represented as small contextual assets rather than a real entry plan.
+    if(scene===0)tank(-4.6,1.5,.75,.7);
+    if(scene===1)B(-4.7,.04,1.5,1.0,.50,.65,'#b19b70','rounded');
+    if(scene===2)panel(-4.6,1.5);
+    if(scene===3)B(-4.6,0,1.5,.8,.7,.65,'#8c9b9e','rounded');
+   }else{
+    const col=scene===1?'#b4a48e':scene===2?'#c4c6b7':'#aeb7b8';
+    building(-3.8,-1.8,3.1,1.45,.92,col);building(0,-1.8,3.1,1.45,.92,col);building(3.8,-1.8,2.8,1.45,.92,col);
+    B(0,0,.3,8.7,.05,1.2,'#8d9795');
+    building(-3.8,1.55,2.6,1.3,.82,col);building(3.8,1.55,2.6,1.3,.82,col);
+    B(0,0,1.45,2.7,.07,1.4,'#758775');tree(-1.05,1.5);tree(1.05,1.5);
+    if(scene===2){panel(-4.5,.35);panel(4.5,.35)}
+    if(scene===1){B(-.8,0,.15,.55,.26,.32,'#87938b');B(.8,0,.15,.55,.26,.32,'#87938b')}
    }
   }
-  return solids
+  // Separate component visualization: scaled for legibility, deliberately not an installation plan.
+  B(0,-.025,3.0,12.4,.035,1.55,'#38454d');
+  if(showDevices){keys(zone).forEach((k,j)=>{const index=find(k);if(index<0)return;const model=library.models[index];const extent=Math.max(.5,...model.b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.8)));const scale=.61/extent,x=-4.5+j*3;
+    put(box(x,.015,3,2.63,.075,1.25,j===selected?'#c0a274':'#56636c'),zone,j);
+    model.b.forEach(p=>{let v=p.slice();v[0]=x+p[0]*scale;v[1]=.10+p[1]*scale;v[2]=3+p[2]*scale;for(let q=3;q<=5;q++)v[q]*=scale;put(v,zone,j)});
+  })}
+  return solids;
  }
  function draw(){
   if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(render)
@@ -363,17 +382,17 @@ function initStudio(lang,library){
  function render(){
   raf=0;const w=C.clientWidth,h=C.clientHeight;if(!w||!h)return;const d=Math.min(window.devicePixelRatio||1,2);C.width=w*d;C.height=h*d;ctx.scale(d,d);
   const bg=ctx.createRadialGradient(w*.5,h*.42,10,w*.5,h*.42,Math.max(w,h)*.75);bg.addColorStop(0,'#303c44');bg.addColorStop(1,'#101519');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
-  const s=Math.min(w/15.6,h/9.6)*zoom,cos=Math.cos(yaw),sin=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const s=Math.min(w/14.2,h/10.5)*zoom,cos=Math.cos(yaw),sin=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
   function project([x,y,z]){let X=x*cos-z*sin,Z=x*sin+z*cos;return[w/2+X*s,h*.48+(Z*sp-y*cp)*s,Z*cp+y*sp]}
   function polygon(q,color,stroke){if(!q.length)return;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.55;ctx.stroke()}}
   function shade(color,v){let n=parseInt(color.slice(1),16);return 'rgb('+[n>>16,(n>>8)&255,n&255].map(x=>Math.round(Math.min(255,x*v))).join(',')+')'}
   // Ground contact shadow.
   ctx.save();ctx.filter='blur(12px)';polygon([[-6.95,-.55,-3.5],[6.95,-.55,-3.5],[6.95,-.55,3.5],[-6.95,-.55,3.5]].map(project),'#05080b');ctx.restore();
   const faces=[];
-  for(const {p,g,device} of geometry()){const m=library.mesh(p);const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
+  for(const {p,g,device,tilt} of geometry()){const m=library.mesh(p);if(tilt){const ct=Math.cos(tilt),st=Math.sin(tilt);m.vertices=m.vertices.map(([x,y,z])=>{const dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
   faces.sort((a,b)=>a.depth-b.depth).forEach(f=>polygon(f.q,f.color,f.smooth?null:'#222d3240'));
-  // Floating labels, independent of model scale.
-  for(let i=0;i<3;i++){const p=project([zonesX[i],0,-3.5]);ctx.fillStyle=i===zone?'#f5e4c7':'#d5e0e5';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText('ZONE 0'+(i+1),p[0],Math.max(30,p[1]-10));}
+  ctx.textAlign='center';ctx.fillStyle='#f5e4c7';ctx.font='bold 12px monospace';const titlePos=project([0,0,-3.9]);ctx.fillText(t(scenes[scene].n)+' / '+t(state().n),w/2,Math.max(42,titlePos[1]-12));
+  if(showDevices){for(let j=0;j<keys(zone).length;j++){const p=project([-4.5+j*3,.05,3.7]);ctx.fillStyle=j===selected?'#f0c583':'#d0dbe0';ctx.font='bold 11px monospace';ctx.fillText('0'+(j+1),p[0],Math.min(h-12,p[1]+8))}}
   ctx.textAlign='left';ctx.font='12px monospace';ctx.fillStyle='#b7c4cc';ctx.fillText('RAVEN / CONCEPT ARCHITECTURE',14,23);
   if(showDevices&&selected>=0){ctx.fillStyle='#edc58c';ctx.fillText(z?'高亮：当前选中组件':'HIGHLIGHT: selected component',14,h-18)}
  }
