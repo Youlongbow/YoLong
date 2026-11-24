@@ -19,29 +19,30 @@ try {
   await page.locator('#lab-modules button').first().waitFor({timeout:30000});
   assert.equal(await page.locator('#lab-modules button').count(),85);
   await page.locator('#studio-scenes button').first().waitFor();
-  assert.equal(await page.locator('#studio-scenes button').count(),3);
+  assert.equal(await page.locator('#studio-scenes button').count(),4);
   const sc=page.locator('#studio-canvas');
-  for(let s=0;s<3;s++){
+  for(let s=0;s<4;s++){
    await page.locator('#studio-scenes button').nth(s).click();
    assert.equal(await page.locator('#studio-zones button').count(),3);
    for(let i=0;i<3;i++){
     await page.locator('#studio-zones button').nth(i).click();
-    assert.equal(await page.locator('#studio-components .studio-device').count(),4);
-    const initial=await page.locator('#studio-components').innerText();
-    await page.locator('#studio-config button').nth(1).click();
-    assert.equal(await page.locator('#studio-components .studio-device').count(),4);
-    assert.notEqual(await page.locator('#studio-components').innerText(),initial);
-    await page.locator('#studio-config button').first().click();
-    await page.locator('#studio-components .studio-device button').first().click();
-    await page.locator('#studio-roles select').selectOption('2');
-    assert(await page.locator('#studio-roles p').innerText());
-    const canvasData=await sc.evaluate(c=>c.toDataURL());
-    assert(canvasData.length>1000,'Scene rendered');
+    assert.equal(await page.locator('#studio-config button').count(),3);
+    const configurations=new Set();
+    for(let v=0;v<3;v++){
+     await page.locator('#studio-config button').nth(v).click();
+     assert.equal(await page.locator('#studio-components .studio-device').count(),4);
+     configurations.add(await page.locator('#studio-components').innerText());
+     await page.locator('#studio-components .studio-device button').first().click();
+     await page.locator('#studio-roles select').selectOption('2');
+     assert(await page.locator('#studio-roles p').innerText());
+     assert((await sc.evaluate(c=>c.toDataURL())).length>1000,'Industry area rendered');
+    }
+    assert.equal(configurations.size,3);
    }
   }
   await page.locator('#studio-components .studio-device button').nth(1).click();
   assert(await page.locator('#lab-info h2').innerText());
-  console.log('STUDIO PASS',lang,'3 scenes, 9 zones, 18 configurations');
+  console.log('STUDIO PASS',lang,'4 industries, 12 areas, 36 configurations');
   const categories=await page.locator('#lab-categories button').allTextContents();
   assert.equal(categories.length,5);
   for(const count of [30,30,15,10])assert(categories.some(x=>x.endsWith('· '+count)));
