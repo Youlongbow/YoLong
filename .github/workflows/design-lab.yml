@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +26,19 @@ jobs:
       - run: node scripts/build.mjs
       - run: npm install --no-save playwright@1.56.1
       - run: npx playwright install --with-deps chromium
-      - run: node scripts/test-lab.mjs
+      - name: Exercise all industrial models with actual WebGL pixel assertions
+        env:
+          LAB_REQUIRE_WEBGL: '1'
+          LAB_CAPTURE_DIR: lab-visual-review
+        run: node scripts/test-lab.mjs
+      - name: Preserve visual review captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab-visual-review
+          path: lab-visual-review
+          if-no-files-found: warn
+          retention-days: 14
   live-route:
     runs-on: ubuntu-latest
     timeout-minutes: 8
