@@ -46,6 +46,7 @@ const txt=phrases[lang];
 
 function activeUrl(target){
  if(section==='home') return '/'+target+'/';
+ if(section==='lab')return '/lab/'+target+'/'+location.search;
  if(!slug) return '/'+section+'/'+target+'/';
  if(section==='security') return '/security/'+target+'/'+slug+'/';
  if(section==='training') return '/training/'+target+'/'+slug+'/';
@@ -132,7 +133,7 @@ function expertise(s){
   '</section>';
 }
 function platforms(s){
- const services=[['01',s.training,s.trainingLead,'/training/'+lang+'/'],['02',s.career,s.careerLead,apps.careers],['03',s.ops,s.opsLead,apps.ops]];
+ const services=[['01',s.training,s.trainingLead,'/training/'+lang+'/'],['02',s.career,s.careerLead,apps.careers],['03',s.ops,s.opsLead,apps.ops],['04',lang==='zh'?'安防设计实验室':'Security Design Lab',lang==='zh'?'交互式三维模型、安防设备、应用场景及设计概念。':'Interactive 3D models, security equipment, application scenarios and design concepts.','/lab/'+lang+'/']];
  return '<section class="sec shell" id="platforms">'+blockTitle(s,txt.platforms)+'<div class="cards3">'+services.map(x=>'<a class="feature" href="'+esc(x[3])+'" target="_blank" rel="noopener"><span class="num">'+x[0]+' / RAVEN</span><h3>'+esc(x[1])+'</h3><p>'+esc(x[2])+'</p><span class="arrow">↗</span></a>').join('')+'</div></section>';
 }
 function richInline(input){
