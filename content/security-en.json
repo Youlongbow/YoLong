@@ -3,9 +3,22 @@
   "lang": "en",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
-  "snapshotDate": "2026-11-23",
-  "total": 135,
+  "snapshotDate": "2026-11-24",
+  "total": 138,
   "events": [
+    {
+      "slug": "2026-11-23-drc-ituri-ebola-responders-fighting-hospital",
+      "date": "2026-11-23",
+      "region": "DR Congo / Ituri",
+      "category": "security",
+      "title": "DR Congo Ituri: Fighting traps Ebola responders inside hospital and disrupts outbreak response",
+      "summary": "A 23 November UN report says fighting near a hospital in Ituri disrupted Ebola services and forced health and aid teams to shelter in a maternity ward for more than 24 hours.",
+      "body": "Facts | On 23 November 2026, UN News reported that WHO Director-General Tedros Adhanom Ghebreyesus said on 22 November that heavy fighting near an Ituri hospital interrupted healthcare and the Ebola response. Medical and aid workers sheltered in a maternity ward for more than 24 hours while WHO sought safe passage. Neither the exact facility nor the combatants were identified in the report. The reported interruption therefore applies to the affected hospital, not every medical facility in Ituri.\nAssessment | Ituri faces the simultaneous pressures of armed conflict and a Bundibugyo Ebola outbreak. The operational change is that violence has actually interrupted disease-response capability. Fighting around the facility and loss of safe access provide the best-supported explanation; the available account does not establish deliberate targeting of health workers. Delays in case detection, contact tracing, sample movements, isolation and treatment could accumulate if access remains restricted. For mining, construction and logistics operators, the immediate business exposure is the reliability of emergency care and medically controlled referrals for personnel, including expatriates.\nManagement actions | Require the medical provider serving each affected project to confirm functioning referral facilities, transport authorizations, travel time and infection-control arrangements. Integrate febrile-illness reporting, on-site isolation and medically supervised transfers into duty-of-care plans. Reauthorize non-essential journeys near the affected facility against specific current security notices. Suspected Ebola cases require health-authority-directed handling rather than improvised relocation.\nIndicators | (1) WHO confirmation of the team's safe exit and resumption of hospital services; (2) identification and reopening of access to the affected site; (3) changes in diagnostic turnaround and contact-tracing performance in the health zone; (4) further fighting that restricts other medical facilities. A contained, short disruption would be managed through referrals; repeated disruption across facilities could require lower site occupancy and a revised medevac strategy.\nSources | UN News, 23 November, relaying the WHO chief; Reuters, 22 November. https://www.un.org/en/heavy-fighting-ituri-traps-dr-congo-ebola-responders-who ; https://www.reuters.com/business/healthcare-pharmaceuticals/who-chief-says-fighting-near-congo-ebola-outbreak-area-disrupts-response-efforts-2026-11-22/",
+      "sourceUrls": [
+        "https://www.un.org/en/heavy-fighting-ituri-traps-dr-congo-ebola-responders-who",
+        "https://www.reuters.com/business/healthcare-pharmaceuticals/who-chief-says-fighting-near-congo-ebola-outbreak-area-disrupts-response-efforts-2026-11-22/"
+      ]
+    },
     {
       "slug": "2026-11-23-libya-benghazi-russian-corvette-drone-strike",
       "date": "2026-11-23",
@@ -21,6 +34,19 @@
       ]
     },
     {
+      "slug": "2026-11-23-niger-niamey-tillaberi-foreign-national-kidnapping",
+      "date": "2026-11-23",
+      "region": "Niger / Niamey–Tillabéri (exact location disputed)",
+      "category": "personnel",
+      "title": "Niger: Foreign national reportedly abducted, with Niamey or Tillabéri road cited as possible location",
+      "summary": "MDMG Sahel reported on 23 November that a foreign national had been kidnapped on the night of 21 November; the location, nationality and alleged transfer to Mali remain source-level claims.",
+      "body": "Reported facts | On 23 November 2026, French-language outlet MDMG Sahel reported from multiple contacts that a foreign national was abducted in Niger on the night of Saturday, 21 November. Sources differed over whether it occurred within Niamey or on the Tillabéri–Niamey road. The outlet said early accounts suggested Saudi nationality and a possible transfer to the Ménaka area of Mali. Those are reported leads, not established official findings. No group had claimed responsibility; the outlet associated the incident with Islamic State Sahel, an attribution that remains the outlet's assessment.\nAssessment | Niamey concentrates expatriate residences, commercial premises and official missions, while the Tillabéri approach is an important travel exposure. Confirmation of a city kidnapping would point towards the ability to locate, approach and move a foreign target through an urban setting. Confirmation of a road abduction would put the emphasis on predictable journey patterns and exposure on the western approaches. The current reporting supports treating this as a significant foreign-national kidnapping candidate. Criminal facilitation, opportunistic abduction and insurgent-directed kidnapping remain possible operational explanations. Earlier foreign-hostage releases cited by the outlet make coercion and ransom relevant hypotheses, not demonstrated motives in this case.\nManagement | Distinguish residential and workplace exposure in Niamey from journey exposure on the Tillabéri corridor. Review expatriate night movements, pickup arrangements, driver vetting, accommodation access and disclosure of regular routes. Where travel west of the capital is unavoidable, have the security manager approve specific journeys using verified police and road information. Account for staff through company records rather than assumptions about the reported victim's nationality.\nIndicators | (1) Identification and confirmed location from police, diplomatic or family sources; (2) a credible claim or hostage-negotiation development; (3) checkpoint or movement restrictions on the Niamey–Tillabéri corridor; (4) a cluster of comparable incidents involving foreign personnel. The location finding determines whether residential protection or road-journey redesign should receive immediate priority.\nVerification | Single specialist local-media account. Original source: https://mdmgsahel.com/niger-nouvel-enlevement-dun-etranger/",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://mdmgsahel.com/niger-nouvel-enlevement-dun-etranger/"
+      ]
+    },
+    {
       "slug": "2026-11-22-chagai-dalbandin-dhadar-cargo-vehicle-shooting",
       "date": "2026-11-22",
       "region": "Pakistan / Balochistan / Chagai / Dalbandin",
@@ -31,6 +57,19 @@
       "eventDate": "2026-11-22",
       "sourceUrls": [
         "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
+    {
+      "slug": "2026-11-22-myanmar-yangon-mayangon-33-chinese-detained-scam-raid",
+      "date": "2026-11-22",
+      "region": "Myanmar / Mayangon, Yangon",
+      "category": "regulatory",
+      "title": "Myanmar Yangon: 105 detained in online-scam raid, including 33 Chinese nationals",
+      "summary": "State broadcaster Myanmar International TV reported on 22 November that a 20 November raid in Mayangon resulted in 105 arrests, including 25 Chinese men and eight Chinese women, on suspicion of online financial fraud.",
+      "body": "Officially reported action | Myanmar International TV reported on 22 November 2026 that a joint security team raided a residential property in Mayangon Township, Yangon, at about 11 p.m. on 20 November. Authorities detained 105 people: 25 Chinese men, eight Chinese women, two Thai women and 70 Myanmar nationals. Computers, telephones and networking devices were seized, with additional equipment found at a nearby address. The broadcaster attributed to preliminary investigators the claim that the group had run online financial scams since around May 2026 and recruited Chinese-speaking workers through Telegram. These are suspects subject to investigation and possible proceedings; the report does not establish individual criminal convictions.\nAssessment | The significant development is a large enforcement action involving Chinese nationals in a Yangon urban residential setting, rather than solely at a remote border compound. This expands the practical premises and contractor profiles that compliance teams may need to screen in Myanmar. The report cites a tip-off, which fits a discrete intelligence-led raid. A broader operation against linked international scam networks is another possible explanation but requires evidence connecting different locations and suspects.\nBusiness transmission | Lawful companies using Chinese-speaking personnel or outsourced digital operations in Myanmar should be prepared to document employment status, work authorization, property leases, business activity and ownership of IT equipment. Vet contractors and payment-processing partners against fraud indicators, and ensure that company records distinguish legitimate employees from third-party personnel. Large-scale searches may interrupt a linked property's operations even before courts resolve allegations. Consular access, investigation status and handling of personal or corporate equipment matter to affected individuals and businesses.\nIndicators | (1) Filed charges and the number of people actually prosecuted; (2) consular involvement, releases or repatriation of the 33 Chinese nationals; (3) subsequent searches in Mayangon or other Yangon townships; (4) asset-freeze, property-seizure or transaction restrictions. If enforcement expands across unrelated premises, strengthen sector-wide third-party audits; otherwise focus on verified direct relationships with the reported location.\nSource | Myanmar International TV, 22 November, citing authorities. https://www.myanmaritv.com/news/online-scam-crackdown-105-people-arrested-online-scam-crackdown-yangon",
+      "eventDate": "2026-11-20",
+      "sourceUrls": [
+        "https://www.myanmaritv.com/news/online-scam-crackdown-105-people-arrested-online-scam-crackdown-yangon"
       ]
     },
     {
