@@ -129,6 +129,8 @@ jobs:
             const response=await fetch(url,{cache:'no-store',headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(12000)});
             if(!response.ok)throw Error('JSON '+response.status+' '+url);
             const live=await response.json();
+            const config=await fetch(origin+'/content/site.json?verify='+stamp,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+            if(!config.ok || (await config.json()).preview!==false)throw Error('STILL_MARKED_PREVIEW '+origin+' status='+config.status);
             const liveSlugs=(live.events||[]).slice(0,5).map(x=>x.slug);
             if(live.events?.length!==source.total || liveSlugs.some((s,i)=>s!==source.head[i]))
               throw Error('STALE_ARCHIVE '+origin+' '+source.lang+' local='+source.total+' live='+live.events?.length+' localHead='+source.latest+' liveHead='+liveSlugs[0]);
