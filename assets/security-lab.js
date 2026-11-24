@@ -212,3 +212,125 @@ const cats=document.querySelector('#lab-categories');function showCat(cat){categ
 let down=null;C.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];drag=[e.clientX,e.clientY];C.setPointerCapture(e.pointerId)});C.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.012;pitch=Math.max(.08,Math.min(1.4,pitch+(e.clientY-drag[1])*.009));drag=[e.clientX,e.clientY];render()});C.addEventListener('pointerup',e=>{if(down&&Math.hypot(e.clientX-down[0],e.clientY-down[1])<5)pickAt(e);down=null});for(const ev of ['pointerup','pointercancel','lostpointercapture'])C.addEventListener(ev,()=>drag=null);
 document.querySelectorAll('.lab-controls button').forEach(b=>b.onclick=()=>{switch(b.dataset.act){case'base':showBase=!showBase;b.setAttribute('aria-pressed',String(showBase));break;case'top':pitch=1.55;break;case'front':pitch=.08;yaw=0;break;case'left':yaw-=.3;break;case'right':yaw+=.3;break;case'up':pitch=Math.min(1.4,pitch+.15);break;case'down':pitch=Math.max(.08,pitch-.15);break;case'explode':exploded=!exploded;b.setAttribute('aria-pressed',String(exploded));break;case'night':night=!night;b.setAttribute('aria-pressed',String(night));break;case'zoomIn':zoom=Math.min(1.7,zoom*1.15);break;case'zoomOut':zoom=Math.max(.55,zoom/1.15);break;default:yaw=.65;pitch=.42;zoom=1}render()});document.querySelector('#lab-search').addEventListener('input',e=>{query=e.target.value.toLowerCase().trim();showCat(category)});C.addEventListener('wheel',e=>{if(!e.ctrlKey)return;e.preventDefault();zoom=Math.max(.55,Math.min(1.7,zoom*Math.exp(-e.deltaY*.004)));render()},{passive:false});C.addEventListener('keydown',e=>{const actions={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down','+':'zoomIn','-':'zoomOut',Home:'reset'};if(actions[e.key]){e.preventDefault();document.querySelector('[data-act='+actions[e.key]+']').click()}});if(typeof ResizeObserver==='function')new ResizeObserver(render).observe(C);else window.addEventListener('resize',render);const wanted=new URL(location.href).searchParams.get('model');const found=models.findIndex((_,i)=>modelKey(i)===wanted);showCat('');if(found>=0)select(found);initStudio(lang,{models,mesh,modelKey,openModel:i=>{query='';document.querySelector('#lab-search').value='';showCat('');select(i);document.querySelector('#lab-catalog').scrollIntoView({behavior:'smooth'})}})
 }
+
+function initStudio(lang,library){
+ const z=lang==='zh',t=a=>a[z?0:1],$=s=>document.querySelector(s),C=$('#studio-canvas');if(!C)return;
+ const palette=['#668f84','#b39564','#a86b70'];
+ const P=(zh,en)=>[zh,en];
+ const devices={
+ 'visitor-service-counter':P('现场接待与信息服务','Reception and information service'),
+ 'visitor-kiosk':P('访客登记和告知','Visitor registration and notice'),
+ 'security-signage':P('空间信息与导向','Wayfinding and information'),
+ 'security-lighting':P('正常活动所需可视性','Visibility for ordinary activity'),
+ 'credential-reader':P('凭证与授权管理','Credential and authorization management'),
+ 'access-control':P('记录授权通行','Record authorized access'),
+ 'door-contact':P('门体状态管理','Door state management'),
+ 'video-management-system':P('视频数据治理及记录','Video data governance and recording'),
+ 'dome-camera':P('公共空间事件记录','Public-space event recording'),
+ 'secure-storage-cabinet':P('资产存取责任','Accountability for asset storage'),
+ 'document-safe':P('受管理文件存放','Managed document storage'),
+ 'emergency-assistance-station':P('公共求助服务','Public assistance service'),
+ 'glazed-partition':P('空间区分并保留视觉联系','Separate space while retaining visual connection'),
+ 'equipment-enclosure':P('设备存放与维护','Equipment storage and maintenance'),
+ 'mesh-tool-cage':P('共享工具交接','Shared tool issue and return'),
+ 'environmental-monitor':P('环境状态记录','Environmental condition recording'),
+ 'incident-management-workstation':P('事件记录及交接','Incident records and handover'),
+ 'public-address-speaker':P('公共信息传达','Public information'),
+ 'portable-crowd-barrier':P('临时服务流线组织','Temporary service circulation'),
+ 'protective-railing':P('日常人车空间管理','Ordinary pedestrian and vehicle separation')
+ };
+ const scenes=[
+ {n:P('企业办公楼','Corporate office'),desc:P('公共接待、共享办公、内部业务空间采用不同的使用权限和管理责任。','Public reception, shared office and internal workspaces have distinct permissions and owners.'),zones:[
+ {n:P('公共接待区','Public reception'),purpose:P('接待、咨询与等候','Reception, inquiry and waiting'),policy:P('公开服务时段对访客开放；工作人员提供接待与信息指引。','Open to visitors during service hours; staff provide reception and wayfinding.'),owner:P('前台 / 设施管理','Reception / facilities'),devices:['visitor-service-counter','visitor-kiosk','security-lighting','dome-camera'],alt:['visitor-service-counter','visitor-kiosk','emergency-assistance-station','security-lighting'],altName:P('服务与隐私优先','Service and privacy focus'),roles:[0,1,2]},
+ {n:P('共享工作区','Shared workspace'),purpose:P('员工办公、会议及经批准的协作','Staff work, meetings and approved collaboration'),policy:P('员工凭有效授权使用；访客由接待人员安排会议或陪同服务。','Staff use the space under valid authorization; visitors attend arranged meetings or accompanied service.'),owner:P('行政管理 / 部门负责人','Administration / department owners'),devices:['glazed-partition','credential-reader','access-control','secure-storage-cabinet'],alt:['visitor-kiosk','glazed-partition','secure-storage-cabinet','incident-management-workstation'],altName:P('预约协作模式','Booked collaboration'),roles:[1,2]},
+ {n:P('内部档案与设备区','Internal records and equipment'),purpose:P('文件、资产和设备维护','Records, assets and equipment servicing'),policy:P('按照工作职责批准访问；资产交接和检修由指定责任人记录。','Access is approved according to work responsibility; assigned owners record asset transfer and servicing.'),owner:P('资产管理 / IT与设施','Asset management / IT and facilities'),devices:['secure-storage-cabinet','document-safe','equipment-enclosure','environmental-monitor'],alt:['document-safe','secure-storage-cabinet','environmental-monitor','incident-management-workstation'],altName:P('档案交接模式','Records handover'),roles:[2]}]},
+ {n:P('制造与物流设施','Manufacturing and logistics'),desc:P('将访客服务、日常生产协作与资产保管的运营要求区分开。','Separate visitor service, routine production collaboration and asset custody requirements.'),zones:[
+ {n:P('行政与访客服务','Administration and visitor services'),purpose:P('登记、接待、业务交接','Registration, reception and handover'),policy:P('正常服务时间办理登记，工作人员提供安全及业务信息。','Registration takes place during service hours; staff provide safety and business information.'),owner:P('行政 / 访客服务','Administration / visitor services'),devices:['visitor-service-counter','visitor-kiosk','public-address-speaker','security-lighting'],alt:['visitor-service-counter','visitor-kiosk','emergency-assistance-station','portable-crowd-barrier'],altName:P('集中访客服务','Consolidated visitor service'),roles:[0,1,2]},
+ {n:P('生产与协作区','Production and collaboration'),purpose:P('人员作业、设备操作、协作','Work, machine operation and collaboration'),policy:P('通过岗位授权和安全培训组织正常作业；外来服务人员由业务负责人安排。','Routine work is organized by job authorization and safety training; external service is arranged by business owners.'),owner:P('生产管理 / 安全生产','Production / occupational safety'),devices:['protective-railing','security-lighting','credential-reader','incident-management-workstation'],alt:['protective-railing','public-address-speaker','security-lighting','environmental-monitor'],altName:P('作业信息与安全服务','Operational information focus'),roles:[1,2]},
+ {n:P('资产与工具管理区','Asset and tool custody'),purpose:P('资产、工具的领取与归还','Asset and tool issue and return'),policy:P('领用由资产责任人确认，建立记录、归还和检查流程。','Issue is confirmed by asset owners, with records, return and inspection procedures.'),owner:P('仓储 / 资产管理','Stores / asset management'),devices:['mesh-tool-cage','secure-storage-cabinet','environmental-monitor','incident-management-workstation'],alt:['equipment-enclosure','mesh-tool-cage','secure-storage-cabinet','incident-management-workstation'],altName:P('共享工具交接','Shared tool handover'),roles:[2]}]},
+ {n:P('商业与公共服务中心','Commercial and public services'),desc:P('服务活动、员工工作和运营资产管理相互协调。','Coordinate public service, staff work and operational asset management.'),zones:[
+ {n:P('公共服务空间','Public service space'),purpose:P('等候、办理与公共信息','Waiting, service and public information'),policy:P('公开营业时段提供服务，兼顾排队秩序、无障碍与隐私。','Service during opening hours combines queue management, accessibility and privacy.'),owner:P('服务运营 / 物业','Service operations / property'),devices:['visitor-service-counter','visitor-kiosk','portable-crowd-barrier','emergency-assistance-station'],alt:['visitor-service-counter','security-lighting','public-address-speaker','emergency-assistance-station'],altName:P('公共信息服务','Public information service'),roles:[0,1,2]},
+ {n:P('员工服务后台','Staff service area'),purpose:P('业务处理及员工协作','Processing and staff collaboration'),policy:P('员工根据工作安排使用；来访协作人员由业务负责人接待。','Staff use according to assignments; business owners receive visiting collaborators.'),owner:P('业务部门 / 行政','Business departments / administration'),devices:['glazed-partition','credential-reader','secure-storage-cabinet','incident-management-workstation'],alt:['glazed-partition','access-control','visitor-kiosk','incident-management-workstation'],altName:P('预约业务协作','Scheduled collaboration'),roles:[1,2]},
+ {n:P('运营资产管理','Operational asset management'),purpose:P('文件、设备与业务物品管理','Records, equipment and business assets'),policy:P('按指定责任人管理资产交接、检修及记录。','Designated owners manage asset handover, servicing and records.'),owner:P('运营资产 / 设施','Operations assets / facilities'),devices:['document-safe','equipment-enclosure','secure-storage-cabinet','environmental-monitor'],alt:['secure-storage-cabinet','document-safe','incident-management-workstation','environmental-monitor'],altName:P('资产记录与交接','Asset records and handover'),roles:[2]}]}
+ ];
+ // All positions are schematic presentation slots, not installation specifications.
+ const aliases={'security-signage':'safety-and-security-signage','glazed-partition':'glazed-partition'};
+ const find=k=>library.models.findIndex((_,i)=>library.modelKey(i)===(aliases[k]||k));
+ let scene=0,zone=0,role=0,config=[0,0,0],yaw=.62,pitch=.62,zoom=1,showColors=true,showDevices=true,showFurniture=true,drag=null,raf=0,selected=-1;
+ const state=()=>scenes[scene].zones[zone];
+ const keys=(i)=>config[i]?scenes[scene].zones[i].alt:scenes[scene].zones[i].devices;
+ const make=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
+ function btn(host,text,action,pressed){const b=make('button',text);b.type='button';if(pressed!==undefined)b.setAttribute('aria-pressed',String(pressed));b.onclick=action;host.append(b);return b}
+ function renderControls(){
+  let host=$('#studio-scenes');host.replaceChildren();scenes.forEach((s,i)=>btn(host,t(s.n),()=>{scene=i;zone=0;selected=-1;config=[0,0,0];renderControls();draw()},scene===i));
+  host=$('#studio-zones');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>btn(host,'0'+(i+1)+' '+t(q.n),()=>{zone=i;selected=-1;renderControls();draw()},zone===i));
+  const q=state(),detail=$('#studio-zone-detail');detail.replaceChildren();detail.append(make('h3',t(q.n)),make('p',t(q.purpose)),make('label',z?'安保政策':'Security policy'),make('p',t(q.policy)),make('label',z?'管理责任':'Accountability'),make('p',t(q.owner)));
+  host=$('#studio-config');host.replaceChildren();btn(host,z?'标准运营配置':'Routine configuration',()=>{config[zone]=0;selected=-1;renderControls();draw()},!config[zone]);btn(host,t(q.altName),()=>{config[zone]=1;selected=-1;renderControls();draw()},!!config[zone]);
+  host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'当前配置 · 组件库关联':'Current configuration · linked components'));
+  keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span',t(library.models[i].n)),make('div',t(devices[k]||P('支持区域运营','Supports zone operation')),'studio-component-role'));row.append(txt);btn(row,z?'定位':'Locate',()=>{selected=j;draw()},selected===j);btn(row,z?'详情':'Details',()=>library.openModel(i));host.append(row)});
+  host=$('#studio-roles');host.replaceChildren();host.className='studio-roles';host.append(make('label',z?'人员角色与授权示例':'Role and authorization example'));const select=make('select');select.setAttribute('aria-label',z?'人员角色':'Person role');[P('访客','Visitor'),P('普通员工','General employee'),P('指定业务责任人','Designated business owner')].forEach((a,i)=>{const opt=make('option',t(a));opt.value=i;select.append(opt)});select.value=String(role);select.onchange=()=>{role=Number(select.value);renderControls()};host.append(select,make('p',q.roles.includes(role)?(z?'该角色可按本区域规定办理正常业务。':'This role can conduct ordinary business under the zone policy.'):(z?'由区域责任人按业务需求另行办理授权。':'Separate authorization is arranged by the zone owner according to business need.')));
+  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'分区':'Zones',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'设备':'Devices',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'建筑与家具':'Architecture & furniture',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);
+  host=$('#studio-comparison');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>{const card=make('article');const label=make('div','ZONE 0'+(i+1),'over');card.append(label,make('h3',t(q.n)),make('p',t(q.policy)),make('p',(z?'配置：':'Configuration: ')+keys(i).map(k=>{const j=find(k);return j>=0?t(library.models[j].n):k}).join(z?'、':', ')));btn(card,z?'查看分区':'Inspect zone',()=>{zone=i;selected=-1;renderControls();draw()},zone===i);host.append(card)});
+  $('#studio-legend').textContent=(z?'示意场景 · 非实际安装位置':'Illustrative scene · no installation specification')+' / '+t(scenes[scene].n);
+ }
+ const ctx=C.getContext('2d');if(!ctx)return;
+ function box(x,y,z,w,h,d,k){return [x,y,z,w,h,d,k]}
+ const zonesX=[-4.4,0,4.4],metal='#b8c1c4',wall='#84939a',wood='#a38c73',floor='#3c494e';
+ function geometry(){
+  const solids=[];
+  const put=(p,g=-1,device=-1)=>solids.push({p,g,device});
+  const B=(...a)=>put(box(...a));
+  B(0,-.35,0,13.65,.28,6.65,'#2c3439');
+  for(let i=0;i<3;i++){
+   const x=zonesX[i],col=showColors?palette[i]:floor;
+   put(box(x,-.07,0,4.3,.07,6.1,col),i);
+   for(let j=0;j<6;j++)B(x,-.009,-2.65+j*.96,4.25,.009,.018,'#a0a8a5');
+   for(let j=0;j<4;j++)B(x-1.6+j*1.05,-.009,0,.018,.009,6,'#a0a8a5');
+   if(showFurniture){
+    B(x,0,-3.03,4.26,1.7,.16,wall);B(x,.85,-2.93,2.8,.62,.045,'#506c7a');
+    B(x,1.47,-2.95,3,.10,.12,metal);
+    for(let j=0;j<3;j++)B(x-1.4+j*1.4,.85,-2.87,.045,.62,.04,metal);
+    B(x,0,-2.8,4.26,.12,.1,metal);
+    if(i===0){B(x-.9,0,-1.15,2.15,.7,.68,wood);B(x-.9,.7,-1.15,2.28,.07,.77,metal);for(let j=0;j<3;j++){B(x-1.4+j*.72,0,.85,.61,.36,.66,'#4a565b');B(x-1.4+j*.72,.34,1.13,.61,.42,.12,'#647078')}}
+    if(i===1&&scene!==1){for(let j=0;j<2;j++){const tx=x-1+j*1.9;B(tx,0,-1,.12,.76,.6,metal);B(tx,.76,-1,1.5,.075,.78,wood);B(tx,.84,-1.18,.85,.45,.10,'#253138');B(tx,.92,-1.11,.73,.29,.025,'#526b7c');B(tx,0,-.35,.52,.42,.52,'#535f64')}}
+    if(i===1&&scene===1){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-.8,1.45,1.2,1.45,metal);B(tx,.4,-.04,.72,.55,.10,'#263238');B(tx,.5,.03,.57,.35,.025,'#506f7d');B(tx,1.2,-.8,1.25,.08,1.2,'#8d9a9e')}}
+    if(i===2){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-1.45,1.55,1.55,.9,'#5c686e');for(let k=0;k<3;k++){B(tx,.16+k*.45,-.96,1.39,.39,.06,'#76858b');B(tx,.29+k*.45,-.91,.40,.04,.06,metal)}}}
+    if(i<2){B(x+2.15,0,-2.1,.10,1.3,1.7,metal);B(x+2.15,0,2.0,.10,1.3,1.7,metal)}
+   }
+   if(showDevices){const slots=[[-1.35,.0,2.05],[-.45,.0,2.05],[.45,.0,2.05],[1.35,.0,2.05]];
+    keys(i).forEach((k,j)=>{let index=find(k);if(index<0)return;let model=library.models[index],extent=Math.max(.5,...model.b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.6)));const scale=.48/extent,slot=slots[j];
+     put(box(x+slot[0],.015,slot[2],.82,.035,.82,i===zone&&j===selected?'#d7b075':'#68777a'),i,j);
+     model.b.forEach(p=>{let v=p.slice();v[0]=x+slot[0]+p[0]*scale;v[1]=.055+(p[1])*scale;v[2]=slot[2]+p[2]*scale;for(let q=3;q<=5;q++)v[q]*=scale;put(v,i,j)});
+    });
+   }
+  }
+  return solids
+ }
+ function draw(){
+  if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(render)
+ }
+ function render(){
+  raf=0;const w=C.clientWidth,h=C.clientHeight;if(!w||!h)return;const d=Math.min(window.devicePixelRatio||1,2);C.width=w*d;C.height=h*d;ctx.scale(d,d);
+  const bg=ctx.createRadialGradient(w*.5,h*.42,10,w*.5,h*.42,Math.max(w,h)*.75);bg.addColorStop(0,'#303c44');bg.addColorStop(1,'#101519');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
+  const s=Math.min(w/15.6,h/9.6)*zoom,cos=Math.cos(yaw),sin=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  function project([x,y,z]){let X=x*cos-z*sin,Z=x*sin+z*cos;return[w/2+X*s,h*.48+(Z*sp-y*cp)*s,Z*cp+y*sp]}
+  function polygon(q,color,stroke){if(!q.length)return;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.55;ctx.stroke()}}
+  function shade(color,v){let n=parseInt(color.slice(1),16);return 'rgb('+[n>>16,(n>>8)&255,n&255].map(x=>Math.round(Math.min(255,x*v))).join(',')+')'}
+  // Ground contact shadow.
+  ctx.save();ctx.filter='blur(12px)';polygon([[-6.95,-.55,-3.5],[6.95,-.55,-3.5],[6.95,-.55,3.5],[-6.95,-.55,3.5]].map(project),'#05080b');ctx.restore();
+  const faces=[];
+  for(const {p,g,device} of geometry()){const m=library.mesh(p);const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
+  faces.sort((a,b)=>a.depth-b.depth).forEach(f=>polygon(f.q,f.color,f.smooth?null:'#222d3240'));
+  // Floating labels, independent of model scale.
+  for(let i=0;i<3;i++){const p=project([zonesX[i],0,-3.5]);ctx.fillStyle=i===zone?'#f5e4c7':'#d5e0e5';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText('ZONE 0'+(i+1),p[0],Math.max(30,p[1]-10));}
+  ctx.textAlign='left';ctx.font='12px monospace';ctx.fillStyle='#b7c4cc';ctx.fillText('RAVEN / CONCEPT ARCHITECTURE',14,23);
+  if(showDevices&&selected>=0){const p=project([zonesX[zone]+[-1.35,-.45,.45,1.35][selected],.95,2.05]);ctx.strokeStyle='#edc58c';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p[0],p[1],9,0,Math.PI*2);ctx.stroke()}
+ }
+ C.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];C.setPointerCapture(e.pointerId)});
+ C.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.009;pitch=Math.min(1.5,Math.max(.15,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY];draw()});
+ for(const ev of ['pointerup','pointercancel','lostpointercapture'])C.addEventListener(ev,()=>drag=null);
+ C.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','Home'].includes(e.key))return;e.preventDefault();if(e.key==='ArrowLeft')yaw-=.2;else if(e.key==='ArrowRight')yaw+=.2;else if(e.key==='ArrowUp')pitch=Math.min(1.5,pitch+.15);else if(e.key==='ArrowDown')pitch=Math.max(.15,pitch-.15);else if(e.key==='+')zoom=Math.min(1.5,zoom*1.15);else if(e.key==='-')zoom=Math.max(.65,zoom/1.15);else{yaw=.62;pitch=.62;zoom=1}draw()});
+ if(typeof ResizeObserver==='function')new ResizeObserver(draw).observe(C);else window.addEventListener('resize',draw);
+ $('#studio-engine').textContent=z?'交互式三维概念模型':'Interactive 3D concept model';
+ renderControls();draw();
+}
