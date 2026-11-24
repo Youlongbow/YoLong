@@ -113,6 +113,46 @@ jobs:
             console.log('All live Cloudflare endpoints responded with expected content.');
           }
           NODE
+      - name: Verify latest bilingual intelligence on both public domains
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const base='https://www.ravenlong.com';
+          const fallback='https://yolong.bournelong511.workers.dev';
+          const sources=['zh','en'].map(lang=>{
+            const obj=JSON.parse(readFileSync('content/security-'+lang+'.json','utf8'));
+            return {lang,total:obj.events.length,latest:obj.events[0]?.slug,head:obj.events.slice(0,5).map(e=>e.slug)};
+          });
+          async function verify(origin,source) {
+            const stamp=Date.now()+'-'+Math.random().toString(36).slice(2);
+            const url=origin+'/content/security-'+source.lang+'.json?verify='+stamp;
+            const response=await fetch(url,{cache:'no-store',headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(12000)});
+            if(!response.ok)throw Error('JSON '+response.status+' '+url);
+            const live=await response.json();
+            const liveSlugs=(live.events||[]).slice(0,5).map(x=>x.slug);
+            if(live.events?.length!==source.total || liveSlugs.some((s,i)=>s!==source.head[i]))
+              throw Error('STALE_ARCHIVE '+origin+' '+source.lang+' local='+source.total+' live='+live.events?.length+' localHead='+source.latest+' liveHead='+liveSlugs[0]);
+            const articleUrl=origin+'/security/'+source.lang+'/'+source.latest+'/';
+            const article=await fetch(articleUrl,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+            const html=await article.text();
+            if(!article.ok || !html.includes('id="app"'))throw Error('ARTICLE_NOT_VISIBLE '+articleUrl+' status='+article.status);
+            const index=await fetch(origin+'/security/'+source.lang+'/',{cache:'no-store',signal:AbortSignal.timeout(12000)});
+            const indexHtml=await index.text();
+            if(!index.ok || !indexHtml.includes('id="app"'))throw Error('ARCHIVE_NOT_VISIBLE '+origin+' '+source.lang+' status='+index.status);
+            console.log('CURRENT_INTELLIGENCE',JSON.stringify({origin,lang:source.lang,count:live.events.length,latest:source.latest,index:index.status,detail:article.status}));
+          }
+          const errors=[];
+          for(const origin of [base,fallback]){
+            for(const source of sources){
+              let ok=false,last='';
+              for(let attempt=1;attempt<=12;attempt++){
+                try {await verify(origin,source);ok=true;break;}catch(e){last=String(e);console.log('RETRY_LIVE_ARCHIVE',origin,source.lang,attempt,last);await new Promise(r=>setTimeout(r,5000));}
+              }
+              if(!ok)errors.push(last);
+            }
+          }
+          if(errors.length)throw Error('Live intelligence release not fully visible: '+errors.join(' | '));
+          NODE
       - name: Verify GA4 Measurement ID is deployed to production
         run: |
           node --input-type=module <<'NODE'
