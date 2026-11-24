@@ -156,6 +156,12 @@ function setupDemo(){const host=document.querySelector('#lab-demo');const d=demo
 
 function mesh(part){
  const [x,y,z,a,b,c,color,shape]=part;
+ if(shape==='pitRing'){
+  const vertices=[],polys=[],N=96,inner=part[8]||.6,innerY=Number(part[9]||0),variation=part[10]||.03;
+  for(let j=0;j<2;j++)for(let i=0;i<N;i++){const t=i*2*Math.PI/N,f=(j?1:inner)*(1+variation*Math.sin(t*5+.4)+variation*.55*Math.sin(t*11+1.5));vertices.push([x+a*.5*f*Math.cos(t),y+(j?b:innerY)+.015*Math.sin(t*13),z+c*.5*f*Math.sin(t)])}
+  for(let i=0;i<N;i++){let k=(i+1)%N;polys.push([i,k,k+N,i+N])}
+  return{vertices,polys,color,smooth:false};
+ }
  if(shape==='coolingTower'||shape==='sphere'||shape==='wheel'||shape==='roof'||shape==='terrain'){
   let vertices=[],polys=[];
   if(shape==='roof'){
@@ -346,7 +352,7 @@ function initStudio(lang,library){
  const zonesX=[-4.4,0,4.4],metal='#b8c1c4',wall='#84939a',wood='#a38c73',floor='#3c494e';
  function geometry(){
   const solids=[];
-  const put=(p,g=-1,device=-1,tilt=0)=>solids.push({p,g,device,tilt});
+  const put=(p,g=-1,device=-1,tilt=0,spin=0)=>solids.push({p,g,device,tilt,spin});
   const B=(x,y,z,w,h,d,k,shape)=>put([x,y,z,w,h,d,k,shape]);
   const cyl=(x,y,z,w,h,d,k)=>B(x,y,z,w,h,d,k,'cylinder');
   const dome=(x,y,z,w,h,d,k)=>B(x,y,z,w,h,d,k,'dome');
@@ -357,12 +363,12 @@ function initStudio(lang,library){
    B(x,.02,z+d/2+.01,w,.10,.035,'#7b8583');B(x-w/2+.27,0,z+d/2+.022,.28,h*.67,.045,'#5b6a71');
    for(let j=0;j<Math.floor(w/.57);j++){const wx=x-w/2+.52+j*.57;if(wx>x+w/2-.24)break;B(wx,h*.47,z+d/2+.02,.40,.29,.035,'#687676');B(wx,h*.50,z+d/2+.045,.33,.23,.026,glass);B(wx,h*.50,z+d/2+.062,.016,.23,.012,'#acb9bc');B(wx,h*.44,z+d/2+.045,.44,.025,.09,'#d0d1c6')}
    for(let j=0;j<Math.floor(d/.28);j++)B(x+w/2+.013,.11,z-d/2+.14+j*.28,.018,h*.83,.014,'#919b98');
-   if(style==='pitch')for(let j=0;j<Math.floor(w/.24);j++){const px=x-w/2+.12+j*.24;B(px,h+.15,z,.012,.025,d+.10,'#748083')}
+   if(style==='pitch'){B(x,h+.30,z,w+.18,.04,.055,'#758184');for(let j=0;j<Math.floor(w/.24);j++){const px=x-w/2+.12+j*.24;put([px,h+.15,z+d/4,.014,.025,d/2+.10,'#748083'],-1,-1,-Math.atan2(.30,d/2));put([px,h+.15,z-d/4,.014,.025,d/2+.10,'#748083'],-1,-1,Math.atan2(.30,d/2))}}
    B(x+.28,h*.26,z+d/2+.05,.46,.14,.19,'#d0d1c9');for(let j=0;j<4;j++)B(x+.15+j*.085,h*.285,z+d/2+.155,.016,.085,.012,'#667778');
   };
   const tree=(x,z)=>{cyl(x,0,z,.07,.58,.07,'#74634c');for(const [dx,dz,h] of [[0,0,.65],[-.18,.06,.49],[.19,-.08,.51]])B(x+dx,.42,z+dz,.56,h,.54,'#687b59','sphere')};
   const person=(x,z,col='#d7a95e')=>{B(x-.045,0,z,.065,.22,.07,'#34414a');B(x+.045,0,z,.065,.22,.07,'#34414a');B(x,.20,z,.19,.22,.11,col,'rounded');B(x,.43,z,.12,.13,.11,'#b79d80','sphere');B(x,.52,z,.145,.055,.13,'#e3c470','dome');B(x-.115,.24,z,.055,.18,.07,col);B(x+.115,.24,z,.055,.18,.07,col)};
-  const vehicle=(x,z,type='pickup',col='#d4d5cb')=>{const truck=type==='truck',length=truck?1.65:1.12,width=truck?.62:.48;B(x,.12,z,length,.12,width,'#454c4d','rounded');B(x-(truck?.46:.28),.24,z,truck?.63:.50,.34,width,col,'rounded');B(x-(truck?.46:.28),.42,z,width*.69,.14,width+.012,'#40505b','rounded');B(x+(truck?.40:.29),.24,z,truck?.85:.50,truck?.44:.17,width,col,'rounded');for(const dx of [-length*.31,length*.31])for(const dz of [-width*.49,width*.49]){B(x+dx,.025,z+dz,.25,.25,.10,'#242a2d','wheel');B(x+dx,.088,z+dz*1.09,.12,.12,.026,'#858c8d','wheel')}B(x-length/2,.21,z,width*.07,.06,width*.82,'#c3c8c6');};
+  const vehicle=(x,z,type='pickup',col='#d4d5cb',angle=0)=>{const first=solids.length;const truck=type==='truck',length=truck?1.65:1.12,width=truck?.62:.48;B(x,.12,z,length,.12,width,'#454c4d','rounded');B(x-(truck?.46:.28),.24,z,truck?.63:.50,.34,width,col,'rounded');B(x-(truck?.46:.28),.42,z,width*.69,.14,width+.012,'#40505b','rounded');B(x+(truck?.40:.29),.24,z,truck?.85:.50,truck?.44:.17,width,col,'rounded');for(const dx of [-length*.31,length*.31])for(const dz of [-width*.49,width*.49]){B(x+dx,.025,z+dz,.25,.25,.10,'#242a2d','wheel');B(x+dx,.088,z+dz*1.09,.12,.12,.026,'#858c8d','wheel')}B(x-length/2,.21,z,width*.07,.06,width*.82,'#c3c8c6');if(angle){const co=Math.cos(angle),si=Math.sin(angle);for(let i=first;i<solids.length;i++){let q=solids[i],v=q.p,dx=v[0]-x,dz=v[2]-z;v[0]=x+dx*co-dz*si;v[2]=z+dx*si+dz*co;q.spin=angle}}};
   const tank=(x,z,w,h)=>{cyl(x,0,z,w+.15,.09,w+.15,'#747d7c');cyl(x,.09,z,w,h,w,'#b5bcba');dome(x,h+.09,z,w,.17,w,'#cbd0cc');for(const y of [.19,h*.33,h*.68,h*.94])cyl(x,y,z,w+.025,.018,w+.025,'#8e9999');cyl(x+.14,h+.23,z,.13,.11,.13,'#7e8a89');for(let i=0;i<8;i++){const th=i*Math.PI/4;B(x+Math.cos(th)*w*.47,h+.11,z+Math.sin(th)*w*.47,.021,.17,.021,'#c2c7c3')}};
   const tower=(x,z,h)=>{cyl(x,0,z,.57,h,.57,'#aeb8b9');dome(x,h,z,.57,.15,.57,'#c6ceca');for(const y of [h*.27,h*.52,h*.77])cyl(x,y,z,.82,.055,.82,'#899698');for(const y of [h*.27,h*.52,h*.77])for(let i=0;i<8;i++){const a=i*Math.PI/4;B(x+Math.cos(a)*.39,y+.055,z+Math.sin(a)*.39,.025,.12,.025,'#bcc6c5')}};
   const panel=(x,z)=>{for(const dx of [-.37,.37])cyl(x+dx,0,z,.04,.42,.04,'#a3adae');const putTilt=(p)=>put(p,-1,-1,.28);putTilt([x,.40,z,1.22,.035,.78,'#9aa5a8']);putTilt([x,.44,z,1.17,.035,.73,'#29445d']);for(let i=0;i<6;i++)for(let j=0;j<4;j++){const yy=.486-(j-1.5)*.047;putTilt([x-.475+i*.19,yy,z-.264+j*.176,.177,.007,.165,(i+j)%3===0?'#34566e':'#294760'])}};
@@ -374,14 +380,31 @@ function initStudio(lang,library){
   if(showFurniture){
    if(zone===0){
     if(scene===0){tank(-4.3,-1.0,1.80,1.45);tank(-2.15,-1.7,1.65,1.25);tank(-.15,-.9,1.65,1.55);tower(1.9,-1.55,2.75);tower(3.05,-1.15,2.1);building(4.65,-1.25,1.75,1.6,.90);vehicle(-2.1,1.25,'truck','#a5b4bb');person(2.5,1.0);}
-    else if(scene===1){for(let i=0;i<4;i++){B(-1.9,.01+i*.17,-1.2,8.0-i*1.25,.18,4.0-i*.65,['#998770','#ac987e','#b7a58c','#c5b49a'][i]);B(-1.9,.17+i*.17,-1.2,7.8-i*1.25,.11,3.8-i*.65,'#a99a83','terrain')}building(4.1,-1.0,2.1,1.4,.82,'#b3a995','pitch');vehicle(-2.8,1.55,'truck','#c3a15e');vehicle(1.2,1.35,'pickup','#d7d1be');person(3.7,1.1);}
+    else if(scene===1){
+     const pitX=-1.55,pitZ=-.88;
+     B(pitX,.014,pitZ,1.5,.055,.92,'#b6a38a');
+     const levels=[
+       [2.35,1.65,.17,.075,.62,'#9d8a70'],
+       [3.00,2.12,.17,.17,.78,'#c0ac8f'],
+       [3.85,2.62,.34,.17,.78,'#9c876a'],
+       [4.60,3.12,.34,.34,.84,'#b8a48a'],
+       [5.50,3.72,.55,.34,.83,'#9d876d'],
+       [6.15,4.10,.55,.55,.89,'#c3af92'],
+       [7.15,4.66,.77,.55,.86,'#a18c72'],
+       [8.00,5.03,.77,.77,.89,'#b7a489']
+     ];
+     for(const [w,d,outer,innerY,ratio,col] of levels)put([pitX,.04,pitZ,w,outer,d,col,'pitRing',ratio,innerY,.045]);
+     // Irregular exposed-rock details along the exterior context of this fictional pit.
+     for(let i=0;i<15;i++){const th=i*2.399963,rx=3.62+.12*Math.sin(i*1.7),rz=2.36+.08*Math.cos(i*1.1);B(pitX+rx*Math.cos(th),.75,pitZ+rz*Math.sin(th),.20+.15*Math.abs(Math.sin(i)),.12+.08*Math.abs(Math.cos(i)),.18+.10*Math.abs(Math.sin(i*2)),'#96836b','terrain')}
+     building(4.25,-1.0,1.75,1.4,.82,'#b3a995','pitch');vehicle(-2.8,1.55,'truck','#c3a15e');vehicle(1.2,1.35,'pickup','#d7d1be');person(3.7,1.1);
+    }
     else if(scene===2){for(let i=0;i<3;i++)for(let j=0;j<5;j++)panel(-4.5+j*1.5,-2.2+i*1.25);building(4.35,-.9,2.0,2.0,.85);vehicle(2.0,1.48,'pickup','#d3d8d4');person(4.0,1.25)}
     else{building(-1.8,-1.05,4.4,2.7,1.55,'#a4a9a5','pitch');cooling(2.4,-1.4,1.85,2.5);cooling(4.5,-1.3,1.65,2.18);cyl(-4.7,-.01,-1.5,.35,2.8,.35,'#a9afab');cyl(-4.7,2.46,-1.5,.36,.19,.36,'#8e6557');vehicle(-.8,1.35,'pickup');person(-3.2,1.3)}
    }else if(zone===1){
     B(0,.025,-.4,3.0,.025,6.0,'#3f474b');B(0,.05,-.4,.055,.009,5.8,'#c2bb9d');
     B(-3.45,.025,-.45,3.25,.035,4.9,'#969f9d');B(3.55,.025,-.45,3.10,.035,4.9,'#909b9a');
     building(-3.6,-1.45,2.6,1.8,1.1);building(3.65,-1.45,2.4,1.8,.95,scene===1?'#b7a68e':shell);
-    B(-3.6,0,.8,1.55,.12,1.25,'#687779');B(3.6,0,.8,1.55,.12,1.25,'#687779');vehicle(-.72,1.3,'pickup','#c1c7c5');vehicle(.72,-.2,'truck','#b4bdba');person(-2.65,.45);person(2.55,.75,'#a7bbad');
+    B(-3.6,0,.8,1.55,.12,1.25,'#687779');B(3.6,0,.8,1.55,.12,1.25,'#687779');vehicle(-.72,1.3,'pickup','#c1c7c5',Math.PI/2);vehicle(.72,-.2,'truck','#b4bdba',-Math.PI/2);person(-2.65,.45);person(2.55,.75,'#a7bbad');
     // Distinct industrial identity, represented as small contextual assets rather than a real entry plan.
     if(scene===0)tank(-4.6,1.5,.75,.7);
     if(scene===1)B(-4.7,.04,1.5,1.0,.50,.65,'#b19b70','rounded');
@@ -423,7 +446,7 @@ function initStudio(lang,library){
   // Ground contact shadow.
   ctx.save();ctx.filter='blur(12px)';polygon([[-6.95,-.55,-3.5],[6.95,-.55,-3.5],[6.95,-.55,3.5],[-6.95,-.55,3.5]].map(project),'#05080b');ctx.restore();
   const faces=[];
-  for(const {p,g,device,tilt} of geometry()){const m=library.mesh(p);if(tilt){const ct=Math.cos(tilt),st=Math.sin(tilt);m.vertices=m.vertices.map(([x,y,z])=>{const dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
+  for(const {p,g,device,tilt,spin} of geometry()){const m=library.mesh(p);if(tilt){const ct=Math.cos(tilt),st=Math.sin(tilt);m.vertices=m.vertices.map(([x,y,z])=>{const dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}if(spin){const co=Math.cos(spin),si=Math.sin(spin);m.vertices=m.vertices.map(([x,y,z])=>{const dx=x-p[0],dz=z-p[2];return[p[0]+dx*co-dz*si,y,p[2]+dx*si+dz*co]})}const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
   faces.sort((a,b)=>a.depth-b.depth).forEach(f=>polygon(f.q,f.color,f.smooth?null:'#222d3240'));
   }
   ctx.textAlign='center';ctx.fillStyle='#f5e4c7';ctx.font='bold 12px monospace';const titlePos=project([0,0,-3.9]);ctx.fillText(t(scenes[scene].n)+' / '+t(state().n),w/2,Math.max(42,titlePos[1]-12));
@@ -462,9 +485,10 @@ function createIndustrialRenderer(canvas){
  let lastKey='',count=0;
  function upload(solids,mesh,zone,selected){
   const data=[];
-  for(const {p,g,device,tilt} of solids){
+  for(const {p,g,device,tilt,spin} of solids){
    const m=mesh(p);let vertices=m.vertices;
    if(tilt){const ct=Math.cos(tilt),st=Math.sin(tilt);vertices=vertices.map(([x,y,z])=>{let dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}
+   if(spin){const co=Math.cos(spin),si=Math.sin(spin);vertices=vertices.map(([x,y,z])=>{const dx=x-p[0],dz=z-p[2];return[p[0]+dx*co-dz*si,y,p[2]+dx*si+dz*co]})}
    const hex=g===zone&&device===selected&&selected>=0?'#e3b375':m.color;
    const code=parseInt(hex.slice(1),16),color=[(code>>16)&255,(code>>8)&255,code&255].map(v=>v/255);
    const isGlass=color[2]>color[0]*1.2&&color[0]<.45;
