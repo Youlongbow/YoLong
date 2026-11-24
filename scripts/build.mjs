@@ -43,7 +43,11 @@ for(const lang of ['zh','en']){
 const appSource=readFileSync('assets/app.js','utf8');
 const marker="const CONTENT_DATA_REVISIONS={zh:'',en:''};";
 if(!appSource.includes(marker))throw Error('Missing versioned page data marker');
-const appContent=appSource.replace(marker,'const CONTENT_DATA_REVISIONS='+JSON.stringify(revisions)+';');
+const labSource=readFileSync('assets/security-lab.js');
+const labRevision=createHash('sha256').update(labSource).digest('hex').slice(0,12);
+const labFile='security-lab.'+labRevision+'.js';
+writeFileSync(join('dist','assets',labFile),labSource);
+const appContent=appSource.replace(marker,'const CONTENT_DATA_REVISIONS='+JSON.stringify(revisions)+';').replace('./security-lab.js','./'+labFile);
 const appRevision=createHash('sha256').update(appContent)
  .update(readFileSync('content/site.json'))
  .update(readFileSync('content/research-zh.json'))
@@ -82,6 +86,8 @@ writeFileSync('dist/_headers',[
   '  Cache-Control: no-store, max-age=0',
   '/assets/app.js',
   '  Cache-Control: no-cache, must-revalidate',
+  '/lab/*',
+  '  Cache-Control: no-cache, must-revalidate',
   '/about/*',
   '  Cache-Control: no-cache, must-revalidate',
   '/experience/*',
@@ -99,7 +105,7 @@ for(const lang of ['zh','en']){
  for(const article of research[lang].articles) routes.push('journal/'+lang+'/'+article.slug);
  for(const page of pages[lang].pages)routes.push(page.slug+'/'+lang);
  for(const module of training[lang].modules)routes.push('training/'+lang+'/'+module.slug);
- routes.push('capabilities/'+lang);
+ routes.push('capabilities/'+lang,'lab/'+lang);
  for(const item of capabilities[lang].items)routes.push('capabilities/'+lang+'/'+item.slug);
 }
 for (const route of routes){
@@ -109,6 +115,7 @@ for (const route of routes){
 }
 const id = value => String(value||'').replace(/-/g,'');
 const redirects=[
+ '/lab /lab/zh/ 302',
  '/security /security/zh/ 302',
  '/security/ /security/zh/ 302',
  '/p/2f83102210ef8055896fcecd3254a5a6 /zh/ 301',
