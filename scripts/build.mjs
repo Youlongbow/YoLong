@@ -74,6 +74,10 @@ writeFileSync('dist/index.html',html);
 // Content always changes together with the displayed bilingual HTML.
 writeFileSync('dist/_headers',[
   '# RAVEN editorial content should never remain stale after a release.',
+  '/',
+  '  Cache-Control: no-cache, must-revalidate',
+  '/security/*',
+  '  Cache-Control: no-cache, must-revalidate',
   '/content/*',
   '  Cache-Control: no-store, max-age=0',
   '/assets/app.js',
@@ -105,6 +109,8 @@ for (const route of routes){
 }
 const id = value => String(value||'').replace(/-/g,'');
 const redirects=[
+ '/security /security/zh/ 302',
+ '/security/ /security/zh/ 302',
  '/p/2f83102210ef8055896fcecd3254a5a6 /zh/ 301',
  '/p/2f53102210ef8047931acda0fd9bf6dd /en/ 301',
  '/p/2f83102210ef81ba8732eba57dd2aee8 /journal/zh/ 301',
