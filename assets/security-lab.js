@@ -128,6 +128,12 @@ ext(principle,'运行可靠性','Operational reliability','通过状态管理、
 ext(principle,'风险导向设计','Risk-informed design','基于使用环境、业务目标和风险评价确定设计需求。','Uses context, business objectives and risk assessment to define design requirements.','设施规划与运营管理','Facility planning and operations','以可接受的业务风险及实际功能为设计依据。','Base design on acceptable business risk and practical functions.','需求、评价、设计决策','Requirements, assessment, design decisions','风险识别与治理','Risk identification and governance',[...base(),...[-1.25,0,1.25].map((a,i)=>B(a,0,0,.95,[.65,1.1,1.55][i],.9,[steel,warm,blue][i]))]);
 ext(principle,'系统验收与持续改进','Acceptance and improvement','通过验证、交付和运行反馈形成持续改进。','Supports continual improvement through verification, handover and operational feedback.','新建设施及存量更新','New facilities and existing-site upgrades','以明确的功能需求、验收记录和责任人为依据。','Use defined functions, acceptance records and accountable owners.','测试对象、工作站、记录','Test object, workstation, records','功能验收与运营复核','Functional acceptance and operational review',[...base(),B(-1.2,0,0,1,1.5,.8,gray),...desk(.8,0),B(-1.2,1.02,.44,.5,.3,.05,green)]);
 
+
+const rounded=(x,y,z,a,b,c,color)=>[x,y,z,a,b,c,color,'rounded'];
+const lens=(x,y,z,a,b,c,color)=>[x,y,z,a,b,c,color,'cylinderZ'];
+models[2].b=[cylinder(0,0,0,.48,.09,.48,dark),cylinder(0,.09,0,.17,2.29,.17,steel),rounded(0,2.31,.34,.16,.15,.68,gray),rounded(0,2.44,.8,.66,.48,1.1,'#b9c1c5'),rounded(0,2.91,.88,.82,.08,1.34,'#a5b0b6'),rounded(0,2.48,1.39,.53,.38,.13,'#222b30'),lens(0,2.52,1.48,.31,.31,.07,'#879ba4'),lens(0,2.55,1.53,.25,.25,.05,'#16394c'),lens(0,2.59,1.56,.17,.17,.035,'#568394'),...Array.from({length:4},(_,i)=>lens((i%2?1:-1)*.20,2.53+Math.floor(i/2)*.17,1.47,.06,.06,.025,'#c4c3ac'))];
+models[7].b=[cylinder(0,1.82,0,1.6,.17,1.6,'#c4cbd0'),cylinder(0,1.66,0,1.43,.16,1.43,gray),[0,1.66,0,1.27,.57,1.27,'#364852','lowerDome'],rounded(0,1.42,.35,.46,.26,.13,'#151f27'),lens(0,1.45,.43,.22,.22,.07,'#7797aa'),lens(0,1.49,.49,.14,.14,.045,'#274c65'),cylinder(0,0,0,.13,1.82,.13,gray)];
+
 const demonstrations={
  'parking-barrier':{n:['道闸运动','Barrier movement'],lo:['关闭','Closed'],hi:['开启','Open'],d:['以正常车辆通行时的闸杆升降为例，观察运动机构与固定机箱的关系。','Observe the moving arm in relation to its fixed cabinet during ordinary authorized vehicle passage.']},
  'retractable-bollard':{n:['隔离柱升降','Bollard movement'],lo:['升起','Raised'],hi:['收回','Retracted'],d:['以概念模型观察柱体与地面套座的相对运动。','Observe conceptual relative motion of the post and its surface collar.']},
@@ -150,8 +156,10 @@ function setupDemo(){const host=document.querySelector('#lab-demo');const d=demo
 
 function mesh(part){
  const [x,y,z,a,b,c,color,shape]=part;
+ if(shape==='rounded'){const vertices=[],polys=[],r=Math.min(a,c,b)*.17;const corners=[[a/2-r,c/2-r,0],[-a/2+r,c/2-r,Math.PI/2],[-a/2+r,-c/2+r,Math.PI],[a/2-r,-c/2+r,Math.PI*1.5]];for(let j=0;j<2;j++)for(const [cx,cz,angle] of corners)for(let k=0;k<=5;k++){let th=angle+k*Math.PI/10;vertices.push([x+cx+r*Math.cos(th),y+j*b,z+cz+r*Math.sin(th)])}const N=24;for(let i=0;i<N;i++)polys.push([i,(i+1)%N,N+(i+1)%N,N+i]);polys.push(Array.from({length:N},(_,i)=>i),Array.from({length:N},(_,i)=>N+i));return {vertices,polys,color,smooth:true}}
+ if(shape==='cylinderZ'){const N=36,vertices=[],polys=[];for(let j=0;j<2;j++)for(let i=0;i<N;i++){let th=i*2*Math.PI/N;vertices.push([x+a/2*Math.cos(th),y+b/2+b/2*Math.sin(th),z-c/2+j*c])}for(let i=0;i<N;i++)polys.push([i,(i+1)%N,N+(i+1)%N,N+i]);polys.push(Array.from({length:N},(_,i)=>i),Array.from({length:N},(_,i)=>N+i));return{vertices,polys,color,smooth:true}}
  if(shape==='cylinder'||shape==='dome'||shape==='lowerDome'){
-  const rings=shape==='cylinder'?2:7,N=28,vertices=[],polys=[];
+  const rings=shape==='cylinder'?2:7,N=36,vertices=[],polys=[];
   for(let j=0;j<rings;j++){const u=j/(rings-1),ang=u*Math.PI/2;
    const rad=shape==='cylinder'?1:shape==='dome'?Math.cos(ang):Math.sin(ang);
    const height=shape==='cylinder'?u:shape==='dome'?Math.sin(ang):-Math.cos(ang);
@@ -162,17 +170,17 @@ function mesh(part){
  return{vertices:[[x-a/2,y,z-c/2],[x+a/2,y,z-c/2],[x+a/2,y,z+c/2],[x-a/2,y,z+c/2],[x-a/2,y+b,z-c/2],[x+a/2,y+b,z-c/2],[x+a/2,y+b,z+c/2],[x-a/2,y+b,z+c/2]],polys:[[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7],[0,1,2,3]],color,smooth:false}
 }
 function t(a){return a[z?0:1]}
-function render(){const w=C.clientWidth,h=C.clientHeight,d=Math.min(devicePixelRatio||1,2);if(!w||!h)return;C.width=w*d;C.height=h*d;ctx.scale(d,d);ctx.fillStyle=night?'#07090c':'#10161b';ctx.fillRect(0,0,w,h);const extent=Math.max(3,...models[active].b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.75)));const s=Math.min(w,h)*.39/extent*zoom*(exploded?.72:1);function project(x,y,z){let X=x*Math.cos(yaw)-z*Math.sin(yaw),Z=x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+X*s,h*.59-(y*Math.cos(pitch)-Z*Math.sin(pitch))*s,Z*Math.cos(pitch)+y*Math.sin(pitch)]}function poly(v,fill,stroke){ctx.beginPath();v.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.stroke()}
-for(let i=-5;i<=5;i++){for(const line of [[project(i,0,-5),project(i,0,5)],[project(-5,0,i),project(5,0,i)]]){ctx.beginPath();ctx.moveTo(...line[0].slice(0,2));ctx.lineTo(...line[1].slice(0,2));ctx.strokeStyle='#26323b';ctx.stroke()}}
-let faces=[];for(const [idx,part] of models[active].b.entries()){if(!showBase&&idx===0&&part[1]<0)continue;let demo=demoTransform(part,idx);if(!demo)continue;let copy=demo.part;if(exploded){copy[0]*=1.16;copy[1]+=.1*Math.min(idx,8);copy[2]+=.11*Math.min(idx,8)}let m=mesh(copy);if(demo.transform)m.vertices=m.vertices.map(demo.transform);let v=m.vertices.map(p=>project(...p));m.polys.forEach((f,i)=>{let q=f.map(j=>v[j]);let p0=m.vertices[f[0]],p1=m.vertices[f[1]],p2=m.vertices[f[2]];let U=p1.map((x,k)=>x-p0[k]),V=p2.map((x,k)=>x-p0[k]);let n=[U[1]*V[2]-U[2]*V[1],U[2]*V[0]-U[0]*V[2],U[0]*V[1]-U[1]*V[0]],mag=Math.hypot(...n)||1;let shade=m.smooth?.12+.28*(1-Math.abs((n[0]*.5+n[1]*.65+n[2]*.55)/mag)):[.23,.4,.2,.35,0,.5][i];faces.push({idx,q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:m.color,shade:Math.min(.85,shade+(night?.25:0)),smooth:m.smooth})})}faces.sort((a,b)=>a.depth-b.depth);hitFaces=faces;faces.forEach(f=>{poly(f.q,f.idx===picked?'#d2a45d':f.color,f.smooth?f.color:'#25323b');if(f.shade)poly(f.q,'rgba(0,0,0,'+f.shade+')',f.smooth?'rgba(0,0,0,0)':'#25323b')});ctx.fillStyle='#a8bac7';ctx.font='12px monospace';ctx.fillText('RAVEN / CONCEPT MODEL  '+String(active+1).padStart(2,'0')+' / '+models.length,16,24)}
+function render(){const w=C.clientWidth,h=C.clientHeight,d=Math.min(devicePixelRatio||1,2);if(!w||!h)return;C.width=w*d;C.height=h*d;ctx.scale(d,d);const grad=ctx.createRadialGradient(w*.5,h*.40,8,w*.5,h*.42,Math.max(w,h)*.7);grad.addColorStop(0,night?'#182027':'#39464e');grad.addColorStop(1,night?'#07090c':'#10161b');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);const extent=Math.max(3,...models[active].b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.75)));const s=Math.min(w,h)*.39/extent*zoom*(exploded?.72:1);function project(x,y,z){let X=x*Math.cos(yaw)-z*Math.sin(yaw),Z=x*Math.sin(yaw)+z*Math.cos(yaw);return [w/2+X*s,h*.59-(y*Math.cos(pitch)-Z*Math.sin(pitch))*s,Z*Math.cos(pitch)+y*Math.sin(pitch)]}function poly(v,fill,stroke){ctx.beginPath();v.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.stroke()}
+for(let i=-5;i<=5;i++){for(const line of [[project(i,0,-5),project(i,0,5)],[project(-5,0,i),project(5,0,i)]]){ctx.beginPath();ctx.moveTo(...line[0].slice(0,2));ctx.lineTo(...line[1].slice(0,2));ctx.strokeStyle='#6c879118';ctx.stroke()}}
+let faces=[];for(const [idx,part] of models[active].b.entries()){if(!showBase&&idx===0&&part[1]<0)continue;let demo=demoTransform(part,idx);if(!demo)continue;let copy=demo.part;if(exploded){copy[0]*=1.16;copy[1]+=.1*Math.min(idx,8);copy[2]+=.11*Math.min(idx,8)}let m=mesh(copy);if(demo.transform)m.vertices=m.vertices.map(demo.transform);let v=m.vertices.map(p=>project(...p));m.polys.forEach((f,i)=>{let q=f.map(j=>v[j]);let p0=m.vertices[f[0]],p1=m.vertices[f[1]],p2=m.vertices[f[2]];let U=p1.map((x,k)=>x-p0[k]),V=p2.map((x,k)=>x-p0[k]);let n=[U[1]*V[2]-U[2]*V[1],U[2]*V[0]-U[0]*V[2],U[0]*V[1]-U[1]*V[0]],mag=Math.hypot(...n)||1;let shade=m.smooth?.12+.28*(1-Math.abs((n[0]*.5+n[1]*.65+n[2]*.55)/mag)):[.23,.4,.2,.35,0,.5][i];faces.push({idx,q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:m.color,shade:Math.min(.85,shade+(night?.25:0)),smooth:m.smooth})})}faces.sort((a,b)=>a.depth-b.depth);hitFaces=faces;faces.forEach(f=>{poly(f.q,f.idx===picked?'#d2a45d':f.color,f.smooth?f.color:'#25323b66');if(f.shade)poly(f.q,'rgba(0,0,0,'+f.shade+')',f.smooth?'rgba(0,0,0,0)':'#25323b44')});ctx.fillStyle='#a8bac7';ctx.font='12px monospace';ctx.fillText('RAVEN / CONCEPT MODEL  '+String(active+1).padStart(2,'0')+' / '+models.length,16,24)}
 
 const namesByModel={
  0:['立柱 / post','立柱 / post','下横梁 / lower rail','上横梁 / upper rail'],
  1:['底座 / base','柱体 / body','标识带 / marking','顶盖 / cap'],
- 2:['安装底座 / base','立杆 / pole','支架 / bracket','机身 / housing','遮阳罩 / sunshield','面板 / faceplate','光学窗口 / optical window'],
+ 2:['安装底座 / base','立杆 / pole','支架 / bracket','机身 / housing','遮阳罩 / sunshield','面板 / faceplate','镜头外环 / lens ring','镜片 / lens element','光学窗口 / optical window'],
  3:['侧框 / side frame','侧框 / side frame','上框 / head','门扇 / leaf','五金 / hardware','读卡器 / reader'],
  4:['底座 / base','灯杆 / pole','支架 / bracket','灯具 / housing','发光面 / luminous surface'],
- 7:['安装底座 / mount','连接环 / ring','球罩 / dome','镜头模块 / lens','示意支架 / stand']
+ 7:['安装底座 / mount','连接环 / ring','球罩 / dome','镜头模块 / lens','镜头外环 / lens ring','镜片 / optical element','示意支架 / stand']
 };
 function partName(i){const list=namesByModel[active];const name=list?.[active===1?i%4:i];return name?name.split(' / ')[z?0:1]:(z?'构件 ':'Part ')+String(i+1).padStart(2,'0')}
 function setPicked(i){picked=picked===i?-1:i;document.querySelector('#lab-status').textContent=picked<0?(z?'已清除选择':'Selection cleared'):(z?'已选构件：':'Selected: ')+partName(picked);document.querySelectorAll('#lab-parts button').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.part)===picked)));render()}
@@ -257,14 +265,14 @@ function initStudio(lang,library){
  const aliases={'security-signage':'safety-and-security-signage','glazed-partition':'glazed-partition'};
  const find=k=>library.models.findIndex((_,i)=>library.modelKey(i)===(aliases[k]||k));
  let scene=0,zone=0,role=0,config=[0,0,0],yaw=.62,pitch=.62,zoom=1,showColors=true,showDevices=true,showFurniture=true,drag=null,raf=0,selected=-1;
- const state=()=>scenes[scene].zones[zone];
+ const state=()=>scenes[scene].zones[zone];const policyNotes=[[["开放服务：接待、登记与公共事件记录。","Open service: reception, registration and public-event records."],["优先采用接待和求助服务，视频信息按实际用途管理。","Prioritize reception and assistance, managing video information according to its purpose."]],[["日常员工授权与业务协作。","Routine employee authorization and collaboration."],["访客会议采取预约和接待确认，记录共享资产交接。","Scheduled visitor meetings and reception confirmation, with shared-asset handover records."]],[["资产责任人按岗位审批并记录资产状态。","Asset owners approve according to role and record asset state."],["文件交接采用预约、签收和责任记录。","Use scheduled document handover, receipt and ownership records."]]];
  const keys=(i)=>config[i]?scenes[scene].zones[i].alt:scenes[scene].zones[i].devices;
  const make=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
  function btn(host,text,action,pressed){const b=make('button',text);b.type='button';if(pressed!==undefined)b.setAttribute('aria-pressed',String(pressed));b.onclick=action;host.append(b);return b}
  function renderControls(){
   let host=$('#studio-scenes');host.replaceChildren();scenes.forEach((s,i)=>btn(host,t(s.n),()=>{scene=i;zone=0;selected=-1;config=[0,0,0];renderControls();draw()},scene===i));
   host=$('#studio-zones');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>btn(host,'0'+(i+1)+' '+t(q.n),()=>{zone=i;selected=-1;renderControls();draw()},zone===i));
-  const q=state(),detail=$('#studio-zone-detail');detail.replaceChildren();detail.append(make('h3',t(q.n)),make('p',t(q.purpose)),make('label',z?'安保政策':'Security policy'),make('p',t(q.policy)),make('label',z?'管理责任':'Accountability'),make('p',t(q.owner)));
+  const q=state(),detail=$('#studio-zone-detail');detail.replaceChildren();detail.append(make('h3',t(q.n)),make('p',t(q.purpose)),make('label',z?'安保政策':'Security policy'),make('p',t(q.policy)),make('label',z?'管理责任':'Accountability'),make('p',t(q.owner)),make('label',z?'当前配置的运营规则':'Operating rule for this configuration'),make('p',t(policyNotes[zone][config[zone]])));
   host=$('#studio-config');host.replaceChildren();btn(host,z?'标准运营配置':'Routine configuration',()=>{config[zone]=0;selected=-1;renderControls();draw()},!config[zone]);btn(host,t(q.altName),()=>{config[zone]=1;selected=-1;renderControls();draw()},!!config[zone]);
   host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'当前配置 · 组件库关联':'Current configuration · linked components'));
   keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span',t(library.models[i].n)),make('div',t(devices[k]||P('支持区域运营','Supports zone operation')),'studio-component-role'));row.append(txt);btn(row,z?'定位':'Locate',()=>{selected=j;draw()},selected===j);btn(row,z?'详情':'Details',()=>library.openModel(i));host.append(row)});
@@ -291,16 +299,16 @@ function initStudio(lang,library){
     B(x,1.47,-2.95,3,.10,.12,metal);
     for(let j=0;j<3;j++)B(x-1.4+j*1.4,.85,-2.87,.045,.62,.04,metal);
     B(x,0,-2.8,4.26,.12,.1,metal);
-    if(i===0){B(x-.9,0,-1.15,2.15,.7,.68,wood);B(x-.9,.7,-1.15,2.28,.07,.77,metal);for(let j=0;j<3;j++){B(x-1.4+j*.72,0,.85,.61,.36,.66,'#4a565b');B(x-1.4+j*.72,.34,1.13,.61,.42,.12,'#647078')}}
+    if(i===0){if(!showDevices){B(x-.9,0,-1.15,2.15,.7,.68,wood);B(x-.9,.7,-1.15,2.28,.07,.77,metal);}for(let j=0;j<3;j++){B(x-1.4+j*.72,0,.85,.61,.36,.66,'#4a565b');B(x-1.4+j*.72,.34,1.13,.61,.42,.12,'#647078')}}
     if(i===1&&scene!==1){for(let j=0;j<2;j++){const tx=x-1+j*1.9;B(tx,0,-1,.12,.76,.6,metal);B(tx,.76,-1,1.5,.075,.78,wood);B(tx,.84,-1.18,.85,.45,.10,'#253138');B(tx,.92,-1.11,.73,.29,.025,'#526b7c');B(tx,0,-.35,.52,.42,.52,'#535f64')}}
     if(i===1&&scene===1){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-.8,1.45,1.2,1.45,metal);B(tx,.4,-.04,.72,.55,.10,'#263238');B(tx,.5,.03,.57,.35,.025,'#506f7d');B(tx,1.2,-.8,1.25,.08,1.2,'#8d9a9e')}}
-    if(i===2){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-1.45,1.55,1.55,.9,'#5c686e');for(let k=0;k<3;k++){B(tx,.16+k*.45,-.96,1.39,.39,.06,'#76858b');B(tx,.29+k*.45,-.91,.40,.04,.06,metal)}}}
+    if(i===2&&!showDevices){for(let j=0;j<2;j++){const tx=x-1.05+j*2.1;B(tx,0,-1.45,1.55,1.55,.9,'#5c686e');for(let k=0;k<3;k++){B(tx,.16+k*.45,-.96,1.39,.39,.06,'#76858b');B(tx,.29+k*.45,-.91,.40,.04,.06,metal)}}}
     if(i<2){B(x+2.15,0,-2.1,.10,1.3,1.7,metal);B(x+2.15,0,2.0,.10,1.3,1.7,metal)}
    }
-   if(showDevices){const slots=[[-1.35,.0,2.05],[-.45,.0,2.05],[.45,.0,2.05],[1.35,.0,2.05]];
-    keys(i).forEach((k,j)=>{let index=find(k);if(index<0)return;let model=library.models[index],extent=Math.max(.5,...model.b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.6)));const scale=.48/extent,slot=slots[j];
-     put(box(x+slot[0],.015,slot[2],.82,.035,.82,i===zone&&j===selected?'#d7b075':'#68777a'),i,j);
-     model.b.forEach(p=>{let v=p.slice();v[0]=x+slot[0]+p[0]*scale;v[1]=.055+(p[1])*scale;v[2]=slot[2]+p[2]*scale;for(let q=3;q<=5;q++)v[q]*=scale;put(v,i,j)});
+   if(showDevices){const slots=[[-1.55,0,1.65],[-.55,0,1.65],[.55,0,1.65],[1.55,0,1.65]];
+    keys(i).forEach((k,j)=>{let index=find(k);if(index<0)return;let model=library.models[index],extent=Math.max(.5,...model.b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,(p[1]+p[4])*.6)));let slot=slots[j].slice(),size=.52;const fixtures={'visitor-service-counter':[-.8,0,-1.12,1.0],'visitor-kiosk':[1.48,0,-.28,.62],'dome-camera':[.8,1.35,-2.35,.36],'credential-reader':[1.63,.7,-.9,.25],'access-control':[1.32,0,-.9,.65],'glazed-partition':[0,0,.35,1.16],'secure-storage-cabinet':[-1.0,0,-1.7,.78],'document-safe':[.95,0,-1.65,.62],'equipment-enclosure':[1.43,0,-2.12,.62],'environmental-monitor':[.3,.9,-2.75,.28],'incident-management-workstation':[.6,0,.05,.85],'security-lighting':[1.65,0,1.9,.65],'mesh-tool-cage':[-1.0,0,-1.6,.85],'public-address-speaker':[-1.65,1.25,-2.7,.26],'protective-railing':[0,0,1.05,.96],'portable-crowd-barrier':[0,0,1.4,.8],'emergency-assistance-station':[1.62,0,1.55,.55]};if(fixtures[k]){const a=fixtures[k];slot=a.slice(0,3);size=a[3]}const scale=size/extent;
+     if(i===zone&&j===selected)put(box(x+slot[0],.008,slot[2],.92,.025,.92,'#d7b075'),i,j);
+     model.b.forEach(p=>{let v=p.slice();v[0]=x+slot[0]+p[0]*scale;v[1]=slot[1]+.03+(p[1])*scale;v[2]=slot[2]+p[2]*scale;for(let q=3;q<=5;q++)v[q]*=scale;put(v,i,j)});
     });
    }
   }
@@ -324,7 +332,7 @@ function initStudio(lang,library){
   // Floating labels, independent of model scale.
   for(let i=0;i<3;i++){const p=project([zonesX[i],0,-3.5]);ctx.fillStyle=i===zone?'#f5e4c7':'#d5e0e5';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText('ZONE 0'+(i+1),p[0],Math.max(30,p[1]-10));}
   ctx.textAlign='left';ctx.font='12px monospace';ctx.fillStyle='#b7c4cc';ctx.fillText('RAVEN / CONCEPT ARCHITECTURE',14,23);
-  if(showDevices&&selected>=0){const p=project([zonesX[zone]+[-1.35,-.45,.45,1.35][selected],.95,2.05]);ctx.strokeStyle='#edc58c';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(p[0],p[1],9,0,Math.PI*2);ctx.stroke()}
+  if(showDevices&&selected>=0){ctx.fillStyle='#edc58c';ctx.fillText(z?'高亮：当前选中组件':'HIGHLIGHT: selected component',14,h-18)}
  }
  C.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];C.setPointerCapture(e.pointerId)});
  C.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.009;pitch=Math.min(1.5,Math.max(.15,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY];draw()});
