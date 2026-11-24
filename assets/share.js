@@ -7,10 +7,11 @@ export function initSharing({lang,events=[]}){
  let previous;
  function open(record){
  previous=document.activeElement;
- const title=record?.title||document.querySelector('main h1')?.textContent||document.title;
- const summary=String(record?.summary||document.querySelector('meta[name="description"]')?.content||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
+ const lab=location.pathname.startsWith('/lab/');
+ const title=record?.title||(lab?document.querySelector('#lab-info h2')?.textContent:null)||document.querySelector('main h1')?.textContent||document.title;
+ const summary=String(record?.summary||(lab?document.querySelector('#lab-info dd:nth-of-type(3)')?.textContent:null)||document.querySelector('meta[name="description"]')?.content||'').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
  const brief=Array.from(summary).slice(0,z?110:240).join('')+(Array.from(summary).length>(z?110:240)?'…':'');
- const path=record?'/security/'+lang+'/'+encodeURIComponent(record.slug)+'/':location.pathname;
+ const path=record?'/security/'+lang+'/'+encodeURIComponent(record.slug)+'/':location.pathname+(lab?location.search:'');
  const url=new URL(path,'https://www.ravenlong.com').href;
  dialog.replaceChildren();
  const heading=document.createElement('h2');heading.textContent=t('分享这条信息','Share this page');dialog.append(heading);
