@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, mkdir } from 'node:fs/promises';
 import { resolve, extname } from 'node:path';
 import assert from 'node:assert/strict';
 const root=resolve('dist');
@@ -8,7 +8,9 @@ const type={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=u
 const server=createServer(async(req,res)=>{try{let p=new URL(req.url,'http://localhost').pathname;if(p.endsWith('/'))p+='index.html';let path=resolve(root,'.'+decodeURIComponent(p));if(!path.startsWith(root+'/')){res.writeHead(403);res.end();return}const data=await readFile(path);res.writeHead(200,{'Content-Type':type[extname(path)]||'application/octet-stream'});res.end(data)}catch{res.writeHead(404);res.end('Not found')}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=process.env.LAB_LIVE_ORIGIN||'http://127.0.0.1:'+server.address().port;
-const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist']});
+const requireGPU=process.env.LAB_REQUIRE_WEBGL==='1';
+const captures=process.env.LAB_CAPTURE_DIR;if(captures)await mkdir(captures,{recursive:true});
 const errors=[];
 try {
  for(const lang of ['zh','en']){
@@ -21,6 +23,10 @@ try {
   await page.locator('#studio-scenes button').first().waitFor();
   assert.equal(await page.locator('#studio-scenes button').count(),4);
   const sc=page.locator('#studio-canvas');
+  if(requireGPU)await page.waitForFunction(()=>document.querySelector('#studio-engine')?.textContent.includes('WebGL 2'),{},{timeout:30000});
+  const gpu=await page.locator('#studio-engine').innerText();
+  console.log('STUDIO RENDERER',lang,gpu);
+
   for(let s=0;s<4;s++){
    await page.locator('#studio-scenes button').nth(s).click();
    assert.equal(await page.locator('#studio-zones button').count(),3);
@@ -35,7 +41,16 @@ try {
      await page.locator('#studio-components .studio-device button').first().click();
      await page.locator('#studio-roles select').selectOption('2');
      assert(await page.locator('#studio-roles p').innerText());
+     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
      assert((await sc.evaluate(c=>c.toDataURL())).length>1000,'Industry area rendered');
+     const activeGPU=await page.locator('#studio-engine').innerText();
+     if(requireGPU)assert(activeGPU.includes('WebGL 2'),'WebGL should remain active across all profiles');
+     if(activeGPU.includes('WebGL 2')){
+      const pixels=await page.locator('#studio-gl').evaluate(c=>{const out=document.createElement('canvas');out.width=64;out.height=64;const context=out.getContext('2d');context.drawImage(c,0,0,64,64);const data=context.getImageData(0,0,64,64).data;let visible=0,colors=new Set();for(let k=0;k<data.length;k+=4){if(data[k+3]>100){visible++;colors.add((data[k]>>4)*256+(data[k+1]>>4)*16+(data[k+2]>>4))}}return{visible,colors:colors.size}});
+      assert(pixels.visible>150&&pixels.colors>12,'Nonempty WebGL scene with distinct material colors: '+JSON.stringify(pixels));
+     }
+     if(captures&&lang==='zh'&&v===0)await page.locator('.studio-canvas-stack').screenshot({path:captures+'/industry-'+(s+1)+'-area-'+(i+1)+'.png'});
+
     }
     assert.equal(configurations.size,3);
    }
