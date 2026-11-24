@@ -1,3 +1,4 @@
+import { labMarkup, initLab } from './security-lab.js';
 import { initSharing } from './share.js';
 import { initGoogleAnalytics } from './analytics.js';
 import { renderCourseTable } from './course-tables.js';
@@ -6,7 +7,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp
 // Replaced with content fingerprints during the Cloudflare build.
 const CONTENT_DATA_REVISIONS={zh:'',en:''};
 const pathParts = location.pathname.split('/').filter(Boolean);
-const section = ['security','journal','about','experience','contact','training','capabilities'].includes(pathParts[0]) ? pathParts[0] : 'home';
+const section = ['security','journal','about','experience','contact','training','capabilities','lab'].includes(pathParts[0]) ? pathParts[0] : 'home';
 const lang = section==='home' ? (pathParts[0]==='en'?'en':'zh') : (pathParts[1]==='en'?'en':'zh');
 const slug = section==='home' ? '' : (pathParts[2] || '');
 const oldHome = {zh:'https://www.ravenlong.com/p/2f83102210ef8055896fcecd3254a5a6',en:'https://www.ravenlong.com/p/2f53102210ef8047931acda0fd9bf6dd'};
@@ -77,6 +78,7 @@ function header(){
   link(txt.security,'/security/'+lang+'/',section==='security')+
   link(txt.journal,'/journal/'+lang+'/',section==='journal')+
   link('HEAT','/training/'+lang+'/',section==='training')+
+  link(lang==='zh'?'安防实验室':'Design Lab','/lab/'+lang+'/',section==='lab')+
   link(lang==='zh'?'专业经历':'Experience','/experience/'+lang+'/',section==='experience')+
   link(lang==='zh'?'关于':'About','/about/'+lang+'/',section==='about')+
   '<a class="nav-contact" href="/contact/'+lang+'/">'+(lang==='zh'?'联系':'Contact')+'</a>'+
@@ -532,12 +534,14 @@ try{
  if(section==='security')content=slug?securityDetail():securityList(s);
  else if(section==='journal')content=slug?researchDetail():researchList(s);
  else if(section==='training')content=slug?trainingDetail():trainingList();
+ else if(section==='lab'){content=labMarkup(lang);document.title=(lang==='zh'?'安防设计实验室':'Security Design Lab')+' · RAVEN';}
  else if(section==='capabilities')content=slug?capabilityDetail(s):capabilityIndex(s);
  else if(['about','experience','contact'].includes(section))content=staticContentPage();
  else content=homeHero(s)+expertise(s)+securityList(s,true)+researchList(s,true)+platforms(s);
  $('#app').innerHTML=header()+'<main class="'+(section==='home'?'home-layout':'interior-layout')+' section-'+section+'">'+content+'</main>'+footer(s);
  if(mediaMap.branding?.mark){const legacy=$('.hero-art .giant-r');if(legacy){const img=document.createElement('img');img.src=mediaMap.branding.mark;img.alt='';img.className='hero-brand-mark';img.setAttribute('aria-hidden','true');legacy.replaceWith(img)}}
  bind();
+ if(section==='lab')initLab(lang);
  initSharing({lang,events:securityData?.events||[]});
  initGoogleAnalytics(site.analytics, {lang, section});
  window.requestAnimationFrame(finishBrandTransition);
