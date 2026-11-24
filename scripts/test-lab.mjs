@@ -71,8 +71,9 @@ try {
    keys.add(new URL(page.url()).searchParams.get('model'));
    assert.equal(await page.locator('#lab-info dd').count(),5);
    assert(await page.locator('#lab-info dd').evaluateAll(nodes=>nodes.every(n=>n.textContent.trim().length>0)));
-   const sample=await page.locator('#lab-canvas').evaluate(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=0;i<d.length;i+=4*97)if(d[i]>65||d[i+1]>75)n++;return n});
-   assert(sample>10,'Canvas should display nonempty geometry: '+title);
+   const sample=await page.evaluate(()=>{const gpu=document.querySelector('#lab-gl'),fallback=document.querySelector('#lab-canvas');const active=getComputedStyle(gpu).visibility==='visible'?gpu:fallback;const mini=document.createElement('canvas');mini.width=96;mini.height=96;const ctx=mini.getContext('2d');ctx.drawImage(active,0,0,96,96);const d=ctx.getImageData(0,0,96,96).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i+3]>80&&(d[i]>45||d[i+1]>50))n++;return{n,gpu:active===gpu}});
+   if(requireGPU)assert(sample.gpu,'Component WebGL is active: '+title);
+   assert(sample.n>10,'Canvas should display nonempty geometry: '+title);
    await page.locator('[data-act=explode]').click();
    assert.equal(await page.locator('[data-act=explode]').getAttribute('aria-pressed'),'true');
    await page.locator('[data-act=explode]').click();
@@ -82,11 +83,11 @@ try {
   assert.equal(await models.count(),1);
   await models.first().click();
   const modelURL=page.url();const modelKey=new URL(modelURL).searchParams.get('model');
-  const canvas=page.locator('#lab-canvas');const before=await canvas.evaluate(c=>c.toDataURL());
-  await page.locator('[data-act=right]').click();assert.notEqual(await canvas.evaluate(c=>c.toDataURL()),before);
+  const modelImage=()=>page.evaluate(()=>{const gpu=document.querySelector('#lab-gl');return(getComputedStyle(gpu).visibility==='visible'?gpu:document.querySelector('#lab-canvas')).toDataURL()});const before=await modelImage();
+  await page.locator('[data-act=right]').click();assert.notEqual(await modelImage(),before);
   await page.locator('[data-act=night]').click();assert.equal(await page.locator('[data-act=night]').getAttribute('aria-pressed'),'true');
   await page.locator('#lab-parts button').first().click();assert.equal(await page.locator('#lab-parts button').first().getAttribute('aria-pressed'),'true');
-  await page.locator('#lab-flow button').last().click();assert(await page.locator('#lab-flow-copy').textContent());
+  await page.locator('#lab-flow button').last().click();assert(await page.locator('#lab-flow-copy').textContent());if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/component-example.png'});
   await page.locator('#lab-quiz button').first().click();assert(await page.locator('#lab-answer').textContent());
   await page.locator('#lab-play').click();await page.waitForTimeout(1200);assert.equal(await page.locator('#lab-process button').nth(1).getAttribute('aria-pressed'),'true');
   await page.reload({waitUntil:'domcontentloaded'});await page.locator('#lab-info h2').waitFor();assert.equal(new URL(page.url()).searchParams.get('model'),modelKey);
