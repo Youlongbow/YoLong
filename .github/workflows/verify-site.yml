@@ -16,6 +16,7 @@ jobs:
       - name: Check browser JavaScript syntax
         run: |
           node --input-type=module --check < assets/app.js
+          node --input-type=module --check < assets/security-lab.js
           node --input-type=module --check < assets/analytics.js
           node --input-type=module --check < assets/course-tables.js
       - name: Audit every migrated HEAT table in both languages
@@ -34,6 +35,11 @@ jobs:
           test -s dist/assets/styles.css
           test -s dist/assets/app.js
           test -s dist/content/site.json
+          test -s dist/lab/zh/index.html
+          test -s dist/lab/en/index.html
+          grep -q 'https://www.ravenlong.com/lab/zh/' dist/sitemap.xml
+          grep -q 'Security Design Lab' dist/lab/en/index.html
+          grep -q 'security-lab\.' dist/assets/app.js
           test -s dist/en/index.html
           test -s dist/zh/index.html
           test -s dist/security/en/index.html
