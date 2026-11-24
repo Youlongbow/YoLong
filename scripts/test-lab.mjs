@@ -18,6 +18,30 @@ try {
   assert.equal(response.status(),200);
   await page.locator('#lab-modules button').first().waitFor({timeout:30000});
   assert.equal(await page.locator('#lab-modules button').count(),85);
+  await page.locator('#studio-scenes button').first().waitFor();
+  assert.equal(await page.locator('#studio-scenes button').count(),3);
+  const sc=page.locator('#studio-canvas');
+  for(let s=0;s<3;s++){
+   await page.locator('#studio-scenes button').nth(s).click();
+   assert.equal(await page.locator('#studio-zones button').count(),3);
+   for(let i=0;i<3;i++){
+    await page.locator('#studio-zones button').nth(i).click();
+    assert.equal(await page.locator('#studio-components .studio-device').count(),4);
+    const initial=await page.locator('#studio-components').innerText();
+    await page.locator('#studio-config button').nth(1).click();
+    assert.equal(await page.locator('#studio-components .studio-device').count(),4);
+    assert.notEqual(await page.locator('#studio-components').innerText(),initial);
+    await page.locator('#studio-config button').first().click();
+    await page.locator('#studio-components .studio-device button').first().click();
+    await page.locator('#studio-roles select').selectOption('2');
+    assert(await page.locator('#studio-roles p').innerText());
+    const canvasData=await sc.evaluate(c=>c.toDataURL());
+    assert(canvasData.length>1000,'Scene rendered');
+   }
+  }
+  await page.locator('#studio-components .studio-device button').nth(1).click();
+  assert(await page.locator('#lab-info h2').innerText());
+  console.log('STUDIO PASS',lang,'3 scenes, 9 zones, 18 configurations');
   const categories=await page.locator('#lab-categories button').allTextContents();
   assert.equal(categories.length,5);
   for(const count of [30,30,15,10])assert(categories.some(x=>x.endsWith('· '+count)));
@@ -57,7 +81,7 @@ try {
   const page=await browser.newPage({viewport:{width,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
   page.on('pageerror',e=>errors.push('mobile '+width+': '+e.message));
   await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#lab-info h2').waitFor();
-  assert(await page.locator('#lab-canvas').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'No mobile horizontal overflow');
+  assert(await page.locator('#studio-canvas').isVisible());assert(await page.locator('#lab-canvas').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'No mobile horizontal overflow');
   await page.locator('#lab-categories button').last().click();assert.equal(await page.locator('#lab-modules button').count(),10);
   await page.locator('[data-act=base]').click();assert.equal(await page.locator('[data-act=base]').getAttribute('aria-pressed'),'false');
   console.log('LAB MOBILE PASS',width);await page.close();
