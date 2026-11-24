@@ -1,0 +1,62 @@
+name: Design Lab acceptance
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/security-lab.js'
+      - 'assets/app.js'
+      - 'assets/share.js'
+      - 'scripts/build.mjs'
+      - 'scripts/seo.mjs'
+      - 'scripts/test-lab.mjs'
+      - '.github/workflows/design-lab.yml'
+  workflow_dispatch:
+jobs:
+  local-browser:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --input-type=module --check < assets/security-lab.js
+      - run: node scripts/build.mjs
+      - run: npm install --no-save playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/test-lab.mjs
+  live-route:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify published localized routes and exact renderer revision
+        run: |
+          node --input-type=module <<'NODE'
+          import {createHash} from 'node:crypto';
+          import {readFileSync} from 'node:fs';
+          const hash=createHash('sha256').update(readFileSync('assets/security-lab.js')).digest('hex').slice(0,12);
+          for(const origin of ['https://www.ravenlong.com','https://yolong.bournelong511.workers.dev']){
+            let passed=false;
+            for(let attempt=1;attempt<=24;attempt++){
+              try{
+                for(const lang of ['zh','en']){
+                  const res=await fetch(origin+'/lab/'+lang+'/?check='+attempt,{cache:'no-store',signal:AbortSignal.timeout(12000)});
+                  if(!res.ok)throw Error('Route '+res.status);
+                  const html=await res.text(),app=html.match(/src="(\/assets\/app\.[a-f0-9]{12}\.js)"/)?.[1];
+                  if(!app||!html.includes('/lab/'+lang+'/'))throw Error('Missing localized route metadata');
+                  const code=await fetch(origin+app,{signal:AbortSignal.timeout(12000)}).then(r=>r.text());
+                  if(!code.includes('security-lab.'+hash+'.js'))throw Error('Stale lab revision');
+                  const model=await fetch(origin+'/assets/security-lab.'+hash+'.js',{signal:AbortSignal.timeout(12000)});
+                  if(!model.ok)throw Error('Renderer asset '+model.status);
+                  const bytes=Buffer.from(await model.arrayBuffer());
+                  if(createHash('sha256').update(bytes).digest('hex').slice(0,12)!==hash)throw Error('Renderer hash differs');
+                }
+                console.log('LAB LIVE PASS',origin,hash);passed=true;break;
+              }catch(e){console.log('LAB LIVE RETRY',origin,attempt,String(e));await new Promise(r=>setTimeout(r,5000))}
+            }
+            if(!passed)throw Error('Lab publication not verified: '+origin)
+          }
+          NODE
