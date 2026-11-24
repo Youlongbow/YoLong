@@ -48,6 +48,9 @@ function metadata(route){
    const item=data.security.find(x=>x.slug===parts[2]);
    if(item){title=item.title;desc=item.summary||short(item.body,175);date=item.date||'';article=true;}
   }
+ }else if(cat==='lab'){
+  title=lang==='zh'?'安防设计实验室':'Security Design Lab';
+  desc=lang==='zh'?'通过可交互三维概念模型探索物理安防、电子安防设备及设计原理。':'Explore physical security, electronic security and design principles through interactive three-dimensional concept models.';
  }else if(cat==='capabilities'){
   title=lang==='zh'?'专业领域':'Security Capabilities';
   desc=site.sections[lang].capabilitiesLead;
@@ -65,7 +68,7 @@ for(const lang of ['zh','en']){
  for(const x of d.research)routes.push('journal/'+lang+'/'+x.slug);
  for(const x of d.pages)routes.push(x.slug+'/'+lang);
  for(const x of d.training)routes.push('training/'+lang+'/'+x.slug);
- routes.push('capabilities/'+lang);
+ routes.push('capabilities/'+lang,'lab/'+lang);
  for(const x of d.capabilities)routes.push('capabilities/'+lang+'/'+x.slug);
 }
 
@@ -87,6 +90,8 @@ function crawlableBody(route){
   intro.push(site.sections[lang].supporting,site.sections[lang].capabilitiesLead,site.sections[lang].researchLead,site.sections[lang].monitoringLead);
   refs.push(...d.research.slice(0,5).map(x=>({url:'/journal/'+lang+'/'+x.slug,title:x.title,desc:x.summary||x.excerpt||x.body})));
   refs.push(...d.security.slice(0,5).map(x=>({url:'/security/'+lang+'/'+x.slug,title:x.title,desc:x.summary||x.body})));
+ }else if(cat==='lab'){
+  intro.push(lang==='zh'?'物理安防、电子安防与安防设计原理：围栏、防撞柱、门禁、视频监控、照明、系统集成及CPTED。':'Physical security, electronic security and design principles: fencing, bollards, access control, video surveillance, lighting, integration and CPTED.');
  }else if(cat==='journal'&&!detail){
   intro.push(site.sections[lang].researchLead);
   refs.push(...d.research.slice(0,35).map(x=>({url:'/journal/'+lang+'/'+x.slug,title:x.title,desc:x.excerpt||x.summary||x.body})));
