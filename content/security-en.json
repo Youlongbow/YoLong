@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-24",
-  "total": 138,
+  "total": 139,
   "events": [
     {
       "slug": "2026-11-23-drc-ituri-ebola-responders-fighting-hospital",
@@ -57,6 +57,19 @@
       "eventDate": "2026-11-22",
       "sourceUrls": [
         "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
+    {
+      "slug": "2026-11-22-myanmar-shan-mong-kung-25-chinese-detained-scam-site",
+      "date": "2026-11-22",
+      "region": "Myanmar / Mong Kung, southern Shan State",
+      "category": "regulatory",
+      "title": "Myanmar Shan State: 25 Chinese nationals detained at alleged scam site in Mong Kung",
+      "summary": "Eleven Media reported on 22 November that security forces detained 25 Chinese men in a 21 November operation near Long San village, Mong Kung, southern Shan State, seizing phones and Starlink terminals.",
+      "body": "Reported facts | Eleven Media reported on 22 November 2026 that Myanmar security personnel searched an area north of Long San village in Mong Kung Township, southern Shan State, on 21 November after tips from residents. They detained 25 Chinese men at four makeshift shelters and seized two desktop computers, 39 mobile phones, two Starlink terminals and power equipment. According to the outlet's account of initial investigations, the men entered Myanmar through the Yunnan frontier in early November, were promised about RMB6,500 a month, and allegedly used WeChat, Momo and QQ for fake investment propositions, online stores and impersonation scams directed at Chinese victims. These are authorities' allegations as carried by the outlet; detained persons are suspects, not convicted offenders.\nAssessment | Another reported crackdown during the same period involved 33 Chinese nationals in Mayangon, Yangon. The Mong Kung event is geographically and operationally distinct and merits a separate event record. Satellite broadband terminals and mobile power at makeshift structures, if the reported inventory is accurate, illustrate how alleged fraud operations can function at sites with limited conventional infrastructure. Such activity would depend on remote recruitment, equipment procurement and digital payment access. A common organizational network linking Shan and Yangon is a hypothesis to test, rather than an established fact.\nBusiness exposure | Companies placing Chinese staff, IT teams and outsourcing contractors in Myanmar or near border corridors should verify employment documents, migration status, contracts, facilities, payments and the lawful use of communications equipment. Examine the sourcing and physical locations of remote subcontractors, particularly where intermediaries obscure end-client identity. Separate partner fraud exposure from legitimate industrial satellite-connectivity use.\nIndicators | (1) Charges, consular contact, release or repatriation of the 25 detainees; (2) treatment of devices and associated accounts; (3) documented personnel, financial or equipment links to the Yangon case; (4) additional searches in southern Shan. If a cross-regional coordinated network is established, upgrade supplier vetting across locations; if discrete operations, target controls to actual exposure.\nSource | Eleven Media Group, 22 November 2026, reporting attributed investigative claims. https://elevenmyanmar.com/news/25-chinese-nationals-arrested-in-southern-shan-state-over-online-scam-operation?language=en",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://elevenmyanmar.com/news/25-chinese-nationals-arrested-in-southern-shan-state-over-online-scam-operation?language=en"
       ]
     },
     {

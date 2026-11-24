@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
   "snapshotDate": "2026-11-24",
-  "total": 138,
+  "total": 139,
   "events": [
     {
       "slug": "2026-11-23-drc-ituri-ebola-responders-fighting-hospital",
@@ -57,6 +57,19 @@
       "eventDate": "2026-11-22",
       "sourceUrls": [
         "https://warmonitorpk.com/en/news/driver-killed-three-injured-in-chagai-highway-shooting-vehicles-seized-in-separate"
+      ]
+    },
+    {
+      "slug": "2026-11-22-myanmar-shan-mong-kung-25-chinese-detained-scam-site",
+      "date": "2026-11-22",
+      "region": "缅甸 / 南掸邦Mong Kung",
+      "category": "regulatory",
+      "title": "缅甸掸邦：Mong Kung打击网络诈骗行动拘捕25名中国公民",
+      "summary": "Eleven Media 11月22日报道，缅甸安全人员11月21日在南掸邦Mong Kung乡镇查获疑似网络诈骗场所，拘捕25名中国籍男性，并查扣手机及卫星互联网设备。",
+      "body": "事件事实｜缅甸Eleven Media 2026年11月22日报道，安全部队在11月21日根据当地居民线报搜索南掸邦Mong Kung Township的Long San村以北区域，在四处简易建筑中拘捕25名中国籍男性，查获两台一体式电脑、39部手机、两套Starlink终端及供电设备。报道引述调查称，人员11月初经中国云南进入缅甸，被许诺每月约6,500元人民币报酬，使用WeChat、Momo、QQ开展针对中国用户的虚假投资、网络商店和身份冒充活动。这些是调查机关经媒体转述的指控，人员法律身份是嫌疑人，后续仍需司法处理。\n事件背景与判断｜同一报道期仰光Mayangon也有33名中国公民在另一项金融诈骗执法行动中被拘。两案发生在不同地区：Mong Kung位于掸邦乡村地区，而Mayangon是仰光城市居民区；应分别归档，后续可研究是否存在共同的资金、招募与技术设备网络。Mong Kung现场被发现的卫星终端和可移动供电装置说明据称涉案业务可以在简易、通信基础设施薄弱的地点运行。其持续性依赖人员招募、网络连接、支付渠道及物资保障；当前报道没有证明两案属于同一犯罪集团。\n企业运营影响｜在缅甸与边境地区配置中方人员、外包数字团队或技术承包商的企业，应核对人员跨境出入境与工作许可、实际雇佣合同、招聘渠道、设备及卫星通信使用的合法性。对于境外中介提供的远程外包团队，应验证办公地点、客户合同和资金来源，并把可疑合作伙伴隔离出付款及账号授权链路。避免把合法使用卫星互联网的作业点概括为涉案设施。\n后续指标与情景｜①25名被拘人员的具体司法和领事处置；②Starlink终端及涉案数字资产的依法处置；③官方是否公开显示与仰光案件共享人员、设备或资金链条；④掸邦同类场所是否出现持续搜查和清拆。若多地行动显示统一犯罪网络，企业应提升跨地区承包商尽职调查；若各案独立，应按地区和企业实际关联采取定向措施。\n来源及归属｜Eleven Media Group，2026-11-22，依据其所报当局调查信息。原文：https://elevenmyanmar.com/news/25-chinese-nationals-arrested-in-southern-shan-state-over-online-scam-operation?language=en",
+      "eventDate": "2026-11-21",
+      "sourceUrls": [
+        "https://elevenmyanmar.com/news/25-chinese-nationals-arrested-in-southern-shan-state-over-online-scam-operation?language=en"
       ]
     },
     {
