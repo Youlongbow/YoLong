@@ -267,6 +267,10 @@ try {
    for(let i=0;i<3;i++){
     await page.locator('#studio-zones button').nth(i).click();
     assert.equal(await page.locator('#studio-system-interfaces .case-system-card').count(),3);
+    const production=page.locator('#studio-zone-detail .industry-production-context');
+    assert.equal(await production.getAttribute('data-industry'),String(s));
+    assert.equal(await production.locator('svg').getAttribute('viewBox'),'0 0 320 130');
+    assert.equal(await production.locator('.industry-production-tags span').count(),3);
     const exercise=page.locator('#studio-zone-detail .industry-exercise');
     assert.equal(await exercise.getAttribute('data-case-id'),String(s*3+i));
     assert.equal(await exercise.locator('button').count(),2);
