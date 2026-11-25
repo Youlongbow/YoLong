@@ -71,6 +71,8 @@ try {
    for(let j=0;j<4;j++){
     await page.locator('#overview-study-flow button').nth(j).click();
     assert(await page.locator('#overview-study-detail h4').innerText());
+    assert.equal(await page.locator('#overview-study-visual svg').count(),1);
+    assert(await page.locator('#overview-study-visual .study-record strong').innerText());
     assert((await page.locator('#overview-study-detail .overview-links button').count())>0);
    }
   }
