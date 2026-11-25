@@ -84,24 +84,34 @@ function systemPractice(host,system,zh,options={}){
  const s=specs[system];if(!s)return;
  const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
  panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立绘制的虚构业务图像。编号用于对应三维示意设备，图像不属于实际摄像机画面。','Four independently drawn fictional business images. IDs link to illustrative assemblies; these are not actual camera feeds.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
- const tabs=e('div');tabs.style.cssText=system===0?'display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:6px;margin:12px 0':'display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
- const figure=e('div');figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
+ const tabs=e('div');tabs.style.cssText=system===0?'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;min-width:0':'display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
+ const figure=e('div');figure.className='practice-figure';figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
  const detail=e('p'),state=e('p');state.setAttribute('aria-live','polite');const action=e('button',tr(...s.action));action.type='button';
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
-  const view=system===0?['0 0 320 208',videoWall(current,zh)]:['0 0 320 160',stageScene(system,system===3?(current===2?3:current):current,zh)];
+  const view=system===0?['0 0 160 100',videoSample(current)]:['0 0 320 160',stageScene(system,system===3?(current===2?3:current):current,zh)];
   figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
+  if(system===0){figure.dataset.channel=String(current);const title=e('div','CAM 0'+(current+1)+' / '+tr(...s.names[current]));title.style.cssText='padding:9px 12px;font-weight:650;color:#e5eaea;border-top:1px solid #46555b;font-size:13px';figure.append(title)}
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
   state.textContent=tr(...s.fields[1])+'：'+(recorded.has(current)?tr(...s.result):tr('待登记','Not recorded'));
   memory.current=current;state.dataset.recorded=String(recorded.has(current));action.disabled=recorded.has(current);progress.textContent=tr('本系统已完成记录：','System records completed: ')+recorded.size+' / '+s.names.length;progress.dataset.completed=String(recorded.size);
  };
- s.names.forEach((name,i)=>{const b=e('button',(system===0?'CAM 0'+(i+1)+' / ':'')+tr(...name));b.type='button';b.onclick=()=>{current=i;render();options.onSelect?.(i)};tabs.append(b)});
+ s.names.forEach((name,i)=>{const b=e('button',system===0?undefined:tr(...name));b.type='button';
+  if(system===0){b.className='video-channel';b.style.cssText='display:block;text-align:left;padding:3px;min-width:0;border-radius:4px;overflow:hidden;';b.setAttribute('aria-label','CAM 0'+(i+1)+' / '+tr(...name));
+   const thumb=e('div');thumb.innerHTML='<svg viewBox="0 0 160 100" aria-hidden="true" style="display:block;width:100%;height:auto;border-radius:2px">'+videoSample(i)+'</svg>';
+   const caption=e('span','CAM 0'+(i+1)+' / '+tr(...name));caption.style.cssText='display:block;padding:5px 3px;font-size:11px;line-height:1.3;overflow-wrap:anywhere';b.append(thumb,caption);}
+  b.onclick=()=>{current=i;render();options.onSelect?.(i)};tabs.append(b)});
  action.onclick=()=>{recorded.add(current);render()};const reset=e('button',tr('重置演示','Reset demonstration'));reset.type='button';reset.onclick=()=>{recorded.clear();current=0;render();options.onSelect?.(0)};
  const controls=e('div');controls.style.cssText='display:flex;flex-wrap:wrap;gap:8px';controls.append(action,reset);
  const progress=e('p');progress.className='system-practice-progress';
  if(options.locate){const locate=e('button',tr('在综合场景中查看','View in integrated scene'));locate.type='button';locate.dataset.locate='true';locate.onclick=()=>options.locate(current);controls.append(locate);}
- panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
+ if(system===0){
+  const wall=e('div');wall.className='video-wall-layout';wall.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start;gap:12px;min-width:0;margin:12px 0';
+  const grid=e('div');grid.style.minWidth='0';const gridTitle=e('h5',tr('全部图像样本','All image samples'));gridTitle.style.cssText='margin:0 0 8px;font-size:13px';grid.append(gridTitle,tabs);
+  const main=e('div');main.style.minWidth='0';const mainTitle=e('h5',tr('当前选中图像','Selected image'));mainTitle.style.cssText='margin:0 0 8px;font-size:13px';main.append(mainTitle,figure);
+  wall.append(grid,main);panel.append(wall,detail,state,controls,progress);
+ }else panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
 }
 
 // Professional notes for the civilian workplace example. Requirements are agreed with the service owner.
