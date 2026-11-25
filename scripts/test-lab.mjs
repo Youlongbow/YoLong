@@ -91,6 +91,13 @@ try {
 
      assert((await accessReview.locator('a').getAttribute('href')).includes('eis0002'));
     }
+    const boundaryReview=page.locator('.boundary-engineering-review');
+    assert.equal(await boundaryReview.count(),i===2?1:0);
+    if(i===2){
+     assert.equal(await boundaryReview.locator('dd').count(),2);
+     assert.equal(await practice.locator('.practice-figure svg').getAttribute('viewBox'),'0 0 320 180');
+     assert(await practice.locator('.practice-figure svg path').count()>8 || j>0);
+    }
     const review=page.locator('.video-engineering-review');
     assert.equal(await review.count(),i===0?1:0);
     if(i===0){
@@ -118,7 +125,7 @@ try {
      assert.equal(images.size,channels);
      assert.equal(await practice.locator('[data-completed]').getAttribute('data-completed'),String(channels));
      await practice.locator('[data-locate]').click();
-     const focus=[15,3,2,5][i];
+     const focus=[15,3,9,5][i];
      assert.equal(await page.locator('#overview-list button').nth(focus).getAttribute('aria-pressed'),'true');
      if(i===0){
       const cameraPanel=page.locator('.overview-camera-selector');
