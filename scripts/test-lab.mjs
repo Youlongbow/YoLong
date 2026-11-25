@@ -228,7 +228,7 @@ try {
    assert(title?.trim());
    titles.add(title);
    keys.add(new URL(page.url()).searchParams.get('model'));
-   assert.equal(await page.locator('#lab-info dd').count(),5);
+   assert.equal(await page.locator('#lab-info dd').count(),6);
    assert.equal(await page.locator('#lab-engineering h4').count(),3);
    assert(await page.locator('#lab-engineering p').evaluateAll(nodes=>nodes.length===3&&nodes.every(n=>n.textContent.trim().length>0)));
 
@@ -261,8 +261,12 @@ try {
    for(let i=0;i<count;i++){
     await parts.nth(i).click();
     assert.equal(await parts.nth(i).getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('#lab-part-preview svg').count(),1);
+    assert(await page.locator('#lab-part-preview svg polygon').count()>0);
+    assert.equal(await page.locator('#lab-part-preview strong').innerText(),await parts.nth(i).innerText());
     await parts.nth(i).click();
     assert.equal(await parts.nth(i).getAttribute('aria-pressed'),'false');
+    assert.equal(await page.locator('#lab-part-preview svg').count(),0);
    }
    if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/assembly-'+en.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.png'});
   }
