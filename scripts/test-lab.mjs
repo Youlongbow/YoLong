@@ -98,6 +98,26 @@ try {
      await practice.locator('[data-locate]').click();
      const focus=[15,3,2,5][i];
      assert.equal(await page.locator('#overview-list button').nth(focus).getAttribute('aria-pressed'),'true');
+     if(i===0){
+      const cameraPanel=page.locator('.overview-camera-selector');
+      assert.equal(await cameraPanel.getAttribute('data-camera-focus'),'3');
+      const cameraButtons=cameraPanel.locator('button');
+      assert.equal(await cameraButtons.count(),5);
+      const assemblyImages=new Set();
+      for(let channel=0;channel<4;channel++){
+       await cameraButtons.nth(channel+1).click();
+       assert.equal(await cameraPanel.getAttribute('data-camera-focus'),String(channel));
+       assert.equal(await tabs.nth(channel).getAttribute('aria-pressed'),'true');
+       await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+       assemblyImages.add(await campusImage());
+      }
+      assert.equal(assemblyImages.size,4,'Four distinct assembly highlights in integrated scene');
+      await tabs.nth(1).click();
+      assert.equal(await cameraPanel.getAttribute('data-camera-focus'),'1');
+      await cameraButtons.first().click();
+      assert.equal(await cameraPanel.getAttribute('data-camera-focus'),'-1');
+      await tabs.nth(3).click();
+     }
      if(i===3){
       await tabs.nth(1).click();
       await practice.locator('[data-locate]').click();
