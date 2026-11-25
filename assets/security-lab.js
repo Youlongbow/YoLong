@@ -465,7 +465,7 @@ function initStudio(lang,library){
   return [j%2?3.8:-3.8,1.1,j%2?-1.8:1.55];
  }
  let lastSceneGeometry=[];
- const keyListBoundaryIndex=()=>keys(zone).findIndex(k=>/^(fence|welded-mesh-fence|solid-boundary-wall)$/.test(k));
+ const keyListBoundaryIndex=()=>keys(zone).findIndex(k=>/^(fence|welded-mesh-fence)$/.test(k));
  function renderHotspots(project,w,h){
   const host=$('#studio-hotspots');if(!host)return;host.replaceChildren();
   if(!showDevices||!showFurniture)return;
@@ -496,7 +496,7 @@ function initStudio(lang,library){
   const q=state(),detail=$('#studio-zone-detail');$('#studio-path').textContent=t(scenes[scene].n)+' / '+t(q.n)+' / '+t(q.profiles[config[zone]].n);detail.replaceChildren();const caseData=caseFocus[scene][zone],basis=caseBasis[scene][zone];detail.append(make('h3',z?caseData[0]:caseData[1]),make('label',z?'典型业务场景':'Typical operations'),make('p',z?caseData[2]:caseData[3]),make('label',z?'本行业设计关注点':'Industry design priorities'),make('p',z?caseData[4]:caseData[5]),make('label',z?'保护对象与业务边界':'Assets and operational scope'),make('p',basis[z?0:1]),make('label',z?'设计约束与专业接口':'Design constraints and interfaces'),make('p',basis[z?2:3]),make('label',z?'应提交的工程证据':'Required engineering evidence'),make('p',basis[z?4:5]),make('label',z?'保护与运营目标':'Protection and operating objectives'),make('p',t(q.purpose)),make('label',z?'安保政策':'Security policy'),make('p',t(q.policy)),make('label',z?'管理责任':'Accountability'),make('p',t(q.owner)));$('#studio-profile-rule').textContent=t(q.profiles[config[zone]].rule)+' '+(z?'切换的是运营议题与系统学习内容；固定工程设施保持不变。':'Switching changes the operating topic and learning content; permanent architecture stays fixed.');const zoneTypes=$('#studio-access-zones');zoneTypes.replaceChildren();zoneTypes.append(make('p',z?'受限区域的三类术语；与当前行业的设施部位无固定对应关系。':'Three restricted-area categories; these do not correspond to fixed facility locations.'));for(const [name,desc] of conceptual.areas){const card=make('div');card.append(make('strong',t(name)),make('p',t(desc)));zoneTypes.append(card)}
   host=$('#studio-config');host.replaceChildren();q.profiles.forEach((profile,i)=>btn(host,t(profile.n),()=>{config[zone]=i;selected=-1;renderControls();draw()},config[zone]===i));
   host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'系统组件与工程接口':'System components and engineering interfaces'));
-  const visualGeometry=geometry();keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const visible=visualGeometry.some(o=>o.g===zone&&o.device===j);const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span','0'+(j+1)+' / '+t(library.models[i].n)),make('div',t(library.models[i].cat)+' · '+t(devices[k]||library.models[i].d),'studio-component-role'),make('div',visible?(z?'场景中可见构件':'Visible scene assembly'):(z?'工程接口 / 设备库详解':'Engineering interface / equipment details'),'studio-device-context'));row.append(txt);if(visible)btn(row,z?'高亮':'Highlight',()=>{selected=j;renderControls();draw()},selected===j);else{const link=btn(row,z?'接口说明':'Interface notes',()=>{selected=j;renderControls();draw()},selected===j);link.title=t(library.models[i].p)}btn(row,z?'设备详解':'Equipment details',()=>library.openModel(i,t(scenes[scene].n)+' / '+t(q.n)));host.append(row)});
+  const visualGeometry=geometry();keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const visible=visualGeometry.some(o=>o.g===zone&&o.device===j);const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span','0'+(j+1)+' / '+t(library.models[i].n)),make('div',t(library.models[i].cat)+' · '+t(devices[k]||library.models[i].d),'studio-component-role'),make('div',visible?(z?'场景中可见构件':'Visible scene assembly'):(z?'工程接口 / 设备库详解':'Engineering interface / equipment details'),'studio-device-context'));row.append(txt);if(visible)btn(row,z?'高亮':'Highlight',()=>{selected=j;renderControls();draw()},selected===j);else{const link=btn(row,z?'接口说明':'Interface notes',()=>{selected=j;renderControls();draw()},selected===j);link.title=t(library.models[i].p);if(selected===j)txt.append(make('p',t(library.models[i].p)))}btn(row,z?'设备详解':'Equipment details',()=>library.openModel(i,t(scenes[scene].n)+' / '+t(q.n)));host.append(row)});
   host=$('#studio-roles');host.replaceChildren();host.className='studio-roles';host.append(make('label',z?'人员角色与授权示例':'Role and authorization example'));const select=make('select');select.setAttribute('aria-label',z?'人员角色':'Person role');[P('访客','Visitor'),P('普通员工','General employee'),P('指定业务责任人','Designated business owner')].forEach((a,i)=>{const opt=make('option',t(a));opt.value=i;select.append(opt)});select.value=String(role);select.onchange=()=>{role=Number(select.value);renderControls()};host.append(select,make('p',q.roles.includes(role)?(z?'该角色可按本区域规定办理正常业务。':'This role can conduct ordinary business under the zone policy.'):(z?'由区域责任人按业务需求另行办理授权。':'Separate authorization is arranged by the zone owner according to business need.')));
   host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'场景底色':'Scene tint',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'知识热点与示例组件':'Hotspots & sample components',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'工业环境':'Industrial context',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);
   const comparison=$('#studio-industry-compare');comparison.replaceChildren();
@@ -599,7 +599,7 @@ function initStudio(lang,library){
   }
   if(showFurniture){
    const keyList=keys(zone);
-   const boundaryIndex=keyList.findIndex(k=>/^(fence|welded-mesh-fence|solid-boundary-wall)$/.test(k));
+   const boundaryIndex=keyList.findIndex(k=>/^(fence|welded-mesh-fence)$/.test(k));
    const frame=(x1,z1,x2,z2,id,solid=false)=>{
     const L=Math.hypot(x2-x1,z2-z1),a=Math.atan2(z2-z1,x2-x1),cx=(x1+x2)/2,cz=(z1+z2)/2,col=scene===1?'#a7a49a':'#98a5a7';
     const add=(p,spin=0)=>put(p,zone,id,0,spin);
@@ -624,17 +624,20 @@ function initStudio(lang,library){
      const scale=target/max;
      for(const part of model.b){const p=part.slice(),co=Math.cos(spin),si=Math.sin(spin);p[0]=x+(part[0]*co-part[2]*si)*scale;p[1]=y+Math.max(0,part[1])*scale;p[2]=z+(part[0]*si+part[2]*co)*scale;for(let v=3;v<=5;v++)p[v]*=scale;put(p,zone,j,0,spin)}
     };
-    // The objects illustrate normal service contexts and component families, not engineered locations or coverage.
-    for(const k of keyList){
-     if(/^(fence|welded-mesh-fence|solid-boundary-wall)$/.test(k))continue;
-     // Only visible outdoor/service fixtures are depicted in the scene. Indoor or network equipment remains in the system-interface list.
-     if(/signage/.test(k)){for(const x of [-4.8,4.8])fit(k,x,0,2.65,.42);continue}
+    // Persistent illustrative exterior fixtures are independent of the operating-topic filter.
+    // Their group identifier links only a genuinely matching catalogue item to the model.
+    const fixtures=[
+     ...(zone===0||zone===1?['safety-and-security-signage']:[]),
+     ...(zone===0||zone===2?['security-lighting']:[]),
+     ...(zone===1?['visitor-kiosk','parking-barrier']:[]),
+     ...(zone===2?['emergency-assistance-station']:[])
+    ];
+    for(const k of fixtures){
+     if(k==='safety-and-security-signage'){for(const x of [-4.8,4.8])fit(k,x,0,2.65,.42);continue}
      if(k==='security-lighting'){const lights=zone===0?(scene===2?[-4.4,4.4]:[-4.6,-1.7,1.7,4.6]):[-3.8,3.8];for(const x of lights)fit(k,x,0,zone===0?2.32:.85,.64);continue}
-     if(k==='parking-barrier'||k==='protective-railing'){if(zone===1)fit(k,-1.25,0,2.40,.50);continue}
-     if(k==='visitor-kiosk'&&zone===1){fit(k,-3.6,.06,.65,.28);continue}
-     if(k==='emergency-assistance-station'&&zone===2){fit(k,-2.7,0,1.15,.4);continue}
-     // Equipment whose location is indoors, context-dependent or an IT interface is explained separately.
-
+     if(k==='parking-barrier'){fit(k,-1.25,0,2.40,.50);continue}
+     if(k==='visitor-kiosk'){fit(k,-3.6,.06,.65,.28);continue}
+     if(k==='emergency-assistance-station'){fit(k,-2.7,0,1.15,.4);continue}
     }
    }
   }
