@@ -18,6 +18,34 @@ try {
   page.on('pageerror',e=>errors.push(lang+': '+e.message));
   const response=await page.goto(base+'/lab/'+lang+'/',{waitUntil:'domcontentloaded',timeout:60000});
   assert.equal(response.status(),200);
+  await page.locator('#overview-hotspots button').first().waitFor({timeout:30000});
+  assert(await page.locator('#lab-overview').isVisible());
+  assert(await page.locator('#lab-studio').isHidden());
+  assert.equal(await page.locator('#overview-hotspots button').count(),15);
+  assert.equal(await page.locator('#overview-layers button').count(),6);
+  assert.equal(await page.locator('#overview-functions button').count(),6);
+  if(requireGPU)await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.includes('WEBGL 2'),{},{timeout:30000});
+  for(let l=0;l<6;l++){
+   await page.locator('#overview-layers button').first().click();
+   if(l)await page.locator('#overview-layers button').nth(l).click();
+   for(let f=0;f<6;f++){
+    await page.locator('#overview-functions button').first().click();
+    if(f)await page.locator('#overview-functions button').nth(f).click();
+    await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+    assert.equal(await page.locator('#overview-hotspots button').count(),await page.locator('#overview-list button').count());
+    assert(await page.locator('#overview-detail h3').innerText());
+   }
+  }
+  await page.locator('#overview-layers button').first().click();
+  await page.locator('#overview-functions button').first().click();
+  await page.locator('#overview-list button').first().click();
+  await page.locator('#overview-detail .overview-links button').first().click();
+  assert(await page.locator('#lab-library-panel').isVisible());
+  await page.locator('#lab-back-scene').click();
+  assert(await page.locator('#lab-overview').isVisible());
+  if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/integrated-campus.png'});
+  await page.locator('#overview-next button').nth(1).click();
+  assert.equal(await page.locator('#studio-scenes button').nth(1).getAttribute('aria-pressed'),'true');
   await page.locator('#studio-scenes button').first().waitFor({timeout:30000});
   assert(await page.locator('#lab-library-panel').isHidden());
   assert.equal(await page.locator('#lab-mode-scene').getAttribute('aria-pressed'),'true');
@@ -131,7 +159,10 @@ try {
  for(const width of [390,320]){
   const page=await browser.newPage({viewport:{width,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
   page.on('pageerror',e=>errors.push('mobile '+width+': '+e.message));
-  await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#studio-scenes button').first().waitFor();
+  await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#overview-hotspots button').first().waitFor();
+  assert(await page.locator('#overview-canvas').isVisible());
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Overview no mobile horizontal overflow');
+  await page.locator('#lab-mode-scene').click();await page.locator('#studio-scenes button').first().waitFor();
   assert(await page.locator('#studio-canvas').isVisible());assert(await page.locator('#lab-canvas').isHidden());
   await page.locator('#lab-mode-library').click();await page.locator('#lab-info h2').waitFor();assert(await page.locator('#lab-canvas').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'No mobile horizontal overflow');
   await page.locator('#lab-categories button').last().click();assert.equal(await page.locator('#lab-modules button').count(),10);
