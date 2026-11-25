@@ -97,6 +97,14 @@ try {
      await practice.locator('[data-locate]').click();
      const focus=[15,3,2,5][i];
      assert.equal(await page.locator('#overview-list button').nth(focus).getAttribute('aria-pressed'),'true');
+     if(i===3){
+      await tabs.nth(1).click();
+      await practice.locator('[data-locate]').click();
+      assert.equal(await page.locator('#overview-day-night').getAttribute('aria-pressed'),'true');
+      await tabs.nth(2).click();
+      await practice.locator('[data-locate]').click();
+      assert.equal(await page.locator('#overview-day-night').getAttribute('aria-pressed'),'false');
+     }
      await page.locator('#overview-study-flow button').nth(1).click();
      assert.equal(await practice.locator('[data-completed]').getAttribute('data-completed'),'3');
      assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'true');
@@ -112,13 +120,35 @@ try {
   await page.locator('#overview-list button').nth(2).click();
   if(captures&&lang==='zh')await page.locator('#overview-system-study').screenshot({path:captures+'/system-study.png'});
 
-  assert.equal(await page.locator('#overview-functions button').count(),4);
+  assert.equal(await page.locator('#overview-functions button').count(),6);
+  const assetTabs=page.locator('#overview-assets button');
+  assert.equal(await assetTabs.count(),5);
+  for(const [i,point] of [3,12,11,14].entries()){
+   await assetTabs.nth(i).click();
+   assert.equal(await assetTabs.nth(i).getAttribute('aria-pressed'),'true');
+   assert.equal(await page.locator('#overview-list button').nth(point).getAttribute('aria-pressed'),'true');
+   assert(await page.locator('#overview-asset-detail h4').count()===3);
+   assert(await page.locator('#overview-asset-detail button').count()>=3);
+  }
+  await assetTabs.nth(4).click();
+  const dayNight=page.locator('#overview-day-night');
+  await page.locator('#overview-views button').first().click();
+  await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  if(await dayNight.getAttribute('aria-pressed')==='true')await dayNight.click();
+  await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  const dayImage=await campusImage();
+  await dayNight.click();
+  await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  assert.equal(await dayNight.getAttribute('aria-pressed'),'true');
+  assert.notEqual(await campusImage(),dayImage,'Integrated campus day and evening appearances differ');
+  await dayNight.click();
+  await page.locator('#overview-views button').nth(1).click();
   assert.equal(await page.locator('#overview-framework .concept-definition').count(),7);
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.includes('WEBGL 2'),{},{timeout:30000});
   for(let l=0;l<6;l++){
    await page.locator('#overview-layers button').first().click();
    if(l)await page.locator('#overview-layers button').nth(l).click();
-   for(let f=0;f<4;f++){
+   for(let f=0;f<6;f++){
     await page.locator('#overview-functions button').first().click();
     if(f)await page.locator('#overview-functions button').nth(f).click();
     await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
