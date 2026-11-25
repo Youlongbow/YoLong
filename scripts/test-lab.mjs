@@ -81,7 +81,7 @@ try {
     assert.equal(await practice.count(),1);
     if(j===0){
      const tabs=practice.locator('button');
-     assert.equal(await tabs.count(),5);
+     assert.equal(await tabs.count(),6);
      const images=new Set();
      for(let k=0;k<3;k++){
       await tabs.nth(k).click();
@@ -93,6 +93,14 @@ try {
       assert(await tabs.nth(3).isDisabled());
      }
      assert.equal(images.size,3);
+     assert.equal(await practice.locator('[data-completed]').getAttribute('data-completed'),'3');
+     await practice.locator('[data-locate]').click();
+     const focus=[15,3,2,5][i];
+     assert.equal(await page.locator('#overview-list button').nth(focus).getAttribute('aria-pressed'),'true');
+     await page.locator('#overview-study-flow button').nth(1).click();
+     assert.equal(await practice.locator('[data-completed]').getAttribute('data-completed'),'3');
+     assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'true');
+     await page.locator('#overview-study-flow button').nth(0).click();
      await tabs.nth(4).click();
      assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'false');
     }
