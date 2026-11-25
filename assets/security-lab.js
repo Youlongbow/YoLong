@@ -422,7 +422,8 @@ function initStudio(lang,library){
   [P('减轻后果','Mitigate'),P('考虑人员安全、设施适用性、应急服务及业务连续性，减少事件造成的损失。','Reduce incident consequences through life safety, facility suitability, emergency services and continuity.')],
   [P('响应','Respond'),P('明确事件评估、通知、责任分工、外部协调及恢复流程。','Define event assessment, notification, responsibility, external coordination and recovery.')]
  ];
- let activeLayer=1,activeFunction=0,hotspots=[];
+ const industryLayerContext=[[["关注工业运输与周边公共服务的协调。","Coordinate industrial transport and surrounding public services."],["边界设施需与工艺环境、材料适用性及设施管理协调。","Coordinate boundary assets with process conditions, material suitability and facilities management."],["将生产、承包商作业和检修管理纳入统一责任体系。","Align production, contractor work and maintenance responsibilities."],["建筑防护与工艺安全、消防、疏散共同审查。","Review building protection alongside process safety, fire safety and egress."],["保护人员、生产服务、设备及业务信息。","Protect people, production services, equipment and business information."]],[["关注用地、社区关系与正常运输活动。","Consider land use, community relationships and ordinary transport."],["地形、粉尘、施工阶段与维护条件影响边界资产选型。","Terrain, dust, construction phases and upkeep affect boundary asset selection."],["协调重型设备作业、人员活动、运输和资产交接。","Coordinate heavy equipment operations, people, transport and asset handover."],["临建、住宿和长期设施分别按使用条件审查。","Review temporary, accommodation and enduring buildings against their conditions of use."],["关注人员保障、生产设备、物资和业务连续性。","Consider personnel welfare, production equipment, materials and continuity."]],[["关注用地、属地服务以及远程运维的外部接口。","Consider land use, local services and external interfaces for remote O&M."],["边界资产管理需考虑分散运维、天气及维护资源。","Consider distributed maintenance, weather and servicing resources in boundary asset management."],["分散设备的工单、状态管理及运维责任是重点。","Focus on work orders, asset status and ownership of distributed equipment."],["运维建筑的生活服务、通信和电气安全需求应同步审查。","Review welfare, communications and electrical safety requirements for O&M buildings together."],["关注发电服务、设备、人员和运维信息。","Consider generation services, equipment, people and maintenance information."]],[["关注工业服务、交通及外部协调。","Consider industrial services, traffic and external coordination."],["将边界设施维护与运行、检修及环境要求协调。","Coordinate boundary maintenance with operation, outages and environmental requirements."],["运行、检修和电气安全责任需明确交接。","Clarify handover among operations, maintenance and electrical safety responsibilities."],["工业建筑及值班设施应协调消防、设施安全和正常使用。","Coordinate fire safety, facility safety and ordinary use in industrial and shift-worker buildings."],["以人员、发电服务、设备和运行记录为保护对象。","Protect people, generation services, equipment and operational records."]]];
+ let activeLayer=1,activeFunction=0;
  const contextByKey=(k)=>{
   if(/fence|boundary-wall|railing/.test(k))return P('边界与空间分隔','Boundary and spatial separation');
   if(/credential|access-control|visitor|parking-barrier|intercom|signage/.test(k))return P('日常通行与服务','Routine circulation and service');
@@ -431,7 +432,7 @@ function initStudio(lang,library){
   return P('设施与资产管理','Facility and asset management');
  };
  function renderExploration(){
-  let host=$('#studio-layers');host.replaceChildren();layerContent.forEach((a,i)=>btn(host,t(a[0]),()=>{activeLayer=i;renderExploration()},i===activeLayer));$('#studio-layer-copy').textContent=t(layerContent[activeLayer][1]);
+  let host=$('#studio-layers');host.replaceChildren();layerContent.forEach((a,i)=>btn(host,t(a[0]),()=>{activeLayer=i;renderExploration()},i===activeLayer));$('#studio-layer-copy').textContent=t(layerContent[activeLayer][1])+' '+t(industryLayerContext[scene][activeLayer]);
   host=$('#studio-functions');host.replaceChildren();functionContent.forEach((a,i)=>btn(host,t(a[0]),()=>{activeFunction=i;renderExploration()},i===activeFunction));$('#studio-function-copy').textContent=t(functionContent[activeFunction][1]);
  }
  // Hotspots associate components with ordinary architectural contexts; they are not engineering installation coordinates.
@@ -458,7 +459,7 @@ function initStudio(lang,library){
   return [j%2?3.8:-3.8,1.1,j%2?-1.8:1.55];
  }
  function renderHotspots(project,w,h){
-  const host=$('#studio-hotspots');if(!host)return;host.replaceChildren();hotspots=[];
+  const host=$('#studio-hotspots');if(!host)return;host.replaceChildren();
   if(!showDevices||!showFurniture)return;
   const taken=[];
   keys(zone).forEach((k,j)=>{let i=find(k);if(i<0)return;const point=project(contextPoint(k,j));let x=Math.max(18,Math.min(w-18,point[0])),y=Math.max(35,Math.min(h-18,point[1]-12));
@@ -571,6 +572,7 @@ function initStudio(lang,library){
    const fit=(k,x,y,z,scale,spin=0)=>{const i=find(k);if(i<0)return;const model=library.models[i];const j=keys(zone).indexOf(k);
     for(const part of model.b){const p=part.slice(),co=Math.cos(spin),si=Math.sin(spin);p[0]=x+(part[0]*co-part[2]*si)*scale;p[1]=y+part[1]*scale;p[2]=z+(part[0]*si+part[2]*co)*scale;for(let v=3;v<=5;v++)p[v]*=scale;put(p,zone,j,0,spin)}
    };
+   if(zone===0){for(const k of keys(zone)){if(k==='fence'||k==='welded-mesh-fence'||k==='solid-boundary-wall')fit(k,-3.9,0,2.35,.42);else if(k==='safety-and-security-signage')fit(k,2.9,0,1.65,.30);else if(k==='security-lighting')fit(k,1.4,0,1.4,.25);}}
    if(zone===1){for(const k of keys(zone)){if(k==='visitor-kiosk')fit(k,-2.65,0,.65,.31);else if(k==='visitor-service-counter')fit(k,3.55,0,.72,.34);else if(k==='safety-and-security-signage')fit(k,-4.5,0,1.35,.35);}}
    if(zone===2){for(const k of keys(zone)){if(k==='security-lighting')fit(k,-.95,0,1.05,.29);else if(k==='emergency-assistance-station')fit(k,1.15,0,1.0,.30);else if(k==='visitor-service-counter')fit(k,-2.9,0,-.6,.29);}}
   }
