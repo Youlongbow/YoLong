@@ -1180,7 +1180,7 @@ function initOverview(lang,library){
  let layer=-1,fn=-1,selected=2,yaw=.62,pitch=.68,zoom=1,drag=null,raf=0,geometryCache=null,annotated=true,markerMode='selected',paintCache=null,evening=false,cameraFocus=-1;
  const el=(tag,txt,cls)=>{const e=document.createElement(tag);if(txt!==undefined)e.textContent=txt;if(cls)e.className=cls;return e};
  function button(host,txt,action,pressed){const e=el('button',txt);e.type='button';if(pressed!==undefined)e.setAttribute('aria-pressed',String(pressed));e.onclick=action;host.append(e);return e}
- const filtered=()=>points.map((p,i)=>({p,i})).filter(({p})=>(layer<0||p.layer===layer)&&(fn<0||protectiveEffects[i].includes(fn)));
+ const filtered=()=>points.map((p,i)=>({p,i})).filter(({p,i})=>(layer<0||p.layer===layer)&&(fn<0||protectiveEffects[i].includes(fn)));
  const selectedParts=()=>selected<0?[]:selected===2?[2,3]:[selected];
  const related={
   boundary:['welded-mesh-fence','fence','swing-gate','sliding-vehicle-gate'],
