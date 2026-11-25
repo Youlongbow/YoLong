@@ -117,7 +117,7 @@ function visitorScene(i,zh){
 // The illustrations describe appearance and materials, not a protective layout.
 function boundaryExhibit(i,zh){
  const label=(x,y,a,b,size=10)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+size+'" font-family="system-ui,sans-serif" fill="#e1e8e8">'+(zh?a:b)+'</text>';
- const p=(x,y,z=0)=>[160+(x-y)*.87,118+(x+y)*.36-z];
+ const p=(x,y,z=0)=>[160+(x-y)*.87,130+(x+y)*.27-z];
  const poly=(pts,fill,stroke='none')=>'<polygon points="'+pts.map(q=>q.map(n=>n.toFixed(1)).join(',')).join(' ')+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width=".6"/>';
  const box=(x,y,w,d,h,palette,z=0)=>{
   const a=p(x,y,z),b=p(x+w,y,z),c=p(x+w,y+d,z),e=p(x,y+d,z),A=p(x,y,z+h),B=p(x+w,y,z+h),C=p(x+w,y+d,z+h),E=p(x,y+d,z+h);
@@ -126,7 +126,7 @@ function boundaryExhibit(i,zh){
  const base=(x,y,active)=>box(x,y,86,37,4,active?['#d1bea0','#89775f','#b09b7b']:['#b1bab5','#647772','#82938d']);
  const panel=(x,y,w,h,color,z=4)=>poly([p(x,y,z),p(x+w,y,z),p(x+w,y,z+h),p(x,y,z+h)],color,'#87999e');
  const steel=['#c0cbcc','#788d93','#9aaeb1'],stone=['#c8c7bb','#8e9891','#a7ada3'],frame=['#b2c3c7','#667e87','#8da4ab'];
- let v='<rect width="320" height="180" fill="#202f36"/>';
+ let v='<rect width="320" height="210" fill="#202f36"/>';
  // Independent exhibition plinths do not represent the relative placement of building measures.
  const x=[-116,-22,72],y=[16,16,16];
  for(let n=0;n<3;n++){
@@ -158,7 +158,7 @@ function systemPractice(host,system,zh,options={}){
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
-  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':system===2?'0 0 320 180':'0 0 320 160',system===1?visitorScene(current,zh):system===2?boundaryExhibit(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
+  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':system===2?'0 0 320 210':'0 0 320 160',system===1?visitorScene(current,zh):system===2?boundaryExhibit(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
   figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':system===1?'340':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   if(system===0){figure.dataset.channel=String(current);const title=e('div','CAM 0'+(current+1)+' / '+tr(...s.names[current]));title.style.cssText='padding:9px 12px;font-weight:650;color:#e5eaea;border-top:1px solid #46555b;font-size:13px';figure.append(title)}
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
