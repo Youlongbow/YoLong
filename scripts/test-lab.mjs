@@ -339,8 +339,9 @@ try {
   const revisedAssemblies=[
    ['安全储物柜','Secure storage cabinet',4],
    ['门磁状态传感器','Door contact',3],
-   ['访客自助终端','Visitor kiosk',4],
-   ['访客服务柜台','Visitor service counter',2],
+   ['凭证读取器','Credential reader',4],
+   ['访客自助终端','Visitor kiosk',5],
+   ['访客服务柜台','Visitor service counter',4],
    ['紧急求助终端','Emergency assistance station',4],
    ['访客凭证打印机','Visitor badge printer',4],
    ['事件管理工作站','Incident management workstation',4],
