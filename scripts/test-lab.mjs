@@ -3,6 +3,22 @@ import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { resolve, extname } from 'node:path';
 import assert from 'node:assert/strict';
+// Verify oriented open-surface meshes before launching the browser.
+const source=await readFile('assets/security-lab.js','utf8');
+const meshStart=source.indexOf('function mesh(part){'),meshEnd=source.indexOf('\nfunction t(a)',meshStart);
+assert(meshStart>=0&&meshEnd>meshStart,'Mesh factory is available');
+const mesh=new Function(source.slice(meshStart,meshEnd)+'\nreturn mesh;')();
+for(const shape of ['annulus','pitRing','terrain','coolingTower']){
+ const m=mesh([0,0,0,3,1,3,'#999999',shape,.8,.3,.03]);
+ assert(m.oriented,shape+' uses explicit face orientation');
+ for(const [i,f] of m.polys.entries()){
+  const [a,b,c]=f.slice(0,3).map(j=>m.vertices[j]),u=b.map((v,k)=>v-a[k]),v=c.map((q,k)=>q-a[k]);
+  const n=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+  const mid=f.map(j=>m.vertices[j]).reduce((sum,p)=>sum.map((x,k)=>x+p[k]),[0,0,0]);
+  const radial=n[0]*mid[0]+n[2]*mid[2];
+  assert(shape==='annulus'?[n[1]<0,n[1]>0,radial>0,radial<0][i%4]:shape==='coolingTower'?radial>0:n[1]>0,shape+' face '+i+' orientation');
+ }
+}
 const root=resolve('dist');
 const type={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.jpg':'image/jpeg'};
 const server=createServer(async(req,res)=>{try{let p=new URL(req.url,'http://localhost').pathname;if(p.endsWith('/'))p+='index.html';let path=resolve(root,'.'+decodeURIComponent(p));if(!path.startsWith(root+'/')){res.writeHead(403);res.end();return}const data=await readFile(path);res.writeHead(200,{'Content-Type':type[extname(path)]||'application/octet-stream'});res.end(data)}catch{res.writeHead(404);res.end('Not found')}});
