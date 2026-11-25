@@ -1082,7 +1082,7 @@ function initOverview(lang,library){
  [P('太阳能电站','Solar power plant'),P('分散资产与远程运维','Distributed assets and remote O&M')],
  [P('发电站','Power station'),P('运行、检修与值班保障','Generation, maintenance and shift welfare')]
  ];
- let layer=-1,fn=-1,selected=2,yaw=.62,pitch=.68,zoom=1,drag=null,raf=0,geometryCache=null,annotated=true,markerMode='all',paintCache=null;
+ let layer=-1,fn=-1,selected=2,yaw=.62,pitch=.68,zoom=1,drag=null,raf=0,geometryCache=null,annotated=true,markerMode='all',paintCache=null,evening=false;
  const el=(tag,txt,cls)=>{const e=document.createElement(tag);if(txt!==undefined)e.textContent=txt;if(cls)e.className=cls;return e};
  function button(host,txt,action,pressed){const e=el('button',txt);e.type='button';if(pressed!==undefined)e.setAttribute('aria-pressed',String(pressed));e.onclick=action;host.append(e);return e}
  const filtered=()=>points.map((p,i)=>({p,i})).filter(({p})=>(layer<0||p.layer===layer)&&(fn<0||protectiveEffects[i].includes(fn)));
@@ -1148,6 +1148,7 @@ function initOverview(lang,library){
  function locatePractice(system,state){
   const target=practiceFocus[system]?.[state];if(target===undefined)return;
   layer=-1;fn=-1;selected=target;annotated=true;markerMode='all';
+  if(system===3)evening=state===1;
   renderControls();syncViewButtons();draw();
   const canvas=$('.overview-stack');canvas?.scrollIntoView({behavior:'smooth',block:'center'});
  }
@@ -1177,10 +1178,11 @@ function initOverview(lang,library){
  const natural=button(viewHost,z?'完整场景':'Natural scene',()=>{annotated=false;syncViewButtons();draw()},false);
  const focus=button(viewHost,z?'系统讲解':'System focus',()=>{annotated=true;syncViewButtons();draw()},true);
  const markers=button(viewHost,z?'全部标注':'All labels',()=>{markerMode=markerMode==='all'?'selected':'all';syncViewButtons();draw()},true);
- function syncViewButtons(){natural.setAttribute('aria-pressed',String(!annotated));focus.setAttribute('aria-pressed',String(annotated));markers.setAttribute('aria-pressed',String(markerMode==='all'));markers.textContent=markerMode==='all'?(z?'全部标注':'All labels'):(z?'仅选中标注':'Selected label')}
+ function syncViewButtons(){natural.setAttribute('aria-pressed',String(!annotated));focus.setAttribute('aria-pressed',String(annotated));markers.setAttribute('aria-pressed',String(markerMode==='all'));markers.textContent=markerMode==='all'?(z?'全部标注':'All labels'):(z?'仅选中标注':'Selected label');dayNight.setAttribute('aria-pressed',String(evening));dayNight.textContent=evening?(z?'夜间概念视图':'Evening concept view'):(z?'日间概念视图':'Daytime concept view')}
  button(viewHost,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.68;zoom=1;draw()});
  button(viewHost,z?'俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});
  button(viewHost,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});button(viewHost,'−',()=>{zoom=Math.max(.68,zoom/1.15);draw()});
+ const dayNight=button(viewHost,z?'日间概念视图':'Daytime concept view',()=>{evening=!evening;syncViewButtons();draw()},false);dayNight.id='overview-day-night';dayNight.title=z?'切换同一园区的环境显示状态':'Toggle the ambient appearance of the same campus';
  const next=$('#overview-next');industries.forEach((a,i)=>{const b=button(next,'',()=>library.openIndustry(i));b.append(el('strong',t(a[0])),el('span',t(a[1])))});
  function solids(){
   const out=[];
@@ -1319,15 +1321,17 @@ function initOverview(lang,library){
   const s=Math.min((w-32)/(2*extX),(h-60)/(2*extY))*zoom;
   const project=([x,y,z])=>{const X=x*co-z*si,Z=x*si+z*co;return[w/2+X*s,h*.48+(Z*sp-y*cp)*s,Z*cp+y*sp]};
   const activeParts=annotated?selectedParts():[];if(!geometryCache)geometryCache=solids();
-  const paintKey=[annotated,layer,fn,selected].join('|');
+  const paintKey=[annotated,layer,fn,selected,evening].join('|');
   if(!paintCache||paintCache.key!==paintKey){
    const relevant=new Set(filtered().map(({i})=>i));
-   paintCache={key:paintKey,scene:geometryCache.map(source=>{const o={...source,p:source.p.slice()};if(activeParts.includes(o.device))o.p[6]='#e3b375';else if(annotated&&((layer>=0&&o.g>=0&&o.g!==layer)||(fn>=0&&o.device>=0&&!relevant.has(o.device)))){const n=parseInt(o.p[6].slice(1),16),rgb=[n>>16,(n>>8)&255,n&255];const gray=rgb[0]*.25+rgb[1]*.55+rgb[2]*.20;o.p[6]='#'+rgb.map(v=>Math.round(v*.34+gray*.40+18).toString(16).padStart(2,'0')).join('')}return o})}
+   paintCache={key:paintKey,scene:geometryCache.map(source=>{const o={...source,p:source.p.slice()};if(activeParts.includes(o.device))o.p[6]='#e3b375';else if(annotated&&((layer>=0&&o.g>=0&&o.g!==layer)||(fn>=0&&o.device>=0&&!relevant.has(o.device)))){const n=parseInt(o.p[6].slice(1),16),rgb=[n>>16,(n>>8)&255,n&255];const gray=rgb[0]*.25+rgb[1]*.55+rgb[2]*.20;o.p[6]='#'+rgb.map(v=>Math.round(v*.34+gray*.40+18).toString(16).padStart(2,'0')).join('')}
+   // Conceptual ambient state, shared by the GPU and compatibility renderer.
+   if(evening){if(source.device===5&&source.p[6]==='#f2e1aa'){o.p[6]='#fff0bc';o.material=[.24,.01]}else if(!activeParts.includes(o.device)){const rgb=parseInt(o.p[6].slice(1),16);o.p[6]='#'+[(rgb>>16)*.46,((rgb>>8)&255)*.55,(rgb&255)*.66+10].map(v=>Math.min(255,Math.round(v)).toString(16).padStart(2,'0')).join('')}}return o})}
   }
   const scene=paintCache.scene;
   let gpuOk=false;if(gpu)try{gpuOk=gpu.draw({solids:scene,mesh:library.mesh,zone:-1,selected:-1,key:paintKey,w,h,s,yaw,pitch,d})}catch(e){console.warn('Overview compatibility mode',e);gpu=null}
   if(G)G.style.visibility=gpuOk?'visible':'hidden';
-  $('#overview-engine').textContent=gpuOk?'WEBGL 2 / LIVE 3D':(z?'兼容三维视图':'Compatible 3D view');
+  $('#overview-engine').textContent=(gpuOk?'WEBGL 2 / LIVE 3D':(z?'兼容三维视图':'Compatible 3D view'))+' · '+(evening?(z?'夜间环境示意':'Evening appearance'):(z?'日间环境示意':'Daytime appearance'));
   if(!gpuOk){
    const faces=[];for(const {p,g,device,spin} of scene){const m=library.mesh(p);if(spin){const a=Math.cos(spin),b=Math.sin(spin);m.vertices=m.vertices.map(([x,y,z])=>{const dx=x-p[0],dz=z-p[2];return[p[0]+dx*a-dz*b,y,p[2]+dx*b+dz*a]})}const v=m.vertices.map(project);for(const f of m.polys){const a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];if(!a||!b||!c)continue;const u=b.map((x,i)=>x-a[i]),q=c.map((x,i)=>x-a[i]),n=[u[1]*q[2]-u[2]*q[1],u[2]*q[0]-u[0]*q[2],u[0]*q[1]-u[1]*q[0]],l=.68+.4*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/(Math.hypot(...n)||1));let color=m.color;const rgb=parseInt(color.slice(1),16);const shade='rgb('+[rgb>>16,(rgb>>8)&255,rgb&255].map(x=>Math.min(255,Math.round(x*l))).join(',')+')';const poly=f.map(i=>v[i]);faces.push({poly,shade,depth:poly.reduce((a,p)=>a+p[2],0)/poly.length})}}
    faces.sort((a,b)=>a.depth-b.depth);for(const f of faces){ctx.beginPath();f.poly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=f.shade;ctx.fill()}
