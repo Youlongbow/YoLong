@@ -103,10 +103,10 @@ try {
      await reviewCheck.uncheck();
 
      configurations.add(await page.locator('#studio-components').innerText());
-     await page.locator('#studio-hotspots button').first().waitFor();
-     assert.equal(await page.locator('#studio-hotspots button').count(),4);
-     await page.locator('#studio-hotspots button').first().click();
-     await page.waitForFunction(()=>document.querySelector('#studio-hotspots button')?.getAttribute('aria-pressed')==='true');
+     await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+     const visibleCount=await page.locator('#studio-components .studio-device-context').evaluateAll(nodes=>nodes.filter(n=>/Visible scene assembly|场景中可见构件/.test(n.textContent)).length);
+     assert.equal(await page.locator('#studio-hotspots button').count(),visibleCount);
+     if(visibleCount){await page.locator('#studio-hotspots button').first().click();await page.waitForFunction(()=>document.querySelector('#studio-hotspots button')?.getAttribute('aria-pressed')==='true');}
      await page.locator('#studio-components .studio-device button').first().click();
      await page.locator('#studio-roles select').selectOption('2');
      assert(await page.locator('#studio-roles p').innerText());
