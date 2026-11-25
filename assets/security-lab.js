@@ -808,7 +808,7 @@ function createIndustrialRenderer(canvas){
  let lastKey='',count=0;
  function upload(solids,mesh,zone,selected){
   const data=[];
-  for(const {p,g,device,tilt,spin,transform} of solids){
+  for(const {p,g,device,tilt,spin,transform,material} of solids){
    const m=mesh(p);let vertices=m.vertices;
    if(tilt){const ct=Math.cos(tilt),st=Math.sin(tilt);vertices=vertices.map(([x,y,z])=>{let dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}
    if(spin){const co=Math.cos(spin),si=Math.sin(spin);vertices=vertices.map(([x,y,z])=>{const dx=x-p[0],dz=z-p[2];return[p[0]+dx*co-dz*si,y,p[2]+dx*si+dz*co]})}
@@ -817,7 +817,7 @@ function createIndustrialRenderer(canvas){
    const code=parseInt(hex.slice(1),16),color=[(code>>16)&255,(code>>8)&255,code&255].map(v=>v/255);
    const isGlass=color[2]>color[0]*1.2&&color[0]<.45;
    const metal=m.smooth&&!isGlass&&color[0]>.38&&Math.abs(color[0]-color[1])<.12;
-   const rough=isGlass?.24:metal?.42:.88,metalness=metal?.42:isGlass?.13:.04;
+   const highlighted=hex==='#e3b375',rough=highlighted?.62:(material?.[0]??(isGlass?.24:metal?.42:.88)),metalness=highlighted?.05:(material?.[1]??(metal?.42:isGlass?.13:.04));
    const center=vertices.reduce((s,v)=>s.map((a,i)=>a+v[i]),[0,0,0]).map(v=>v/vertices.length);
    const faces=[],normals=vertices.map(()=>[0,0,0]);
    for(const raw of m.polys){if(raw.length<3)continue;let f=raw.slice(),a=vertices[f[0]],b=vertices[f[1]],c=vertices[f[2]];
@@ -967,7 +967,8 @@ function initOverview(lang,library){
  const next=$('#overview-next');industries.forEach((a,i)=>{const b=button(next,'',()=>library.openIndustry(i));b.append(el('strong',t(a[0])),el('span',t(a[1])))});
  function solids(){
   const out=[];
-  const B=(x,y,z,w,h,d,k,shape,group=-1,device=-1,spin=0)=>out.push({p:[x,y,z,w,h,d,k,shape],g:group,device,tilt:0,spin});
+  const materials={'#82946f':[.98,0],'#545c60':[.95,0],'#b6b8b1':[.88,0],'#527580':[.19,.08],'#869a9e':[.43,.55],'#a5b5b4':[.44,.40],'#cbc8b9':[.85,0],'#bfc5c2':[.83,0],'#697d81':[.56,.12]};
+  const B=(x,y,z,w,h,d,k,shape,group=-1,device=-1,spin=0,material)=>out.push({p:[x,y,z,w,h,d,k,shape],g:group,device,tilt:0,spin,material:material||materials[k]});
   const cyl=(x,y,z,w,h,d,k,g=-1,id=-1)=>B(x,y,z,w,h,d,k,'cylinder',g,id);
   const grass='#82946f',pavement='#b6b8b1',road='#545c60',steel='#869a9e',glass='#527580';
   B(0,-.38,0,15.6,.34,11.8,'#485459');B(0,-.04,0,15.3,.04,11.5,grass);
@@ -984,6 +985,12 @@ function initOverview(lang,library){
   B(4.05,.03,1.07,3.4,.03,.45,'#d2cfc1',null,2,4);
   B(-3.4,.035,2.95,3.3,.02,.66,'#717b7c',null,2,4);
   for(let i=0;i<5;i++)B(-5+i*.75,.061,2.95,.025,.01,.66,'#dedbca',null,2,4);
+  // Surface finishing and landscape details are drawn as ordinary campus architecture.
+  for(let i=0;i<30;i++)B(-7.25+i*.50,.089,3.76,.012,.005,.32,'#858c87',null,0);
+  for(const x of [-4.1,4.05])for(let j=0;j<7;j++)B(x-1.48+j*.49,.065,1.07,.012,.005,.43,'#a9aa9e',null,2,4);
+  for(const [x,z,w,dep] of [[-5.68,-2.35,.75,2.15],[5.63,-2.2,.75,2.1],[-3.75,.49,1.9,.32],[3.65,.72,2.1,.34]]){
+   B(x,.038,z,w,.035,dep,'#78866c',null,-1);B(x,.073,z,w+.04,.038,.055,'#b3b3a5');B(x,.073,z-dep/2,w+.04,.038,.055,'#b3b3a5');
+  }
   // Continuous architectural property boundary and ordinary entrance openings.
   function fence(x1,z1,x2,z2,id=2){
    const L=Math.hypot(x2-x1,z2-z1),a=Math.atan2(z2-z1,x2-x1),co=Math.cos(a),si=Math.sin(a),cx=(x1+x2)/2,cz=(z1+z2)/2;
@@ -1008,15 +1015,26 @@ function initOverview(lang,library){
    B(x,.035,z,w,h,d,color,null,3,id);
    B(x,h+.035,z,w+.12,roofType==='roof'?.34:.10,d+.12,'#697d81',roofType==='roof'?'roof':null,3,id);
    B(x,.04,z,w+.04,.08,d+.04,'#a1aaa4',null,3,id);
+   // Facade joints, roof edges and sills clarify construction and building scale.
+   if(roofType!=='roof'){
+    for(const zz of [z-d/2,z+d/2])B(x,h+.135,zz,w+.09,.085,.065,'#a9b5b2',null,3,id);
+    for(const xx of [x-w/2,x+w/2])B(xx,h+.135,z,.065,.085,d+.07,'#a9b5b2',null,3,id);
+   }
+   for(let f=1;f<Math.floor(h/.60);f++)B(x,.06+f*.64,z+d/2+.025,w+.01,.045,.032,'#aaa99d',null,3,id);
    for(let f=0;f<Math.max(1,Math.floor(h/.66));f++)for(let j=0;j<Math.floor(w/.56);j++){
     const xx=x-w/2+.29+j*.56,yy=.22+f*.64;
     B(xx,yy,z+d/2+.018,.43,.37,.032,'#7d9194',null,3,id);B(xx,yy+.035,z+d/2+.045,.35,.29,.012,glass,null,3,id);B(xx,yy+.035,z+d/2+.06,.018,.29,.012,'#becac8',null,3,id);
     B(xx,yy,z-d/2-.018,.40,.32,.025,glass,null,3,id);
+    B(xx,yy-.02,z+d/2+.052,.46,.026,.11,'#b0b4aa',null,3,id);
+    B(xx,yy+.29,z+d/2+.059,.35,.028,.012,'#829498',null,3,id);
    }
    for(let f=0;f<Math.max(1,Math.floor(h/.66));f++)for(let j=0;j<Math.floor(d/.58);j++){
     const zz=z-d/2+.32+j*.58;B(x+w/2+.025,.22+f*.64,zz,.028,.33,.40,glass,null,3,id);B(x-w/2-.025,.22+f*.64,zz,.028,.33,.40,glass,null,3,id);
    }
    B(x+.22,.04,z+d/2+.066,.53,.76,.075,'#48616a',null,3,id);B(x+.22,.80,z+d/2+.19,1.0,.09,.57,'#a4b5b6',null,3,id);
+   B(x+.22,.08,z+d/2+.112,.43,.65,.02,glass,null,3,id);
+   B(x+.22,.08,z+d/2+.126,.025,.65,.016,'#9caeae',null,3,id);
+   B(x+.22,.04,z+d/2+.30,.92,.065,.48,'#bcbdb2',null,3,id);
    if(roofType!=='roof'){for(const dx of [-.43,.43]){B(x+dx,h+.135,z-.25,.46,.18,.45,'#a3aeac',null,3,id);B(x+dx,h+.315,z-.25,.36,.018,.36,'#727f83',null,3,id)}}
   };
   building(-3.5,-2.45,3.45,2.35,1.96,'#cbc8b9',8);
@@ -1024,7 +1042,7 @@ function initOverview(lang,library){
   building(.05,-3.30,1.67,1.1,1.12,'#a6b5b8',13);
   building(-4.45,.10,1.75,1.25,.98,'#c9c5b5',9);
   // Landscape, parking and service areas.
-  const tree=(x,z)=>{cyl(x,.05,z,.10,.61,.10,'#817057');B(x,.50,z,.66,.73,.65,'#617b53','sphere');B(x-.19,.55,z+.14,.43,.45,.47,'#759064','sphere')};
+  const tree=(x,z)=>{cyl(x,.05,z,.10,.61,.10,'#817057');B(x,.50,z,.65,.69,.63,'#617b53','sphere');B(x-.19,.55,z+.14,.43,.45,.47,'#759064','sphere');B(x+.21,.55,z-.12,.45,.51,.40,'#59764f','sphere');B(x+.03,.76,z+.08,.43,.49,.43,'#799263','sphere')};
   for(const [x,z] of [[-7,3.65],[6.9,3.64],[-5.75,-3.75],[5.7,-3.7],[-5.5,1.1],[5.45,1.0],[2.1,.3],[4.75,.4],[-1.65,-.5],[6.9,-2],[-7,-1.3]])tree(x,z);
   B(3.65,.05,.04,2.1,.06,1.05,'#93a17d',null,2,7);
   for(const x of [3.0,4.25]){B(x,.12,.21,.65,.13,.29,'#9d886d',null,2,7);B(x,.25,.34,.65,.25,.055,'#a38f71',null,2,7)}
@@ -1040,7 +1058,11 @@ function initOverview(lang,library){
   for(const [x,z] of [[-3.6,1.23],[4.75,1.18]]){B(x,.05,z,.22,.64,.20,'#628a9d',null,2,6);B(x,.46,z+.11,.13,.12,.025,'#e1cc9e',null,2,6)}
   const car=(x,z,color,group=2,id=4)=>{
    B(x,.15,z,.78,.16,.39,color,'rounded',group,id);B(x-.06,.31,z,.43,.16,.35,color,'rounded',group,id);
-   B(x-.06,.40,z,.32,.05,.35,glass,'rounded',group,id);
+   B(x-.06,.40,z,.32,.05,.35,'#a3b4b6','rounded',group,id);
+   for(const side of [-1,1]){B(x-.07,.34,z+side*.181,.31,.079,.015,glass,null,group,id);B(x-.07,.33,z+side*.19,.025,.094,.015,'#7c8e91',null,group,id);B(x+.04,.265,z+side*.202,.065,.035,.022,'#39474c','rounded',group,id)}
+   B(x+.165,.34,z,.018,.079,.30,glass,null,group,id);
+   B(x-.28,.34,z,.018,.078,.30,glass,null,group,id);
+   B(x-.396,.21,z,.015,.065,.29,'#a54f46',null,group,id);
    for(const dx of [-.23,.23])for(const dz of [-.20,.20])B(x+dx,.04,z+dz,.18,.18,.075,'#2d373a','wheel',group,id);
    B(x+.396,.22,z,.015,.07,.32,'#dfe1ca',null,group,id);
   };
@@ -1048,7 +1070,18 @@ function initOverview(lang,library){
   for(const [x,z] of [[-4.4,1.2],[-2.55,.65],[.8,1.0],[3.9,1.13],[4.9,.8],[1.65,3.5],[-3,3.78]]){
    B(x-.04,.04,z,.06,.22,.08,'#4c5a63');B(x+.04,.04,z,.06,.22,.08,'#4c5a63');B(x,.25,z,.17,.2,.10,'#b6a384','rounded');B(x,.45,z,.11,.12,.11,'#bd9f83','sphere');
   }
-  // Exposed teaching exhibit adjacent to the buildings: asset and operational concepts, not a floor plan.
+  // Open architectural display bays make the teaching exhibits recognizable as indoor service furnishings.
+  // These are generic exhibition vignettes, not a protective floor plan.
+  const displayBay=(x,z,w,dep)=>{
+   B(x,.04,z,w,.05,dep,'#c7c6b7');
+   B(x,.09,z-dep/2,w,.46,.075,'#aeb6ae');
+   for(const xx of [x-w/2,x+w/2])B(xx,.09,z,.075,.46,dep,'#aeb6ae');
+   B(x,.55,z-dep/2,w+.04,.035,.105,'#8d9d9d');
+  };
+  displayBay(-3.20,-.48,2.55,1.02);
+  displayBay(3.49,-.65,2.40,.96);
+  displayBay(.10,-2.32,1.46,.74);
+  // The open displays explain asset and operational concepts in an architectural context.
   B(-3.20,.06,-.50,2.25,.065,.90,'#d2d1c4',null,3,8);
   B(-3.52,.13,-.48,1.18,.34,.42,'#9c8b79',null,3,8);B(-3.52,.47,-.48,1.25,.045,.47,'#ded8ca',null,3,8);
   for(const x of [-2.65,-2.2]){B(x,.12,-.46,.36,.66,.41,'#829195',null,4,11);B(x,.31,-.235,.26,.34,.025,'#b0b9b7',null,4,11)}
