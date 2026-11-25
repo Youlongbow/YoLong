@@ -79,6 +79,13 @@ try {
     assert(await page.locator('#overview-study-visual .study-record strong').innerText());
     const practice=page.locator('#overview-study-visual .system-practice');
     assert.equal(await practice.count(),1);
+    const accessReview=page.locator('.access-engineering-review');
+    assert.equal(await accessReview.count(),i===1?1:0);
+    if(i===1){
+     assert.equal(await accessReview.locator('dd').count(),2);
+     assert.equal(await practice.locator('.visitor-journey').count(),1);
+     assert((await accessReview.locator('a').getAttribute('href')).includes('eis0002'));
+    }
     const review=page.locator('.video-engineering-review');
     assert.equal(await review.count(),i===0?1:0);
     if(i===0){
