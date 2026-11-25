@@ -139,6 +139,26 @@ function boundaryExhibit(i,zh){
  v+='<rect x="8" y="7" width="304" height="22" rx="3" fill="#32444c"/><text x="160" y="22" text-anchor="middle" fill="#e1e8e8" font-size="10" font-family="system-ui,sans-serif">'+captions[i]+'</text>';
  return v;
 }
+// Ordinary public-space lighting appearance. This is an illustration, not a photometric calculation.
+function lightingExhibit(i,zh){
+ const evening=i===1,maint=i===2;
+ const colors=evening?{sky:'#202e43',wall:'#697779',glass:'#6f838e',ground:'#626c72',path:'#8c9595',plant:'#506b63',seat:'#817467'}:{sky:'#b4c5ca',wall:'#c8c9bd',glass:'#71909c',ground:'#97a18d',path:'#c2c0b2',plant:'#738c72',seat:'#a08f78'};
+ const label=zh?['日间公共空间','夜间环境示意','灯具维护与外观检查']:['Daytime public space','Illustrative evening appearance','Luminaire upkeep and visual review'];
+ let v='<rect width="320" height="200" fill="'+colors.sky+'"/><path d="M0 120L320 100V200H0Z" fill="'+colors.ground+'"/><path d="M0 158L320 131V200H0Z" fill="'+colors.path+'"/><rect x="18" y="36" width="284" height="84" fill="'+colors.wall+'"/><path d="M18 36L302 36 286 28H35Z" fill="#8d9da0"/>';
+ for(let n=0;n<5;n++){const x=31+n*53;v+='<rect x="'+x+'" y="54" width="39" height="42" rx="1" fill="'+colors.glass+'" stroke="#9fabad"/><path d="M'+(x+19)+' 54v42" stroke="#aebbb9" stroke-width="1"/>';}
+ v+='<path d="M0 173L320 146M0 189L320 162" stroke="#929b98" stroke-width=".6"/>';
+ const plant=(x,y)=>'<g transform="translate('+x+' '+y+')"><rect x="-18" y="-6" width="36" height="13" rx="2" fill="#7b8177"/><circle cx="-9" cy="-16" r="10" fill="'+colors.plant+'"/><circle cx="7" cy="-20" r="12" fill="'+colors.plant+'"/></g>';
+ const bench=(x,y)=>'<g transform="translate('+x+' '+y+')"><path d="M-18-9h36v5h-36zM-18-21h36v7h-36z" fill="'+colors.seat+'"/><path d="M-13-4v10m26-10v10" stroke="#71858a" stroke-width="3"/></g>';
+ v+=plant(30,137)+plant(279,130)+bench(93,149)+bench(231,142);
+ const person=(x,y,c)=>'<g transform="translate('+x+' '+y+')"><circle cy="-28" r="5" fill="#bda890"/><path d="M-5-21H5L7-10H-7Z" fill="'+c+'"/><path d="M-4-10v10h3v-10m2 0v10h3v-10" fill="#52646e"/></g>';
+ v+=person(130,162,'#748d96')+person(186,155,'#b3a28c');
+ for(const x of [65,255]){
+  v+='<path d="M'+x+' 139V86h15" fill="none" stroke="#586b73" stroke-width="3"/><rect x="'+(x+8)+'" y="82" width="18" height="6" rx="2" fill="'+(evening?'#f4e6b9':'#abbabc')+'"/>';
+ }
+ if(maint){v+='<rect x="104" y="45" width="112" height="69" rx="4" fill="#293c45" stroke="#d2b990"/><path d="M128 95V65h34" stroke="#afc1c2" stroke-width="4" fill="none"/><rect x="151" y="60" width="38" height="11" rx="3" fill="#c8d2d1"/><path d="M147 83h47m-47 10h47" stroke="#7e969b" stroke-width="2"/>';}
+ v+='<rect x="8" y="7" width="304" height="22" rx="3" fill="#32444c"/><text x="160" y="22" text-anchor="middle" fill="#e1e8e8" font-size="10" font-family="system-ui,sans-serif">'+label[i]+'</text>';
+ return v;
+}
 // Independent practice consoles; all records and illustrations are fictional.
 function systemPractice(host,system,zh,options={}){
  const e=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n};
@@ -150,7 +170,7 @@ function systemPractice(host,system,zh,options={}){
  {title:['公共照明服务面板','Public lighting service panel'],names:[['日间公共活动','Daytime activity'],['夜间公共活动','Evening activity'],['维护交接','Maintenance handover']],messages:[['观察日间公共活动的视觉需求。','Observe the visual needs of daytime shared activity.'],['观察夜间照明服务的概念状态。','Observe a conceptual evening lighting service state.'],['确认设施维护及功能检查记录。','Confirm upkeep and functional inspection records.']],fields:[['服务状态','Service state'],['功能记录','Function record']],action:['记录功能检查','Record service check'],result:['已登记功能检查及维护交接。','Service check and maintenance handover recorded.']}
  ];
  const s=specs[system];if(!s)return;
- const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';if(system===1)panel.className+=' access-console';if(system===2)panel.className+=' boundary-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
+ const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';if(system===1)panel.className+=' access-console';if(system===2)panel.className+=' boundary-console';if(system===3)panel.className+=' lighting-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
  panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立绘制的虚构业务图像。编号用于对应三维示意设备，图像不属于实际摄像机画面。','Four independently drawn fictional business images. IDs link to illustrative assemblies; these are not actual camera feeds.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
  const tabs=e('div');tabs.style.cssText=system===0?'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;min-width:0':'display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
  const figure=e('div');figure.className='practice-figure';figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
@@ -158,7 +178,7 @@ function systemPractice(host,system,zh,options={}){
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
-  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':system===2?'0 0 320 210':'0 0 320 160',system===1?visitorScene(current,zh):system===2?boundaryExhibit(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
+  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':system===2?'0 0 320 210':'0 0 320 200',system===1?visitorScene(current,zh):system===2?boundaryExhibit(current,zh):lightingExhibit(current,zh)];
   figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':system===1?'340':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   if(system===0){figure.dataset.channel=String(current);const title=e('div','CAM 0'+(current+1)+' / '+tr(...s.names[current]));title.style.cssText='padding:9px 12px;font-weight:650;color:#e5eaea;border-top:1px solid #46555b;font-size:13px';figure.append(title)}
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
@@ -189,7 +209,11 @@ function systemPractice(host,system,zh,options={}){
   const materials=zh?['材料外观：金属表面与涂层。','材料外观：混凝土或砌体表面。','材料外观：玻璃与金属框架。']:['Material appearance: metal surfaces and finishes.','Material appearance: concrete or masonry surfaces.','Material appearance: glass and metal frames.'];
   const syncMaterial=()=>{material.textContent=materials[memory.current]};tabs.querySelectorAll('button').forEach(b=>{const old=b.onclick;b.onclick=()=>{old();syncMaterial()}});const oldReset=reset.onclick;reset.onclick=()=>{oldReset();syncMaterial()};syncMaterial();
   copy.append(material,detail,state,controls,progress);exhibit.append(tabs,figure,copy);panel.append(exhibit);
- }else panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
+ }else{
+  const gallery=e('div');gallery.className='lighting-gallery';gallery.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;align-items:start;min-width:0';
+  tabs.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:8px';tabs.style.gridColumn='1/-1';
+  const copy=e('div');const note=e('p',tr('日夜图示用于理解普通公共空间的视觉环境与灯具外观。','Day and evening illustrations explain ordinary public-space appearance and luminaire form.'));note.className='lighting-appearance-note';copy.append(note,detail,state,controls,progress);gallery.append(tabs,figure,copy);panel.append(gallery);
+ }host.append(panel);render();
 }
 
 // Professional notes for the civilian workplace example. Requirements are agreed with the service owner.
@@ -251,6 +275,21 @@ function addBoundaryReview(host,step,zh){
  panel.append(dl);const ref=el('a',zh?'NPSA：保护资产参考入口':'NPSA: Protecting your assets');ref.href='https://www.npsa.gov.uk/threat-risk/protecting-your-assets';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
 }
 
+const lightingReviewNotes=[
+ ['普通空间的视觉需求','Visual needs in ordinary spaces','明确人员活动、正常使用、舒适度和无障碍需求，并与建筑及设施负责人协调。','Define ordinary activity, visual comfort and accessibility needs with building and facilities owners.','经批准的使用需求及用户体验评审。','Approved user requirements and user experience review.'],
+ ['灯具与配套服务','Luminaires and supporting services','区分普通灯具、应急灯具、供电服务及维护责任，依据适用的建筑与电气要求评审产品。','Distinguish ordinary luminaires, emergency luminaires, power services and upkeep ownership; review applicable building and electrical requirements.','产品资料、符合性文件及工程交付记录。','Product documents, conformity evidence and handover records.'],
+ ['公共信息与可达性','Public information and accessibility','协调标识、公共信息、接待与无障碍使用；评审视觉舒适度和信息可读性。','Coordinate signage, public information, reception and accessible use; review visual comfort and legibility.','标识与使用评审、适用的无障碍要求。','Signage and usability review, applicable accessibility requirements.'],
+ ['使用验收与维护','Usability acceptance and upkeep','由相应专业人员按批准要求完成使用验收和维护交接，保存检测、培训及维护资料。','Have responsible specialists verify service and handover against approved requirements; retain inspection, training and upkeep records.','验收文件、维护计划及责任交接资料。','Acceptance documents, upkeep plan and responsibility handover.']
+];
+function addLightingReview(host,step,zh){
+ const d=lightingReviewNotes[step];if(!d)return;const l=zh?0:1;
+ const el=(tag,txt)=>{const n=document.createElement(tag);n.textContent=txt;return n};
+ const panel=document.createElement('section');panel.className='lighting-engineering-review';panel.style.cssText='grid-column:1/-1;border-top:1px solid #52626a;padding:14px 0;min-width:0';
+ panel.append(el('h4',d[l]));const dl=document.createElement('dl');
+ for(const [k,v] of [[zh?'设计评审':'Design review',d[2+l]],[zh?'验收依据':'Acceptance evidence',d[4+l]]])dl.append(el('dt',k),el('dd',v));
+ panel.append(dl);host.append(panel);
+}
+
 export function renderSystemStudy(host,system,step,lang,icon,options={}){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
@@ -260,5 +299,5 @@ export function renderSystemStudy(host,system,step,lang,icon,options={}){
  const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
- const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);if(system===1)addAccessReview(host,step,zh);if(system===2)addBoundaryReview(host,step,zh);systemPractice(host,system,zh,options);
+ const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);if(system===1)addAccessReview(host,step,zh);if(system===2)addBoundaryReview(host,step,zh);if(system===3)addLightingReview(host,step,zh);systemPractice(host,system,zh,options);
 }
