@@ -122,9 +122,14 @@ try {
     }
     assert.equal(await page.locator('#studio-config button').count(),3);
     const configurations=new Set();
+    let fixedInventory=null;
     for(let v=0;v<3;v++){
      await page.locator('#studio-config button').nth(v).click();
-     assert.equal(await page.locator('#studio-components .studio-device').count(),4);
+     const assemblyKeys=await page.locator('#studio-components [data-scene-assembly="true"]').evaluateAll(nodes=>nodes.map(n=>n.dataset.model).sort());
+     const signature=JSON.stringify(assemblyKeys);
+     if(fixedInventory===null)fixedInventory=signature;else assert.equal(signature,fixedInventory,'Fixed scene inventory stays stable across topics');
+     assert(assemblyKeys.length>0,'Scene has identifiable assemblies');
+     assert.equal(await page.locator('#studio-components [data-scene-assembly="true"]').count()+await page.locator('#studio-components [data-scene-assembly="false"]').count(),await page.locator('#studio-components .studio-device').count());
      assert.equal(await page.locator('#studio-review .studio-review-item').count(),6);
      assert.equal(await page.locator('#studio-review .studio-review-item input:checked').count(),0);
      const reviewCheck=page.locator('#studio-review .studio-review-item input').first();
