@@ -34,12 +34,18 @@ try {
   page.on('pageerror',e=>errors.push(lang+': '+e.message));
   const response=await page.goto(base+'/lab/'+lang+'/',{waitUntil:'domcontentloaded',timeout:60000});
   assert.equal(response.status(),200);
-  await page.locator('#overview-hotspots button').first().waitFor({timeout:30000});
+  await page.locator('#overview-quick-components button').first().waitFor({timeout:30000});
+  await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.length>0);
   assert(await page.locator('#lab-overview').isVisible());
   assert(await page.locator('#lab-studio').isHidden());
-  assert.equal(await page.locator('#overview-hotspots button').count(),1);
+  assert.equal(await page.locator('#overview-hotspots button').count(),0);
   const quick=page.locator('#overview-quick-components button');
   assert.equal(await quick.count(),4);
+  assert.equal(await quick.locator('[aria-pressed=true]').count(),0);
+  assert.equal(await page.locator('#overview-quick-components button[aria-pressed=true]').count(),0);
+  assert.equal(await page.locator('#overview-views button').first().getAttribute('aria-pressed'),'true');
+  assert(await page.locator('#overview-views button').nth(1).isDisabled());
+  const initialImage=await page.evaluate(()=>{const gl=document.querySelector('#overview-gl');return(getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas')).toDataURL()});
   assert(await page.locator('#overview-advanced').evaluate(n=>!n.open));
   for(let k=0;k<4;k++){
    await quick.nth(k).click();
@@ -62,6 +68,8 @@ try {
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===0);
   const campusImage=()=>page.evaluate(()=>{const gl=document.querySelector('#overview-gl');return(getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas')).toDataURL()});
   const naturalImage=await campusImage();
+  assert.equal(naturalImage,initialImage,'Initial render is identical to restored full-color scene');
+  assert.equal(await page.locator('#overview-quick-components button[aria-pressed=true]').count(),0);
   const sampleCampus=await page.evaluate(()=>{const gl=document.querySelector('#overview-gl'),canvas=getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas');const mini=document.createElement('canvas');mini.width=128;mini.height=128;const x=mini.getContext('2d');x.drawImage(canvas,0,0,128,128);const pixels=x.getImageData(0,0,128,128).data;let n=0;const colors=new Set();for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]>100){n++;colors.add([pixels[i]>>4,pixels[i+1]>>4,pixels[i+2]>>4].join(','))}return {n,colors:colors.size}});
   assert(sampleCampus.n>100&&sampleCampus.colors>12,'Campus has visible geometry and surface variation');
   if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/campus-natural.png'});
@@ -465,7 +473,8 @@ try {
  for(const width of [390,320]){
   const page=await browser.newPage({viewport:{width,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
   page.on('pageerror',e=>errors.push('mobile '+width+': '+e.message));
-  await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#overview-hotspots button').first().waitFor();
+  await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#overview-quick-components button').first().waitFor();
+  assert.equal(await page.locator('#overview-quick-components button[aria-pressed=true]').count(),0);
   assert(await page.locator('#overview-canvas').isVisible());
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Overview no mobile horizontal overflow');
   await page.locator('#lab-mode-scene').click();await page.locator('#studio-scenes button').first().waitFor();
