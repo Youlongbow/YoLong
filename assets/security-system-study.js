@@ -71,6 +71,18 @@ function stageScene(system,step,zh){
  return stages[system*4+step]?.()||'';
 }
 
+// Public workplace visitor-service illustrations. Not a floor plan or a live access-control system.
+function visitorScene(i,zh){
+ const label=(x,y,a,b)=>'<text x="'+x+'" y="'+y+'" fill="#e4ebeb" text-anchor="middle" font-size="10">'+(zh?a:b)+'</text>';
+ const person=(x,y,k)=>'<g transform="translate('+x+' '+y+')"><circle cy="-14" r="7" fill="#c9b29a"/><path d="M-9-5H9L13 21H-13Z" fill="'+k+'"/><path d="M-7 21v22h5V21m4 0v22h5V21" fill="#70828a"/></g>';
+ const desk='<rect x="105" y="63" width="112" height="53" rx="4" fill="#9c9382"/><rect x="101" y="60" width="120" height="8" rx="2" fill="#c2b6a0"/>';
+ const header='<rect width="320" height="160" fill="#253940"/><path d="M0 116H320V160H0Z" fill="#34484e"/>';
+ const v=[
+ header+'<rect x="18" y="13" width="104" height="37" fill="#66818b"/><path d="M70 13V50" stroke="#9cabad"/>'+person(162,40,'#6c9199')+desk+person(67,75,'#a39480')+'<rect x="176" y="40" width="32" height="21" rx="2" fill="#34474e"/>'+label(162,140,'接待与沟通','Reception and communication'),
+ header+'<rect x="26" y="28" width="111" height="80" rx="5" fill="#c2cecc"/><rect x="36" y="38" width="29" height="35" rx="3" fill="#68828a"/><circle cx="50" cy="49" r="7" fill="#a6b8b8"/><path d="M40 69Q50 52 60 69" fill="#a6b8b8"/><path d="M75 44h49m-49 12h38m-38 12h43" stroke="#65787f" stroke-width="3"/><rect x="183" y="28" width="109" height="80" rx="5" fill="#40565e" stroke="#849ba0"/><path d="M195 49h84m-84 17h84m-84 17h60" stroke="#91a7aa" stroke-width="2"/>'+label(81,132,'虚构凭证','Sample credential')+label(238,132,'管理记录','Service record'),
+ header+person(64,63,'#829c93')+'<rect x="117" y="37" width="87" height="75" rx="3" fill="#778c93"/><rect x="128" y="48" width="65" height="64" fill="#435b65"/><path d="M160 48V112" stroke="#a8b8b9" stroke-width="2"/>'+person(255,65,'#b6a389')+label(160,139,'正常通行与服务交接','Ordinary use and handover')
+ ];return v[i]||'';
+}
 // Independent practice consoles; all records and illustrations are fictional.
 function systemPractice(host,system,zh,options={}){
  const e=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n};
@@ -82,7 +94,7 @@ function systemPractice(host,system,zh,options={}){
  {title:['公共照明服务面板','Public lighting service panel'],names:[['日间公共活动','Daytime activity'],['夜间公共活动','Evening activity'],['维护交接','Maintenance handover']],messages:[['观察日间公共活动的视觉需求。','Observe the visual needs of daytime shared activity.'],['观察夜间照明服务的概念状态。','Observe a conceptual evening lighting service state.'],['确认设施维护及功能检查记录。','Confirm upkeep and functional inspection records.']],fields:[['服务状态','Service state'],['功能记录','Function record']],action:['记录功能检查','Record service check'],result:['已登记功能检查及维护交接。','Service check and maintenance handover recorded.']}
  ];
  const s=specs[system];if(!s)return;
- const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
+ const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';if(system===1)panel.className+=' access-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
  panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立绘制的虚构业务图像。编号用于对应三维示意设备，图像不属于实际摄像机画面。','Four independently drawn fictional business images. IDs link to illustrative assemblies; these are not actual camera feeds.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
  const tabs=e('div');tabs.style.cssText=system===0?'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;min-width:0':'display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
  const figure=e('div');figure.className='practice-figure';figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
@@ -90,7 +102,7 @@ function systemPractice(host,system,zh,options={}){
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
-  const view=system===0?['0 0 160 100',videoSample(current)]:['0 0 320 160',stageScene(system,system===3?(current===2?3:current):current,zh)];
+  const view=system===0?['0 0 160 100',videoSample(current)]:['0 0 320 160',system===1?visitorScene(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
   figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   if(system===0){figure.dataset.channel=String(current);const title=e('div','CAM 0'+(current+1)+' / '+tr(...s.names[current]));title.style.cssText='padding:9px 12px;font-weight:650;color:#e5eaea;border-top:1px solid #46555b;font-size:13px';figure.append(title)}
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
@@ -111,6 +123,9 @@ function systemPractice(host,system,zh,options={}){
   const grid=e('div');grid.style.minWidth='0';const gridTitle=e('h5',tr('全部图像样本','All image samples'));gridTitle.style.cssText='margin:0 0 8px;font-size:13px';grid.append(gridTitle,tabs);
   const main=e('div');main.style.minWidth='0';const mainTitle=e('h5',tr('当前选中图像','Selected image'));mainTitle.style.cssText='margin:0 0 8px;font-size:13px';main.append(mainTitle,figure);
   wall.append(grid,main);panel.append(wall,detail,state,controls,progress);
+ }else if(system===1){
+  const journey=e('div');journey.className='visitor-journey';journey.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;align-items:start';
+  tabs.style.cssText='display:grid;grid-template-columns:1fr;gap:7px';const copy=e('div');copy.append(detail,state,controls,progress);journey.append(tabs,figure,copy);panel.append(journey);
  }else panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
 }
 
@@ -143,6 +158,21 @@ function addVideoReview(host,step,zh){
  panel.append(dl);const ref=el('a',zh?'NPSA：工作场所 CCTV 指导（英文 PDF）':'NPSA: CCTV in the Workplace (PDF)');ref.href='https://www.npsa.gov.uk/system/files/documents/a7/eb/20200203%20CCTV%20in%20the%20Workplace.pdf';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
 }
 
+const accessReviewNotes=[
+ ['业务需求与接待方式','Business needs and reception','区分员工、访客及服务人员的正常使用需求；考虑无障碍、服务能力及个人信息保护。','Consider ordinary needs of employees, visitors and service staff, accessibility, service capacity and privacy.','经批准的业务需求与用户体验评审。','Approved requirements and user experience review.'],
+ ['凭证与信息管理','Credentials and information','区分凭证载体、读取设备、信息服务和管理职责；依据业务目的确定资料使用规则。','Distinguish credential media, readers, information services and ownership; define data-use rules from business purposes.','凭证管理政策、授权责任及信息处理记录。','Credential policy, accountable ownership and information handling records.'],
+ ['通行构件与建筑接口','Access assemblies and building interfaces','门体、建筑五金、电子设备与人员使用需求共同接受评审；确保适用的消防、无障碍及产品要求得到落实。','Review doors, architectural hardware, electronics and user needs together; address applicable fire, accessibility and product requirements.','完整构件资料、制造商文件及使用验收记录。','Assembly documents, manufacturer information and usability acceptance records.'],
+ ['运行与维护交接','Operation and maintenance handover','明确培训、服务责任、例行维护及变更管理；将设施与信息技术部门的交付职责协调一致。','Define training, service ownership, routine upkeep and change management; coordinate facilities and IT handover.','培训、维护记录及交付验收资料。','Training, maintenance and handover acceptance evidence.']
+];
+function addAccessReview(host,step,zh){
+ const d=accessReviewNotes[step];if(!d)return;const l=zh?0:1;
+ const el=(tag,txt)=>{const n=document.createElement(tag);n.textContent=txt;return n};
+ const panel=document.createElement('section');panel.className='access-engineering-review';panel.style.cssText='grid-column:1/-1;border-top:1px solid #52626a;padding:14px 0;min-width:0';
+ panel.append(el('h4',d[l]));const dl=document.createElement('dl');
+ for(const [k,v] of [[zh?'设计评审':'Design review',d[2+l]],[zh?'验收依据':'Acceptance evidence',d[4+l]]]){dl.append(el('dt',k),el('dd',v))}
+ panel.append(dl);const ref=el('a',zh?'NPSA 自动出入口控制系统用户指南 EIS0002':'NPSA User Guide on Automatic Access Control Systems EIS0002');ref.href='https://www.npsa.gov.uk/system/files/documents/eis0002-user-guide-on-automatic-access-control-systems.pdf';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
+}
+
 export function renderSystemStudy(host,system,step,lang,icon,options={}){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
@@ -152,5 +182,5 @@ export function renderSystemStudy(host,system,step,lang,icon,options={}){
  const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
- const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);systemPractice(host,system,zh,options);
+ const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);if(system===1)addAccessReview(host,step,zh);systemPractice(host,system,zh,options);
 }
