@@ -270,6 +270,16 @@ try {
    }
    if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/assembly-'+en.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.png'});
   }
+  for(const [zh,en] of [['应急照明灯','Emergency luminaire'],['访客凭证打印机','Visitor badge printer'],['设备状态显示屏','Equipment status display']]){
+   await page.locator('#lab-search').fill(en);
+   const matches=page.locator('#lab-modules button');assert.equal(await matches.count(),1,en);
+   await matches.first().click();
+   const demo=page.locator('#lab-demo input[type=range]');assert(await demo.isVisible());
+   const image=()=>page.evaluate(()=>{const gpu=document.querySelector('#lab-gl');return(getComputedStyle(gpu).visibility==='visible'?gpu:document.querySelector('#lab-canvas')).toDataURL()});
+   await demo.fill('0');const before=await image();
+   await demo.fill('100');assert.notEqual(await image(),before,en+' demonstration must change rendered geometry or color');
+   await demo.fill('0');assert.equal(await image(),before,en+' demonstration returns to initial state');
+  }
   await page.locator('#lab-search').fill('');
 
   const search=page.locator('#lab-search');await search.fill(lang==='zh'?'枪式摄像机':'Bullet camera');
