@@ -72,11 +72,30 @@ try {
    for(let j=0;j<4;j++){
     await page.locator('#overview-study-flow button').nth(j).click();
     assert(await page.locator('#overview-study-detail h4').innerText());
-    assert.equal(await page.locator('#overview-study-visual svg').count(),1);
-    const sceneMarkup=await page.locator('#overview-study-visual svg').innerHTML();
+    assert.equal(await page.locator('#overview-study-visual .study-sample svg').count(),1);
+    const sceneMarkup=await page.locator('#overview-study-visual .study-sample svg').innerHTML();
     assert(!studyScenes.has(sceneMarkup),`Repeated study illustration: system ${i}, step ${j}`);
     studyScenes.add(sceneMarkup);
     assert(await page.locator('#overview-study-visual .study-record strong').innerText());
+    const practice=page.locator('#overview-study-visual .system-practice');
+    assert.equal(await practice.count(),1);
+    if(j===0){
+     const tabs=practice.locator('button');
+     assert.equal(await tabs.count(),5);
+     const images=new Set();
+     for(let k=0;k<3;k++){
+      await tabs.nth(k).click();
+      const visual=await practice.locator('svg').evaluate(node=>node.getAttribute('viewBox')+node.innerHTML+node.style.background);
+      images.add(visual);
+      assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'false');
+      await tabs.nth(3).click();
+      assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'true');
+      assert(await tabs.nth(3).isDisabled());
+     }
+     assert.equal(images.size,3);
+     await tabs.nth(4).click();
+     assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'false');
+    }
     assert((await page.locator('#overview-study-detail .overview-links button').count())>0);
    }
   }
