@@ -37,6 +37,13 @@ try {
     for(let v=0;v<3;v++){
      await page.locator('#studio-config button').nth(v).click();
      assert.equal(await page.locator('#studio-components .studio-device').count(),4);
+     assert.equal(await page.locator('#studio-review .studio-review-item').count(),6);
+     assert.equal(await page.locator('#studio-review .studio-review-item input:checked').count(),0);
+     const reviewCheck=page.locator('#studio-review .studio-review-item input').first();
+     await reviewCheck.check();
+     assert.equal(await page.locator('#studio-review .studio-review-item input:checked').count(),1);
+     await reviewCheck.uncheck();
+
      configurations.add(await page.locator('#studio-components').innerText());
      await page.locator('#studio-components .studio-device button').first().click();
      await page.locator('#studio-roles select').selectOption('2');
@@ -70,6 +77,9 @@ try {
    titles.add(title);
    keys.add(new URL(page.url()).searchParams.get('model'));
    assert.equal(await page.locator('#lab-info dd').count(),5);
+   assert.equal(await page.locator('#lab-engineering h4').count(),3);
+   assert(await page.locator('#lab-engineering p').evaluateAll(nodes=>nodes.length===3&&nodes.every(n=>n.textContent.trim().length>0)));
+
    assert(await page.locator('#lab-info dd').evaluateAll(nodes=>nodes.every(n=>n.textContent.trim().length>0)));
    const sample=await page.evaluate(()=>{const gpu=document.querySelector('#lab-gl'),fallback=document.querySelector('#lab-canvas');const active=getComputedStyle(gpu).visibility==='visible'?gpu:fallback;const mini=document.createElement('canvas');mini.width=96;mini.height=96;const ctx=mini.getContext('2d');ctx.drawImage(active,0,0,96,96);const d=ctx.getImageData(0,0,96,96).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i+3]>80&&(d[i]>45||d[i+1]>50))n++;return{n,gpu:active===gpu}});
    if(requireGPU)assert(sample.gpu,'Component WebGL is active: '+title);
