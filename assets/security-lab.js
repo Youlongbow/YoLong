@@ -613,6 +613,25 @@ function initStudio(lang,library){
    put([x,h+.073,z,w*.72,.065,w*.72,'#c0c5be','annulus',.90]);
    put([x,h*.82,z,w*.62,.012,w*.62,'#64716f','cylinder']);
   };
+  // Ordinary furniture built as recognizable assemblies, reused as architectural furnishings.
+  const table=(x,z,w,d,y=.48)=>{
+   B(x,y,z,w,.045,d,'#c0b5a0','rounded');
+   for(const dx of [-w*.40,w*.40])for(const dz of [-d*.34,d*.34])B(x+dx,.085,z+dz,.035,y-.085,.035,'#788786');
+  };
+  const chair=(x,z,side=1,col='#82938f')=>{
+   for(const dx of [-.115,.115])for(const dz of [-.10,.10])B(x+dx,.085,z+dz,.023,.235,.023,'#778582');
+   B(x,.32,z,.29,.055,.26,col,'rounded');
+   for(const dx of [-.105,.105])B(x+dx,.35,z+side*.115,.022,.23,.022,'#778582');
+   B(x,.44,z+side*.115,.28,.15,.045,col,'rounded');
+  };
+  const bed=(x,z,w,d)=>{
+   for(const dx of [-w*.38,w*.38])for(const dz of [-d*.36,d*.36])B(x+dx,.085,z+dz,.036,.14,.036,'#84908b');
+   B(x,.225,z,w,.065,d,'#899590');
+   B(x,.29,z,w*.96,.085,d*.96,'#dad8c9','rounded');
+   B(x,.375,z-d*.31,w*.81,.045,d*.20,'#efeadb','rounded');
+   B(x,.376,z+d*.10,w*.92,.028,d*.52,'#9ca89b','rounded');
+   B(x,.225,z-d*.48,w,.27,.04,'#9ba59f','rounded');
+  };
   // Ordinary architectural interiors: removable roof/facade for educational viewing.
   // No security hardware placement, coverage, or construction performance is inferred.
   const serviceRoom=(x,z,w,d,h,col,kind)=>{
@@ -621,15 +640,16 @@ function initStudio(lang,library){
    B(x,.015,z,w,.07,d,'#b8b9ad');B(x,.085,z-d/2,w,h,.09,col);B(x-w/2,.085,z,.09,h,d,col);B(x+w/2,.085,z,.09,h,d,col);
    for(let j=0;j<Math.max(1,Math.floor(w/.65));j++){const xx=x-w/2+.32+j*.65;B(xx,.55,z-d/2+.055,.40,.30,.02,glass)}
    if(kind==='sleep'){
-    const n=Math.max(1,Math.floor(w/.85));for(let j=0;j<n;j++){const xx=x-w/2+.43+j*.85;B(xx,.10,z-.08,.55,.18,d*.59,'#929b96');B(xx,.28,z-.08,.53,.09,d*.57,'#d3d1bd','rounded');B(xx,.37,z-d*.24,.46,.055,.23,'#eee7ce','rounded');B(xx,.08,z+d*.30,.25,.30,.23,'#a5a18c')}
+    const n=Math.max(1,Math.floor(w/.85));for(let j=0;j<n;j++){const xx=x-w/2+.43+j*.85;bed(xx,z-.08,.55,d*.59);B(xx,.085,z+d*.30,.25,.30,.23,'#a5a18c');B(xx,.21,z+d*.30+.123,.21,.10,.014,'#b8ad96');B(xx,.255,z+d*.30+.137,.075,.016,.012,'#717e7b')}
    }else if(kind==='dining'){
-    const n=Math.max(1,Math.floor(w/1.05));for(let j=0;j<n;j++){const xx=x-w/2+.53+j*1.05;B(xx,.1,z,.08,.38,.08,'#7e8c88');B(xx,.48,z,.67,.045,.51,'#b4a78d');for(const dz of [-.43,.43]){B(xx,.10,z+dz,.31,.24,.28,'#84948f');B(xx,.33,z+dz,.31,.23,.055,'#84948f')}}
+    const n=Math.max(1,Math.floor(w/1.05));for(let j=0;j<n;j++){const xx=x-w/2+.53+j*1.05;table(xx,z,.67,.51);for(const side of [-1,1]){chair(xx,z+side*.43,side);B(xx,.525,z+side*.145,.19,.012,.13,'#dad6c8','rounded')}}
    }else if(['office','reception','logistics','service','shift'].includes(kind)){
     // Furnish the public-facing administrative room according to its ordinary business use.
     const dx=x-w*.22,dz=z-d*.12,cx=x+w*.20,cz=z+d*.04;
-    B(dx,.1,dz,.90,.38,.46,'#a1aaa4');B(dx,.48,dz,.95,.045,.50,'#c4c0ae');
+    table(dx,dz,.90,.46);
     item('visitor-service-counter',cx,.10,cz,.85,.48,.42,'#9aaba4');item('visitor-service-counter',cx,.58,cz,.90,.045,.46,'#b6bcae');
-    item('incident-management-workstation',dx,.53,dz,.29,.22,.06,glass);B(dx,.10,z+d*.25,.32,.33,.32,'#778e91','rounded');
+    item('incident-management-workstation',dx,.54,dz,.29,.22,.06,glass);
+    B(dx,.525,dz,.10,.055,.13,'#75888a');B(dx,.53,dz+.14,.23,.018,.10,'#687b80');chair(dx,z+d*.25,1,'#778e91');
     if(kind==='reception'||kind==='shift'){
      item('visitor-badge-printer',cx+.19,.625,cz,.23,.13,.21,'#a5b1ae');B(cx+.19,.755,cz+.04,.15,.018,.09,'#e3ded0');
      B(dx-.21,.53,dz-.06,.13,.035,.23,'#c9c8bc');
@@ -640,10 +660,10 @@ function initStudio(lang,library){
 
    }else if(kind==='store'){
     for(let j=0;j<Math.max(1,Math.floor(w/.65));j++){const xx=x-w/2+.36+j*.65;B(xx,.08,z-d*.18,.47,.77,.42,'#8b9c98');for(let k=0;k<3;k++){B(xx,.17+k*.23,z-d*.18,.44,.045,.41,'#b3bdb2');B(xx,.22+k*.23,z-d*.18,.32,.13,.31,'#a99d83','rounded')}}
-    B(x,.09,z+d*.24,Math.min(w*.55,1.3),.38,.36,'#99aaa3');B(x,.47,z+d*.24,Math.min(w*.58,1.4),.045,.40,'#c2bdab');
+    table(x,z+d*.24,Math.min(w*.58,1.4),.40,.47);
    }else if(kind==='rest'){
     for(const dx of [-w*.25,w*.25]){B(x+dx,.08,z-.10,.65,.23,.36,'#879d97','rounded');B(x+dx,.31,z-.24,.65,.30,.08,'#879d97')}
-    B(x,.08,z+.37,.75,.31,.44,'#a2aaa1');B(x,.39,z+.37,.80,.045,.49,'#c5c2b1')
+    table(x,z+.37,.80,.49,.39)
    }
   };
 
