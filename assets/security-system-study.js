@@ -53,6 +53,38 @@ function stageScene(system,step,zh){
  ];
  return stages[system*4+step]?.()||'';
 }
+
+// Independent practice consoles; all records and illustrations are fictional.
+function systemPractice(host,system,zh){
+ const e=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n};
+ const tr=(a,b)=>zh?a:b;
+ const specs=[
+ {title:['视频监控工作站','Video review workstation'],names:[['接待区','Reception'],['办公区','Office'],['公共活动区','Shared activity']],messages:[['访客正在接待柜台办理业务。','A visitor is being served at the reception counter.'],['员工正在办公区域开展日常工作。','Staff are conducting routine office work.'],['人员正在公共区域活动。','People are using a shared space.']],fields:[['图像来源','Image source'],['图像复核','Image review']],action:['登记图像复核','Record image review'],result:['已登记：图像来源、正常业务活动、复核责任。','Recorded: image source, ordinary activity and review ownership.']},
+ {title:['访客接待服务台','Visitor reception console'],names:[['预约信息','Appointment'],['凭证信息','Credential'],['访问结束','Visit completion']],messages:[['已安排的业务访问：确认业务联系人及预约信息。','Scheduled visit: confirm host and appointment information.'],['查看虚构的访客凭证及登记用途。','Review the sample visitor credential and registration purpose.'],['访问结束后登记服务完成与凭证交接。','Record service completion and credential handover.']],fields:[['当前业务环节','Service stage'],['接待记录','Reception record']],action:['登记当前环节','Record this stage'],result:['当前服务环节已记录。','This service stage has been recorded.']},
+ {title:['围界设施工程台账','Boundary assembly register'],names:[['围界资产','Boundary assets'],['构件交付','Assembly handover'],['维护记录','Maintenance record']],messages:[['核对资产名称与设施管理责任。','Review asset identity and facility ownership.'],['查看完整构件的工程验收记录。','Review assembly-level engineering acceptance evidence.'],['登记日常检查及维护工单。','Record routine inspection and upkeep orders.']],fields:[['工程记录','Engineering record'],['复核状态','Review status']],action:['登记复核','Record review'],result:['已登记本项工程资料复核。','Engineering-record review has been recorded.']},
+ {title:['公共照明服务面板','Public lighting service panel'],names:[['日间公共活动','Daytime activity'],['夜间公共活动','Evening activity'],['维护交接','Maintenance handover']],messages:[['观察日间公共活动的视觉需求。','Observe the visual needs of daytime shared activity.'],['观察夜间照明服务的概念状态。','Observe a conceptual evening lighting service state.'],['确认设施维护及功能检查记录。','Confirm upkeep and functional inspection records.']],fields:[['服务状态','Service state'],['功能记录','Function record']],action:['记录功能检查','Record service check'],result:['已登记功能检查及维护交接。','Service check and maintenance handover recorded.']}
+ ];
+ const s=specs[system];if(!s)return;
+ const panel=e('section');panel.className='system-practice';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
+ panel.append(e('h4',tr(...s.title)),e('p',tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
+ const tabs=e('div');tabs.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
+ const figure=e('div');figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
+ const detail=e('p'),state=e('p');state.setAttribute('aria-live','polite');const action=e('button',tr(...s.action));action.type='button';
+ let current=0;const recorded=new Set();
+ const render=()=>{
+  tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
+  const view=system===0?[(current*105+9)+' 12 92 72',frames()]:['0 0 320 160',stageScene(system,system===3?(current===2?3:current):current,zh)];
+  figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:200px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
+  detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
+  state.textContent=tr(...s.fields[1])+'：'+(recorded.has(current)?tr(...s.result):tr('待登记','Not recorded'));
+  state.dataset.recorded=String(recorded.has(current));action.disabled=recorded.has(current);
+ };
+ s.names.forEach((name,i)=>{const b=e('button',tr(...name));b.type='button';b.onclick=()=>{current=i;render()};tabs.append(b)});
+ action.onclick=()=>{recorded.add(current);render()};const reset=e('button',tr('重置演示','Reset demonstration'));reset.type='button';reset.onclick=()=>{recorded.clear();current=0;render()};
+ const controls=e('div');controls.style.cssText='display:flex;flex-wrap:wrap;gap:8px';controls.append(action,reset);
+ panel.append(tabs,figure,detail,state,controls);host.append(panel);render();
+}
+
 export function renderSystemStudy(host,system,step,lang,icon){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
@@ -62,5 +94,5 @@ export function renderSystemStudy(host,system,step,lang,icon){
  const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
- const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);
+ const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);systemPractice(host,system,zh);
 }
