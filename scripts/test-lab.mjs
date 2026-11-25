@@ -150,6 +150,15 @@ try {
    for(let i=0;i<3;i++){
     await page.locator('#studio-zones button').nth(i).click();
     assert.equal(await page.locator('#studio-system-interfaces .case-system-card').count(),3);
+    const exercise=page.locator('#studio-zone-detail .industry-exercise');
+    assert.equal(await exercise.getAttribute('data-case-id'),String(s*3+i));
+    assert.equal(await exercise.locator('button').count(),2);
+    await exercise.locator('button').nth((s*3+i)%2).click();
+    assert.equal(await exercise.locator('[data-result]').getAttribute('data-result'),'review');
+    await exercise.locator('button').nth(1-(s*3+i)%2).click();
+    assert.equal(await exercise.locator('[data-result]').getAttribute('data-result'),'correct');
+    assert.equal(await exercise.locator('[data-result] label').count(),2);
+
     if(i===1||i===2){
      const cutaway=page.locator('#studio-views button').last();
      const previous=await cutaway.getAttribute('aria-pressed');
