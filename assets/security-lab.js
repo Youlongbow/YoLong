@@ -687,3 +687,138 @@ function createIndustrialRenderer(canvas){
  }
  return {draw};
 }
+
+
+/* Fictional mixed-use teaching campus. Geometric coordinates are visual artwork units. */
+function initOverview(lang,library){
+ const z=lang==='zh',t=a=>a[z?0:1],P=(a,b)=>[a,b],$=s=>document.querySelector(s),C=$('#overview-canvas'),G=$('#overview-gl');
+ if(!C)return null;const ctx=C.getContext('2d');if(!ctx)return null;
+ let gpu=null;try{gpu=G?createIndustrialRenderer(G):null}catch(e){console.warn('Overview renderer compatibility mode',e)}
+ const layers=[P('周界之外','Beyond perimeter'),P('周界','Perimeter'),P('场区内部','Within site'),P('建筑','Building'),P('资产','Asset')];
+ const functions=[P('威慑','Deter'),P('探测','Detect'),P('延迟','Delay'),P('减轻后果','Mitigate'),P('响应','Respond')];
+ const systems=[P('物防','Physical'),P('技防','Electronic'),P('管理与人员','People & procedures')];
+ const layerCopy=[
+ P('从设施与周围社区的关系入手，理解公共信息、合法使用与外部服务。','Start with the relationship between the facility and its community, public information, lawful use and external services.'),
+ P('通过边界构件、空间标识和设施管理理解区域的物理界面。','Explore the physical interface through boundary assemblies, spatial information and facilities management.'),
+ P('了解场区正常活动、交通组织、人员服务及运营责任。','Explore ordinary activity, circulation, personnel services and operating responsibilities.'),
+ P('了解建筑构件、授权使用、消防及生命安全之间的接口。','Understand building assemblies, authorized use, fire and life-safety interfaces.'),
+ P('根据人员、财产、信息和业务服务的保护需求明确管理责任。','Define accountability according to protection needs for people, property, information and services.')];
+ const functionCopy=[
+ P('清晰的规则、可识别的空间界面及管理活动有助于预防不当行为。','Clear rules, recognizable spatial interfaces and management activity support prevention.'),
+ P('通过观察、人员报告和电子信息识别需要评估的事件。','Observation, staff reporting and electronic information identify events requiring assessment.'),
+ P('根据保护目标评估实体构件的性能与使用要求，并验证完整构件。','Assess physical assembly performance and use requirements against protection objectives and verify complete assemblies.'),
+ P('通过人员安全、设施适用性、应急服务和业务连续性减轻事件后果。','Reduce consequences through life safety, facility suitability, emergency services and continuity.'),
+ P('通过事件评估、通知、责任分工、外部协调与恢复实现组织响应。','Support organizational response through assessment, notification, accountability, coordination and recovery.')];
+ const H=(id,n,layer,fn,sys,anchor,why,rel,device)=>({id,n,layer,fn,sys,anchor,why,rel,device});
+ const points=[
+ H('public-info',P('公共信息与导向','Public information'),0,[0,3],[0,2],[-4.8,.5,3.55],P('帮助正常使用者识别服务入口、空间用途及行为规则。','Helps legitimate users identify services, space uses and conduct expectations.'),P('公共信息、接待人员与社区沟通','Public information, reception and community engagement'),'safety-and-security-signage'),
+ H('external-services',P('外部服务接口','External service interface'),0,[3,4],[2],[3.9,.3,3.55],P('组织与社区、公共服务及应急服务的日常协调。','Organizes routine coordination with community, public services and emergency services.'),P('联络责任、信息更新与服务协议','Liaison ownership, information updates and service agreements'),null),
+ H('boundary',P('空间边界','Spatial boundary'),1,[0,2],[0,2],[-5.6,.65,-.3],P('建立明确的空间界面，构件需与正常使用、材料及维护条件协调。','Defines a clear spatial interface; assemblies must suit ordinary use, materials and upkeep.'),P('边界构件、标识及设施管理','Boundary assemblies, signage and facilities management'),'welded-mesh-fence'),
+ H('arrival',P('到访与通行管理','Arrival and circulation'),1,[0,3],[0,1,2],[.15,.65,2.75],P('协调人员到访、公共服务、正常车辆活动及无障碍需求。','Coordinates arrivals, public services, ordinary vehicle activity and accessibility.'),P('访客登记、交通组织及接待程序','Visitor registration, circulation and reception'),'visitor-kiosk'),
+ H('movement',P('场区道路与步行空间','Circulation and walkways'),2,[3],[0,2],[.65,.12,.4],P('减少正常人车活动冲突，保持路线信息及公共服务可达。','Reduces conflicts in ordinary circulation and maintains access to services and information.'),P('道路、导向及交通管理','Roads, wayfinding and traffic management'),'protective-railing'),
+ H('lighting',P('公共空间照明','Public space lighting'),2,[0,3],[1,2],[3.25,1.15,1.65],P('根据人员活动和可视性需求审查照明、眩光及维护。','Review lighting, glare and maintenance against activity and visibility needs.'),P('照明、环境条件与设施管理','Lighting, environmental conditions and facilities management'),'security-lighting'),
+ H('assistance',P('人员求助与公共服务','Assistance and welfare'),2,[3,4],[1,2],[-3.6,.7,1.65],P('为人员提供可识别的求助服务，明确接听及后续责任。','Provides recognizable assistance services with defined answering and follow-up duties.'),P('求助终端、接待和公共信息','Assistance terminals, reception and public information'),'emergency-assistance-station'),
+ H('common-space',P('公共活动空间','Shared outdoor space'),2,[0,3],[0,2],[3.8,.15,-.15],P('通过维护、空间使用和环境品质支持正常活动。','Supports ordinary activity through maintenance, use and environmental quality.'),P('景观、人员服务及日常维护','Landscape, personnel services and routine upkeep'),'natural-surveillance'),
+ H('reception',P('建筑接待','Building reception'),3,[0,3],[0,1,2],[-3.25,1.1,-1.35],P('在建筑使用界面提供接待、业务信息及授权服务。','Provides reception, business information and authorization services at the building interface.'),P('接待柜台、访客信息及服务职责','Reception counter, visitor information and service duties'),'visitor-service-counter'),
+ H('assembly',P('建筑门窗构件','Building assemblies'),3,[2,3],[0,2],[-1.6,1.45,-2.5],P('将门窗作为完整构件，按功能要求审查认证、安装、消防及维护。','Review doors and windows as assemblies against function, certification, installation, fire safety and maintenance.'),P('建筑、门窗及工程验收','Architecture, assemblies and engineering acceptance'),'security-door'),
+ H('workspace',P('业务空间与使用权限','Workspaces and authorized use'),3,[0,3],[0,1,2],[2.85,1.1,-1.85],P('以工作职责、正常使用及个人隐私为基础开展授权管理。','Base authorization management on work responsibilities, ordinary use and privacy.'),P('人员授权、凭证管理与正常疏散','Personnel authorization, credential management and ordinary egress'),'credential-reader'),
+ H('records',P('信息与文件管理','Information and records'),4,[2,3],[0,2],[-2.2,.8,-.35],P('明确文件分类、合法访问、保管责任和交接记录。','Define record classification, lawful access, custody and handover records.'),P('储物设施、信息治理与人员责任','Storage, information governance and personnel accountability'),'document-safe'),
+ H('equipment',P('设备与物资管理','Equipment and materials'),4,[2,3],[0,2],[3.75,.75,-.8],P('建立资产登记、领用归还、维护及更新要求。','Define inventory, issue and return, maintenance and replacement requirements.'),P('储物构件、资产台账与工作单','Storage assemblies, inventory and work orders'),'secure-storage-cabinet'),
+ H('event',P('事件信息与评估','Event information and assessment'),4,[1,4],[1,2],[.1,.85,-2.8],P('明确事件信息的合法用途、记录、评估与责任交接。','Define lawful event-information purposes, recording, assessment and handover.'),P('信息系统、人员报告与事件管理','Information systems, staff reports and event management'),'incident-management-workstation'),
+ H('continuity',P('运行连续性与协调','Continuity and coordination'),4,[3,4],[1,2],[1.05,.8,-1.55],P('从关键业务服务出发明确供电、通信、维护及恢复责任。','Define power, communications, maintenance and recovery responsibilities from essential service needs.'),P('备用供电、设施状态和业务连续性程序','Backup power, facility status and continuity procedures'),'backup-power')
+ ];
+ const industries=[
+ [P('炼油厂','Oil refinery'),P('工艺环境与连续生产','Process environment and continuity')],
+ [P('矿山','Mine'),P('地形、作业与人员保障','Terrain, operations and workforce welfare')],
+ [P('太阳能电站','Solar power plant'),P('分散资产与远程运维','Distributed assets and remote O&M')],
+ [P('发电站','Power station'),P('运行、检修与值班保障','Generation, maintenance and shift welfare')]
+ ];
+ let layer=-1,fn=-1,selected=0,yaw=.62,pitch=.68,zoom=1,drag=null,raf=0;
+ const el=(tag,txt,cls)=>{const e=document.createElement(tag);if(txt!==undefined)e.textContent=txt;if(cls)e.className=cls;return e};
+ function button(host,txt,action,pressed){const e=el('button',txt);e.type='button';if(pressed!==undefined)e.setAttribute('aria-pressed',String(pressed));e.onclick=action;host.append(e);return e}
+ const filtered=()=>points.map((p,i)=>({p,i})).filter(({p})=>(layer<0||p.layer===layer)&&(fn<0||p.fn.includes(fn)));
+ function choose(i){selected=i;renderControls();draw()}
+ function updateFilter(){const matches=filtered();if(!matches.some(({i})=>i===selected))selected=matches.length?matches[0].i:-1;renderControls();draw()}
+ function renderControls(){
+  let host=$('#overview-layers');host.replaceChildren();button(host,z?'全部空间':'All spaces',()=>{layer=-1;updateFilter()},layer<0);layers.forEach((a,i)=>button(host,t(a),()=>{layer=layer===i?-1:i;updateFilter()},layer===i));
+  host=$('#overview-functions');host.replaceChildren();button(host,z?'全部功能':'All functions',()=>{fn=-1;updateFilter()},fn<0);functions.forEach((a,i)=>button(host,t(a),()=>{fn=fn===i?-1:i;updateFilter()},fn===i));
+  $('#overview-context').textContent=(layer<0?(z?'从整体观察五个空间层级。':'Explore all five spatial layers.'):t(layerCopy[layer]))+' '+(fn<0?(z?'选择防护功能筛选相关知识热点。':'Select a protective function to filter the hotspots.'):t(functionCopy[fn]));
+  const shown=filtered();$('#overview-count').textContent=(z?'当前知识热点：':'Visible learning hotspots: ')+shown.length+' / '+points.length;
+  host=$('#overview-list');host.replaceChildren();shown.forEach(({p,i})=>button(host,t(p.n),()=>choose(i),selected===i));
+  host=$('#overview-detail');host.replaceChildren();const p=points[selected];
+  if(!p){host.append(el('h3',z?'当前组合没有示例':'No example for this combination'),el('p',z?'调整空间或防护功能，继续探索。':'Change the spatial layer or protective function to keep exploring.'));button(host,z?'显示全部热点':'Show all hotspots',()=>{layer=-1;fn=-1;updateFilter()});return}
+  host.append(el('div','CONCEPT / '+String(selected+1).padStart(2,'0'),'over'),el('h3',t(p.n)),el('h4',z?'空间层级':'Spatial layer'),el('p',t(layers[p.layer])),el('h4',z?'防护功能与系统组成':'Protective functions and system elements'),el('p',p.fn.map(i=>t(functions[i])).join(z?'、':', ')+' / '+p.sys.map(i=>t(systems[i])).join(z?'、':', ')),el('h4',z?'设计目的':'Design purpose'),el('p',t(p.why)),el('h4',z?'系统与管理接口':'System and operating interfaces'),el('p',t(p.rel)));
+  const links=el('div',undefined,'overview-links');const i=library.models.findIndex((_,i)=>library.modelKey(i)===p.device);
+  if(i>=0)button(links,z?'查看相关设备':'Explore related equipment',()=>library.openModel(i,(z?'综合互动模型':'Interactive overview')+' / '+t(p.n)));
+  host.append(links);
+ }
+ const viewHost=$('#overview-views');button(viewHost,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.68;zoom=1;draw()});button(viewHost,z?'俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});button(viewHost,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});button(viewHost,'−',()=>{zoom=Math.max(.68,zoom/1.15);draw()});
+ const next=$('#overview-next');industries.forEach((a,i)=>{const b=button(next,'',()=>library.openIndustry(i));b.append(el('strong',t(a[0])),el('span',t(a[1])))});
+ function solids(){
+  const out=[];
+  const B=(x,y,z,w,h,d,k,shape,group=-1,device=-1)=>out.push({p:[x,y,z,w,h,d,k,shape],g:group,device,tilt:0,spin:0});
+  const cyl=(x,y,z,w,h,d,k,g=-1,id=-1)=>B(x,y,z,w,h,d,k,'cylinder',g,id);
+  const grass='#78836c',pavement='#aaa79a',dark='#515b5f',wall='#b8bbb4',glass='#526e7b',steel='#929fa3';
+  B(0,-.4,0,14.4,.35,10.6,'#414e54');
+  B(0,-.05,0,14.15,.05,10.3,grass);
+  B(0,.01,4.3,14,.025,1.36,'#62696b',null,0);
+  B(0,.04,4.3,13.85,.008,.045,'#c5c2ad',null,0);
+  B(-4.3,.025,3.12,3.2,.06,1.0,pavement,null,0);
+  B(3.9,.025,3.12,3.5,.06,1.0,pavement,null,0);
+  B(0,.025,1.4,12,.05,1.6,'#8f9996',null,2);
+  B(.2,.025,-.5,1.5,.06,5.1,pavement,null,2);
+  B(-3.1,.025,-.5,4.2,.06,4.1,'#9b9f8e',null,3);
+  B(3.3,.025,-.5,4.0,.06,4.0,'#9b9f8e',null,3);
+  const tree=(x,z)=>{cyl(x,.05,z,.11,.68,.11,'#776855');B(x,.54,z,.75,.7,.72,'#667c57','sphere');B(x-.22,.5,z+.12,.48,.5,.48,'#738765','sphere');};
+  for(const [x,z] of [[-6.4,3.25],[6.4,3.2],[-6,-3.75],[5.9,-3.8],[-4.9,2.5],[4.8,2.65],[4.5,.35],[3.1,.35]])tree(x,z);
+  // Architectural boundary example within the teaching artwork.
+  for(let i=0;i<7;i++){const x=-5.65+i*.52;B(x,.04,-.12,.055,.72,.055,steel,null,1,2)}
+  for(let i=0;i<2;i++)B(-4.09,.15+i*.5,-.12,3.12,.036,.04,steel,null,1,2);
+  for(let i=0;i<24;i++)B(-5.61+i*.13,.16,-.12,.018,.49,.022,'#a5aca9',null,1,2);
+  const building=(x,z,w,d,h,color,group,id)=>{
+   B(x,0,z,w,h,d,color,null,group,id);B(x,h,z,w+.13,.10,d+.13,'#68767a',null,group,id);
+   for(let f=0;f<Math.floor(h/.72);f++)for(let j=0;j<Math.floor(w/.6);j++){let xx=x-w/2+.33+j*.6,yy=.24+f*.71;B(xx,yy,z+d/2+.018,.42,.36,.03,'#7f8d8c',null,group,id);B(xx,yy+.035,z+d/2+.045,.34,.28,.012,glass,null,group,id);B(xx,yy+.035,z+d/2+.055,.018,.28,.01,'#c3c9c7',null,group,id)}
+   for(let f=0;f<Math.floor(h/.72);f++)for(let j=0;j<Math.floor(d/.65);j++){let zz=z-d/2+.36+j*.65;B(x+w/2+.018,.24+f*.71,zz,.025,.36,.43,glass,null,group,id)}
+   B(x+.22,0,z+d/2+.06,.48,.68,.06,glass,null,group,id);B(x+.22,.72,z+d/2+.16,1.1,.09,.56,'#a9b7b7',null,group,id);
+   B(x+.65,h+.10,z-.35,.64,.17,.5,'#9ba6a7',null,group,id);
+  };
+  building(-3.2,-2.1,3.45,1.9,1.70,wall,3,8);
+  building(3.15,-2.1,3.4,1.9,1.35,'#c0b9a8',3,10);
+  building(.05,-3.0,1.9,1.55,.98,'#9eacaf',3,13);
+  B(-3.2,.05,-.35,2.4,.08,.9,'#9ba6a4',null,3,8);
+  B(-3.2,.12,-.35,1.6,.39,.53,'#a78d73',null,3,8);B(-3.2,.51,-.35,1.7,.06,.6,'#cfcbc0',null,3,8);
+  B(-2.2,.05,-.35,.48,.85,.5,'#6f8188',null,4,11);B(-2.2,.28,-.086,.35,.4,.04,'#8d9c9e',null,4,11);
+  B(3.75,.05,-.8,.75,.75,.48,'#849596',null,4,12);for(let j=0;j<3;j++)B(3.75,.12+j*.21,-.54,.65,.16,.025,'#a5aeaa',null,4,12);
+  B(1.05,.05,-1.55,.52,.75,.48,'#7e8f95',null,4,14);B(1.05,.53,-1.29,.33,.13,.025,glass,null,4,14);
+  B(.1,.05,-2.0,.95,.44,.55,'#9caaad',null,4,13);B(.1,.5,-2.08,.6,.35,.09,glass,null,4,13);
+  for(const x of [-4.8,-1.1,3.25,5.3]){cyl(x,.02,1.65,.055,1.38,.055,steel,2,5);B(x,1.37,1.65,.32,.09,.18,'#d2d0bb',null,2,5)}
+  B(-4.8,.04,3.55,.055,.64,.055,steel,null,0,0);B(-4.8,.56,3.55,.67,.3,.08,'#d5d2bc',null,0,0);
+  B(.15,.05,2.75,.36,.70,.3,'#9daaa9',null,1,3);B(.15,.55,2.91,.24,.19,.025,glass,null,1,3);
+  B(-3.6,.05,1.65,.26,.76,.22,'#62879b',null,2,6);B(-3.6,.48,1.77,.16,.15,.025,'#d1b296',null,2,6);
+  for(const x of [3.4,4.2]){B(x,.05,.15,.7,.21,.27,'#9e8c74',null,2,7);B(x,.23,.25,.7,.27,.06,'#9e8c74',null,2,7);}
+  for(const [x,z] of [[-4.4,1.2],[-2.55,.65],[.8,1.0],[3.9,2.15],[4.9,.8]]){B(x-.035,.04,z,.05,.22,.07,'#4c5a63');B(x+.035,.04,z,.05,.22,.07,'#4c5a63');B(x,.25,z,.16,.19,.095,'#b0a28b','rounded');B(x,.44,z,.10,.11,.10,'#bda087','sphere')}
+  return out;
+ }
+ function draw(){if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(render)}
+ function render(){
+  raf=0;const w=C.clientWidth,h=C.clientHeight;if(!w||!h)return;const d=Math.min(window.devicePixelRatio||1,2);C.width=w*d;C.height=h*d;ctx.scale(d,d);
+  const s=Math.min(w/17.1,h/12.7)*zoom,co=Math.cos(yaw),si=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const project=([x,y,z])=>{const X=x*co-z*si,Z=x*si+z*co;return[w/2+X*s,h*.48+(Z*sp-y*cp)*s,Z*cp+y*sp]};
+  const scene=solids().map(o=>{if(layer>=0&&o.g>=0&&o.g!==layer){o.p=o.p.slice();const n=parseInt(o.p[6].slice(1),16),rgb=[n>>16,(n>>8)&255,n&255];o.p[6]='#'+rgb.map(v=>Math.round(v*.62+40).toString(16).padStart(2,'0')).join('')}return o});
+  let gpuOk=false;if(gpu)try{gpuOk=gpu.draw({solids:scene,mesh:library.mesh,zone:selected>=0?points[selected].layer:-1,selected,key:[layer,selected].join('|'),w,h,s,yaw,pitch,d})}catch(e){console.warn('Overview compatibility mode',e);gpu=null}
+  if(G)G.style.visibility=gpuOk?'visible':'hidden';
+  $('#overview-engine').textContent=gpuOk?'WEBGL 2 / LIVE 3D':(z?'兼容三维视图':'Compatible 3D view');
+  if(!gpuOk){
+   const faces=[];for(const {p,g,device} of scene){const m=library.mesh(p),v=m.vertices.map(project);for(const f of m.polys){const a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];if(!a||!b||!c)continue;const u=b.map((x,i)=>x-a[i]),q=c.map((x,i)=>x-a[i]),n=[u[1]*q[2]-u[2]*q[1],u[2]*q[0]-u[0]*q[2],u[0]*q[1]-u[1]*q[0]],l=.68+.4*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/(Math.hypot(...n)||1));let color=selected>=0&&device===selected?'#e3b375':m.color;const rgb=parseInt(color.slice(1),16);const shade='rgb('+[rgb>>16,(rgb>>8)&255,rgb&255].map(x=>Math.min(255,Math.round(x*l))).join(',')+')';const poly=f.map(i=>v[i]);faces.push({poly,shade,depth:poly.reduce((a,p)=>a+p[2],0)/poly.length})}}
+   faces.sort((a,b)=>a.depth-b.depth);for(const f of faces){ctx.beginPath();f.poly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=f.shade;ctx.fill()}
+  }
+  const host=$('#overview-hotspots');host.replaceChildren();const used=[];
+  for(const {p,i} of filtered()){let [px,py]=project(p.anchor),x=Math.max(20,Math.min(w-20,px)),y=Math.max(25,Math.min(h-25,py-10));for(let attempt=0;attempt<12;attempt++){if(!used.some(q=>Math.hypot(q[0]-x,q[1]-y)<36))break;y-=36;if(y<22){y=Math.min(h-22,py+36+Math.floor(attempt/3)*36);x=Math.max(20,Math.min(w-20,px+(attempt%2?36:-36)))}}used.push([x,y]);const b=button(host,String(i+1),()=>choose(i),selected===i);b.style.left=x+'px';b.style.top=y+'px';b.title=t(p.n);b.setAttribute('aria-label',t(p.n));}
+ }
+ C.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];C.setPointerCapture(e.pointerId)});
+ C.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.009;pitch=Math.max(.15,Math.min(1.5,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY];draw()});
+ for(const ev of ['pointerup','pointercancel','lostpointercapture'])C.addEventListener(ev,()=>drag=null);
+ C.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','Home'].includes(e.key))return;e.preventDefault();if(e.key==='ArrowLeft')yaw-=.2;if(e.key==='ArrowRight')yaw+=.2;if(e.key==='ArrowUp')pitch=Math.min(1.5,pitch+.15);if(e.key==='ArrowDown')pitch=Math.max(.15,pitch-.15);if(e.key==='+')zoom=Math.min(1.5,zoom*1.15);if(e.key==='-')zoom=Math.max(.68,zoom/1.15);if(e.key==='Home'){yaw=.62;pitch=.68;zoom=1}draw()});
+ if(typeof ResizeObserver==='function')new ResizeObserver(draw).observe(C);else window.addEventListener('resize',draw);
+ renderControls();draw();return{draw};
+}
