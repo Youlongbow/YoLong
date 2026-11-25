@@ -558,13 +558,28 @@ function initStudio(lang,library){
    }
   };
 
+  // Ordinary industrial architecture and equipment, in artwork units.
+  const platform=(x,z,w,d,col)=>{B(x,.025,z,w,.055,d,col);B(x,.08,z,w,.025,d,'#a1a9a4')};
+  const shed=(x,z,w,d,h,col)=>{
+   for(const dx of [-w*.43,w*.43])for(const dz of [-d*.43,d*.43])B(x+dx,.025,z+dz,.075,h,.075,'#89989a');
+   B(x,h+.025,z,w,.07,d,col);for(let j=0;j<Math.floor(w/.24);j++)B(x-w/2+.12+j*.24,h+.10,z,.025,.02,d,'#a6b3b1');
+  };
+  const serviceCabinet=(x,z,w=.60,col='#a5aeaa')=>{B(x,.02,z,w,.065,.52,'#8f9a94');B(x,.085,z,w*.88,.68,.44,col);B(x,.37,z+.229,w*.70,.40,.025,'#b8c1b9');B(x+w*.27,.43,z+.25,.045,.12,.018,'#687a7e')};
+  const ordinaryCanopy=(x,z,w,d,h)=>{shed(x,z,w,d,h,'#7b8d8d');B(x,h-.08,z+d/2,.90,.055,.025,'#c3c8bc')};
   // Fictional industrial context used for spatial learning.
   B(0,-.30,0,12.7,.28,8.1,'#2b3338');
   B(0,-.025,-.60,12.4,.025,6.6,scene===1?sand:asphalt);
   if(showColors){put(box(0,.002,-.60,12.3,.012,6.5,palette[zone]),zone);B(0,.018,-.6,12.16,.009,6.36,scene===1?'#8f8472':'#626c6e')}
   if(showFurniture){
    if(zone===0){
-    if(scene===0){tank(-4.3,-1.0,1.80,1.45);tank(-2.15,-1.7,1.65,1.25);tank(-.15,-.9,1.65,1.55);tower(1.9,-1.55,2.75);tower(3.05,-1.15,2.1);building(4.65,-1.25,1.75,1.6,.90);vehicle(-2.1,1.25,'truck','#a5b4bb');person(2.5,1.0);}
+    if(scene===0){
+     // Process silhouette and ordinary industrial civil works, not a protective layout.
+     platform(-2.2,-1.35,6.0,3.20,'#8b9591');tank(-4.3,-1.0,1.80,1.45);tank(-2.15,-1.7,1.65,1.25);tank(-.15,-.9,1.65,1.55);tower(1.9,-1.55,2.75);tower(3.05,-1.15,2.1);building(4.65,-1.25,1.75,1.6,.90);
+     for(const x of [1.40,2.15,2.90,3.65]){B(x,.03,-2.67,.07,.94,.07,'#7c8b8d');B(x,.91,-2.67,.13,.06,.29,'#a1abaa')}
+     for(const z of [-2.80,-2.65,-2.50])B(2.55,.98,z,2.55,.055,.055,'#b4bcba','cylinder');
+     B(-2.2,.09,-3.0,5.65,.13,.09,'#a0aaa2');B(-2.2,.09,.25,5.65,.13,.09,'#a0aaa2');
+     vehicle(-2.1,1.25,'truck','#a5b4bb');person(2.5,1.0);
+    }
     else if(scene===1){
      const pitX=-1.55,pitZ=-.88;
      B(pitX,.014,pitZ,1.5,.055,.92,'#b6a38a');
@@ -581,29 +596,29 @@ function initStudio(lang,library){
      for(const [w,d,outer,innerY,ratio,col] of levels)put([pitX,.04,pitZ,w,outer,d,col,'pitRing',ratio,innerY,.045]);
      // Irregular exposed-rock details along the exterior context of this fictional pit.
      for(let i=0;i<15;i++){const th=i*2.399963,rx=3.62+.12*Math.sin(i*1.7),rz=2.36+.08*Math.cos(i*1.1);B(pitX+rx*Math.cos(th),.75,pitZ+rz*Math.sin(th),.20+.15*Math.abs(Math.sin(i)),.12+.08*Math.abs(Math.cos(i)),.18+.10*Math.abs(Math.sin(i*2)),'#96836b','terrain')}
-     building(4.25,-1.0,1.75,1.4,.82,'#b3a995','pitch');vehicle(-2.8,1.55,'truck','#c3a15e');vehicle(1.2,1.35,'pickup','#d7d1be');person(3.7,1.1);
+     building(4.25,-1.0,1.75,1.4,.82,'#b3a995','pitch');platform(4.2,1.25,2.5,.85,'#9d9481');shed(4.2,1.25,1.75,.72,.80,'#8b9389');for(const x of [3.65,4.15,4.65])B(x,.12,1.23,.33,.22,.40,'#b2a58b','rounded');vehicle(-2.8,1.55,'truck','#c3a15e');vehicle(1.2,1.35,'pickup','#d7d1be');person(3.7,1.1);
     }
-    else if(scene===2){for(let i=0;i<3;i++)for(let j=0;j<5;j++)panel(-4.5+j*1.5,-2.2+i*1.25);building(4.35,-.9,2.0,2.0,.85);vehicle(2.0,1.48,'pickup','#d3d8d4');person(4.0,1.25)}
-    else{building(-1.8,-1.05,4.4,2.7,1.55,'#a4a9a5','pitch');cooling(2.4,-1.4,1.85,2.5);cooling(4.5,-1.3,1.65,2.18);cyl(-4.7,-.01,-1.5,.35,2.8,.35,'#a9afab');cyl(-4.7,2.46,-1.5,.36,.19,.36,'#8e6557');vehicle(-.8,1.35,'pickup');person(-3.2,1.3)}
+    else if(scene===2){for(let i=0;i<3;i++)for(let j=0;j<5;j++)panel(-4.5+j*1.5,-2.2+i*1.25);building(4.35,-.9,2.0,2.0,.85);for(const x of [3.8,4.6,5.3])serviceCabinet(x,-2.55,.54,'#b9c2b7');B(-1.0,.03,1.3,8.5,.04,.7,'#a2a89a');vehicle(2.0,1.48,'pickup','#d3d8d4');person(4.0,1.25)}
+    else{building(-1.8,-1.05,4.4,2.7,1.55,'#a4a9a5','pitch');cooling(2.4,-1.4,1.85,2.5);cooling(4.5,-1.3,1.65,2.18);cyl(-4.7,-.01,-1.5,.35,2.8,.35,'#a9afab');cyl(-4.7,2.46,-1.5,.36,.19,.36,'#8e6557');for(let j=0;j<5;j++){B(-3.4+j*.74,1.64,-1.05,.48,.10,.42,'#8c9998');B(-3.4+j*.74,1.74,-1.05,.36,.018,.31,'#697c80')}platform(3.5,1.15,2.8,.72,'#a4aaa1');for(const x of [2.6,3.45,4.3])serviceCabinet(x,1.15,.57);vehicle(-.8,1.35,'pickup');person(-3.2,1.3)}
    }else if(zone===1){
     // Distinct ordinary business activities, depicted as fictional architectural scenes.
     if(scene===0){
      B(0,.025,-.4,3.4,.025,6.4,'#424b50');B(0,.06,-.4,.045,.008,5.8,'#d9d0b3');
-     B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');building(-3.65,-1.8,2.65,1.65,1.12);building(-3.65,.85,2.5,1.1,.82);
+     B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');building(-3.65,-1.8,2.65,1.65,1.12);building(-3.65,.85,2.5,1.1,.82);ordinaryCanopy(-3.65,1.67,2.45,.75,.87);
      B(3.65,.02,-.4,3.35,.04,5.1,'#8c9999');building(3.6,-1.5,2.5,1.9,1.05);tank(4.8,1.05,.88,.8);
      vehicle(-.82,1.5,'truck','#b8c4c4',Math.PI/2);vehicle(.82,-.5,'pickup','#c0c6c3',Math.PI/2);person(-2.6,.4);person(2.6,1.05);
     }else if(scene===1){
      B(0,.022,-.25,4.8,.035,6.5,'#a59a85');B(-4,.025,-.8,2.9,.04,4.8,'#b4a48a');building(-4,-1.7,2.6,1.5,.85,'#b4a48e','pitch');building(3.8,-1.7,2.75,1.45,.9,'#b8ac94','pitch');
-     B(3.65,.026,.8,3.45,.025,2.15,'#918777');for(let i=0;i<4;i++)B(2.7+i*.59,.035,.85,.43,.29,.50,'#ad9d7c','rounded');
+     B(3.65,.026,.8,3.45,.025,2.15,'#918777');shed(3.65,.8,2.85,1.35,.98,'#8e9790');for(let i=0;i<4;i++)B(2.7+i*.59,.035,.85,.43,.29,.50,'#ad9d7c','rounded');
      vehicle(-1.12,.75,'truck','#c2a05c',Math.PI/2);vehicle(1.12,-1.2,'truck','#c3aa75',Math.PI/2);vehicle(-3.9,1.25,'pickup','#c6c6b6');person(-2.8,.6);person(3.0,.4);
     }else if(scene===2){
      B(.1,.022,-.4,2.45,.025,6.2,'#737d7b');B(-3.4,.025,-.5,3.9,.03,4.8,'#a4a999');
-     building(-3.6,-1.4,2.4,1.6,.81,'#c3c7b8');building(-3.5,.95,1.8,1.15,.72,'#b1b9b2');
+     building(-3.6,-1.4,2.4,1.6,.81,'#c3c7b8');building(-3.5,.95,1.8,1.15,.72,'#b1b9b2');platform(-3.5,1.73,1.8,.45,'#abb3a5');
      for(let i=0;i<2;i++)for(let j=0;j<2;j++)panel(2.4+j*1.5,-1.6+i*1.5);
      vehicle(.1,.65,'pickup','#d2d7d3',Math.PI/2);person(-2.4,.55,'#9fbaae');
     }else{
      B(0,.025,-.4,3.25,.025,6.3,'#424b50');B(0,.057,-.4,.045,.009,5.8,'#d1c9b1');
-     B(-3.6,.025,-.4,3.75,.035,5.1,'#a1aaa5');building(-3.65,-1.55,3.1,2.1,1.45,'#c1c8c6');B(-3.6,.03,1.1,2.8,.025,.9,'#7d8c8d');
+     B(-3.6,.025,-.4,3.75,.035,5.1,'#a1aaa5');building(-3.65,-1.55,3.1,2.1,1.45,'#c1c8c6');ordinaryCanopy(-3.65,-.07,2.55,.85,1.08);B(-3.6,.03,1.1,2.8,.025,.9,'#7d8c8d');
      B(3.55,.025,-.4,3.45,.03,5.0,'#919e9d');building(3.65,-1.65,2.75,1.85,1.25,'#aebbbb','pitch');B(3.55,.03,1.0,2.6,.35,.62,'#87989a','rounded');
      vehicle(-.8,1.1,'pickup','#d4d5cc',Math.PI/2);vehicle(.8,-.9,'truck','#b0bdbd',Math.PI/2);person(-2.45,.7);person(2.75,.7);person(-3.35,1.65);
     }
@@ -673,7 +688,13 @@ function initStudio(lang,library){
     frame(2.9,-2.3,5.75,-2.3,id,solid);frame(2.9,-2.3,2.9,.35,id,solid);frame(5.75,-2.3,5.75,.35,id,solid);frame(2.9,.35,5.75,.35,id,solid);
    }else{
     frame(-6.03,-3.65,6.03,-3.65,id,solid);frame(-6.03,-3.65,-6.03,2.95,id,solid);frame(6.03,-3.65,6.03,2.95,id,solid);
-    frame(-6.03,2.95,-1.25,2.95,id,solid);frame(1.25,2.95,6.03,2.95,id,solid);frame(-1.25,2.95,1.25,2.95,id,false);
+    frame(-6.03,2.95,-1.25,2.95,id,solid);frame(1.25,2.95,6.03,2.95,id,solid);// Two recognizable gate leaves with posts and framed infill in the artwork.
+    for(const xx of [-1.25,1.25])put([xx,.02,2.95,.10,.79,.10,'#839397'],zone,id);
+    for(const xx of [-.625,.625]){
+     for(const y of [.10,.69])put([xx,y,2.95,1.18,.045,.045,'#91a0a1'],zone,id);
+     for(const x of [xx-.58,xx+.58])put([x,.10,2.95,.045,.61,.045,'#91a0a1'],zone,id);
+     for(let j=0;j<7;j++)put([xx-.48+j*.16,.14,2.95,.015,.54,.022,'#a8b4b2'],zone,id);
+    }
    }
    if(showDevices){
     const fit=(k,x,y,z,target,spin=0)=>{
