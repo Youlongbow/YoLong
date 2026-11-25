@@ -63,6 +63,21 @@ try {
   assert(await page.locator('#overview-hotspots button').evaluateAll(nodes=>nodes.every(n=>Number.isFinite(parseFloat(n.style.left))&&Number.isFinite(parseFloat(n.style.top)))));
 
   assert.equal(await page.locator('#overview-layers button').count(),6);
+  await page.locator('details').filter({has:page.locator('#overview-functions')}).locator('summary').click();
+  assert.equal(await page.locator('#overview-study-tabs button').count(),4);
+  for(let i=0;i<4;i++){
+   await page.locator('#overview-study-tabs button').nth(i).click();
+   assert.equal(await page.locator('#overview-study-flow button').count(),4);
+   for(let j=0;j<4;j++){
+    await page.locator('#overview-study-flow button').nth(j).click();
+    assert(await page.locator('#overview-study-detail h4').innerText());
+    assert((await page.locator('#overview-study-detail .overview-links button').count())>0);
+   }
+  }
+  await page.locator('#overview-layers button').first().click();
+  await page.locator('#overview-list button').nth(2).click();
+  if(captures&&lang==='zh')await page.locator('#overview-system-study').screenshot({path:captures+'/system-study.png'});
+
   assert.equal(await page.locator('#overview-functions button').count(),4);
   assert.equal(await page.locator('#overview-framework .concept-definition').count(),7);
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.includes('WEBGL 2'),{},{timeout:30000});
