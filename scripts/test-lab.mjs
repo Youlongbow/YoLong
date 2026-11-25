@@ -25,13 +25,24 @@ try {
   const viewControls=page.locator('#overview-views button');
   await viewControls.nth(0).click();
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===0);
+  const campusImage=()=>page.evaluate(()=>{const gl=document.querySelector('#overview-gl');return(getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas')).toDataURL()});
+  const naturalImage=await campusImage();
+  const sampleCampus=await page.evaluate(()=>{const gl=document.querySelector('#overview-gl'),canvas=getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas');const mini=document.createElement('canvas');mini.width=128;mini.height=128;const x=mini.getContext('2d');x.drawImage(canvas,0,0,128,128);const pixels=x.getImageData(0,0,128,128).data;let n=0;const colors=new Set();for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]>100){n++;colors.add([pixels[i]>>4,pixels[i+1]>>4,pixels[i+2]>>4].join(','))}return {n,colors:colors.size}});
+  assert(sampleCampus.n>100&&sampleCampus.colors>12,'Campus has visible geometry and surface variation');
+  if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/campus-natural.png'});
+
   await viewControls.nth(1).click();
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
+  assert.notEqual(await campusImage(),naturalImage,'Selection changes rendered campus');
+  if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/campus-system-focus.png'});
+
   await viewControls.nth(2).click();
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===1);
   await viewControls.nth(2).click();
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
   await viewControls.nth(4).click();
+  await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/campus-top.png'});
   await viewControls.nth(3).click();
   assert(await page.locator('#overview-hotspots button').evaluateAll(nodes=>nodes.every(n=>Number.isFinite(parseFloat(n.style.left))&&Number.isFinite(parseFloat(n.style.top)))));
 
