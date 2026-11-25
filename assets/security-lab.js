@@ -183,14 +183,14 @@ function mesh(part){
  if(shape==='annulus'){
   const N=48,vertices=[],polys=[],ratio=part[8]||.8;
   for(let yb=0;yb<2;yb++)for(let r=0;r<2;r++)for(let i=0;i<N;i++){const t=i*2*Math.PI/N,f=r?1:ratio;vertices.push([x+a*.5*f*Math.cos(t),y+yb*b,z+c*.5*f*Math.sin(t)])}
-  for(let i=0;i<N;i++){const j=(i+1)%N;polys.push([i,j,N+j,N+i],[2*N+i,3*N+i,3*N+j,2*N+j],[N+i,N+j,3*N+j,3*N+i],[i,2*N+i,2*N+j,j])}
-  return {vertices,polys,color,smooth:false};
+  for(let i=0;i<N;i++){const j=(i+1)%N;polys.push([N+i,N+j,j,i],[2*N+j,3*N+j,3*N+i,2*N+i],[3*N+i,3*N+j,N+j,N+i],[j,2*N+j,2*N+i,i])}
+  return {vertices,polys,color,smooth:false,oriented:true};
  }
  if(shape==='pitRing'){
   const vertices=[],polys=[],N=96,inner=part[8]||.6,innerY=Number(part[9]||0),variation=part[10]||.03;
   for(let j=0;j<2;j++)for(let i=0;i<N;i++){const t=i*2*Math.PI/N,f=(j?1:inner)*(1+variation*Math.sin(t*5+.4)+variation*.55*Math.sin(t*11+1.5));vertices.push([x+a*.5*f*Math.cos(t),y+(j?b:innerY)+.015*Math.sin(t*13),z+c*.5*f*Math.sin(t)])}
   for(let i=0;i<N;i++){let k=(i+1)%N;polys.push([i,k,k+N,i+N])}
-  return{vertices,polys,color,smooth:false};
+  return{vertices,polys,color,smooth:false,oriented:true};
  }
  if(shape==='coolingTower'||shape==='sphere'||shape==='wheel'||shape==='roof'||shape==='terrain'){
   let vertices=[],polys=[];
@@ -198,7 +198,7 @@ function mesh(part){
    vertices=[[x-a/2,y,z-c/2],[x+a/2,y,z-c/2],[x+a/2,y,z+c/2],[x-a/2,y,z+c/2],[x-a/2,y+b,z],[x+a/2,y+b,z]];
    polys=[[0,1,5,4],[3,4,5,2],[0,4,3],[1,2,5],[0,3,2,1]];
   }else if(shape==='terrain'){
-   const N=7;for(let j=0;j<N;j++)for(let i=0;i<N;i++){const u=i/(N-1),v=j/(N-1);let h=b*(.22+.78*Math.sin(Math.PI*u)*Math.sin(Math.PI*v))*(.83+.17*Math.sin(i*3.7+j*2.9));vertices.push([x+(u-.5)*a,y+h,z+(v-.5)*c]);}for(let j=0;j<N-1;j++)for(let i=0;i<N-1;i++){const k=j*N+i;polys.push([k,k+1,k+N+1],[k,k+N+1,k+N])}
+   const N=7;for(let j=0;j<N;j++)for(let i=0;i<N;i++){const u=i/(N-1),v=j/(N-1);let h=b*(.22+.78*Math.sin(Math.PI*u)*Math.sin(Math.PI*v))*(.83+.17*Math.sin(i*3.7+j*2.9));vertices.push([x+(u-.5)*a,y+h,z+(v-.5)*c]);}for(let j=0;j<N-1;j++)for(let i=0;i<N-1;i++){const k=j*N+i;polys.push([k,k+N+1,k+1],[k,k+N,k+N+1])}
   }else{
    const N=32,R=shape==='wheel'?2:shape==='coolingTower'?18:12;
    for(let j=0;j<R;j++){let u=j/(R-1),rad=shape==='wheel'?1:shape==='coolingTower'?(.61+.43*Math.pow((u-.68)/.68,2)):Math.sin(Math.PI*u);
@@ -207,7 +207,8 @@ function mesh(part){
    for(let j=0;j<R-1;j++)for(let i=0;i<N;i++){let k=j*N+i,n=j*N+(i+1)%N;polys.push([k,n,n+N,k+N])}
    if(shape==='wheel')polys.push(Array.from({length:N},(_,i)=>i),Array.from({length:N},(_,i)=>(R-1)*N+i));
   }
-  return {vertices,polys,color,smooth:shape!=='roof'&&shape!=='terrain'};
+  if(shape==='coolingTower')polys.forEach(f=>f.reverse());
+  return {vertices,polys,color,smooth:shape!=='roof'&&shape!=='terrain',oriented:shape==='terrain'||shape==='coolingTower'};
  }
  if(shape==='rounded'){const vertices=[],polys=[],r=Math.min(a,c,b)*.17;const corners=[[a/2-r,c/2-r,0],[-a/2+r,c/2-r,Math.PI/2],[-a/2+r,-c/2+r,Math.PI],[a/2-r,-c/2+r,Math.PI*1.5]];for(let j=0;j<2;j++)for(const [cx,cz,angle] of corners)for(let k=0;k<=5;k++){let th=angle+k*Math.PI/10;vertices.push([x+cx+r*Math.cos(th),y+j*b,z+cz+r*Math.sin(th)])}const N=24;for(let i=0;i<N;i++)polys.push([i,(i+1)%N,N+(i+1)%N,N+i]);polys.push(Array.from({length:N},(_,i)=>i),Array.from({length:N},(_,i)=>N+i));return {vertices,polys,color,smooth:true}}
  if(shape==='cylinderZ'){const N=36,vertices=[],polys=[];for(let j=0;j<2;j++)for(let i=0;i<N;i++){let th=i*2*Math.PI/N;vertices.push([x+a/2*Math.cos(th),y+b/2+b/2*Math.sin(th),z-c/2+j*c])}for(let i=0;i<N;i++)polys.push([i,(i+1)%N,N+(i+1)%N,N+i]);polys.push(Array.from({length:N},(_,i)=>i),Array.from({length:N},(_,i)=>N+i));return{vertices,polys,color,smooth:true}}
@@ -491,7 +492,7 @@ function initStudio(lang,library){
   if(type==='Boundary and spatial separation')return [0,.15,2.15];
   return [j%2?3.8:-3.8,1.1,j%2?-1.8:1.55];
  }
- let lastSceneGeometry=[];
+ let lastSceneGeometry=[],cachedScene=null,cachedFallback=null;
  const keyListBoundaryIndex=()=>keys(zone).indexOf('fence');
  function renderHotspots(project,w,h){
   const host=$('#studio-hotspots');if(!host)return;host.replaceChildren();
@@ -536,7 +537,7 @@ function initStudio(lang,library){
   const zoneTypes=$('#studio-access-zones');zoneTypes.replaceChildren();zoneTypes.append(make('p',z?'受限区域的三类术语；与当前行业的设施部位无固定对应关系。':'Three restricted-area categories; these do not correspond to fixed facility locations.'));for(const [name,desc] of conceptual.areas){const card=make('div');card.append(make('strong',t(name)),make('p',t(desc)));zoneTypes.append(card)}
   host=$('#studio-config');host.replaceChildren();q.profiles.forEach((profile,i)=>btn(host,t(profile.n),()=>{config[zone]=i;selected=-1;renderControls();draw()},config[zone]===i));
   host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'场景构件与当前议题':'Scene assemblies and current topic'));
-  const visualGeometry=geometry(),allKeys=keys(zone),topicKeys=new Set(profileKeys(zone));
+  const visualGeometry=getSceneGeometry(),allKeys=keys(zone),topicKeys=new Set(profileKeys(zone));
   const visibleKeys=allKeys.filter((k,j)=>visualGeometry.some(o=>o.g===zone&&o.device===j));
   const sceneItems=allKeys.filter(k=>visibleKeys.includes(k)),interfaceItems=allKeys.filter(k=>topicKeys.has(k)&&!visibleKeys.includes(k));
   const renderItem=(k,visible)=>{const j=allKeys.indexOf(k),i=find(k);if(i<0)return;const row=make('div',undefined,'studio-device'),txt=make('span');
@@ -810,6 +811,24 @@ function initStudio(lang,library){
   }
   return solids;
  }
+ // Reuse stable artwork geometry while orbiting, changing a topic, or selecting a learning label.
+ function sceneGeometryKey(){return [scene,zone,showColors,showFurniture,workspaceCutaway].join('|')}
+ function getSceneGeometry(){
+  const key=sceneGeometryKey();
+  if(!cachedScene||cachedScene.key!==key){cachedScene={key,solids:geometry()};cachedFallback=null}
+  return cachedScene.solids;
+ }
+ function getFallbackMeshes(){
+  if(cachedFallback)return cachedFallback;
+  cachedFallback=getSceneGeometry().map(o=>{
+   const m=library.mesh(o.p),p=o.p;
+   let vertices=m.vertices;
+   if(o.tilt){const ct=Math.cos(o.tilt),st=Math.sin(o.tilt);vertices=vertices.map(([x,y,z])=>{const dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}
+   if(o.spin){const co=Math.cos(o.spin),si=Math.sin(o.spin);vertices=vertices.map(([x,y,z])=>{const dx=x-p[0],dz=z-p[2];return[p[0]+dx*co-dz*si,y,p[2]+dx*si+dz*co]})}
+   return {g:o.g,device:o.device,m:{...m,vertices}};
+  });
+  return cachedFallback;
+ }
  function draw(){
   if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(render)
  }
@@ -822,15 +841,15 @@ function initStudio(lang,library){
   function project([x,y,z]){let X=x*cos-z*sin,Z=x*sin+z*cos;return[w/2+X*s,h*.48+(Z*sp-y*cp)*s,Z*cp+y*sp]}
   function polygon(q,color,stroke){if(!q.length)return;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.55;ctx.stroke()}}
   function shade(color,v){let n=parseInt(color.slice(1),16);return 'rgb('+[n>>16,(n>>8)&255,n&255].map(x=>Math.round(Math.min(255,x*v))).join(',')+')'}
-  lastSceneGeometry=geometry();let gpuOk=false;
-  if(gpu){try{gpuOk=gpu.draw({solids:lastSceneGeometry,mesh:library.mesh,zone,selected:showDevices?selected:-1,key:[scene,zone,...config,showColors,showDevices,showFurniture,selected,workspaceCutaway].join('|'),w,h,s,yaw,pitch,d})}catch(e){console.warn('WebGL render fallback',e);gpu=null}}
+  lastSceneGeometry=getSceneGeometry();let gpuOk=false;
+  if(gpu){try{gpuOk=gpu.draw({solids:lastSceneGeometry,mesh:library.mesh,zone,selected:showDevices?selected:-1,key:sceneGeometryKey()+'|'+(showDevices?selected:-1),w,h,s,yaw,pitch,d})}catch(e){console.warn('WebGL render fallback',e);gpu=null}}
   if(glCanvas)glCanvas.style.visibility=gpuOk?'visible':'hidden';
   $('#studio-engine').textContent=gpuOk?(z?'WebGL 2 · 实时光影与材质':'WebGL 2 · Real-time materials and shadows'):(z?'兼容模式 · 三维概念模型':'Compatibility mode · 3D concept model');
   if(gpuOk)ctx.clearRect(0,0,w,h);else{
   // Ground contact shadow.
   ctx.save();ctx.filter='blur(12px)';polygon([[-6.95,-.55,-3.5],[6.95,-.55,-3.5],[6.95,-.55,3.5],[-6.95,-.55,3.5]].map(project),'#05080b');ctx.restore();
   const faces=[];
-  for(const {p,g,device,tilt,spin} of lastSceneGeometry){const m=library.mesh(p);if(tilt){const ct=Math.cos(tilt),st=Math.sin(tilt);m.vertices=m.vertices.map(([x,y,z])=>{const dy=y-p[1],dz=z-p[2];return[x,p[1]+dy*ct-dz*st,p[2]+dy*st+dz*ct]})}if(spin){const co=Math.cos(spin),si=Math.sin(spin);m.vertices=m.vertices.map(([x,y,z])=>{const dx=x-p[0],dz=z-p[2];return[p[0]+dx*co-dz*si,y,p[2]+dx*si+dz*co]})}const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
+  for(const {g,device,m} of getFallbackMeshes()){const v=m.vertices.map(project);for(const f of m.polys){const q=f.map(i=>v[i]),a=m.vertices[f[0]],b=m.vertices[f[1]],c=m.vertices[f[2]];const u=b.map((x,i)=>x-a[i]),v2=c.map((x,i)=>x-a[i]);const n=[u[1]*v2[2]-u[2]*v2[1],u[2]*v2[0]-u[0]*v2[2],u[0]*v2[1]-u[1]*v2[0]],norm=Math.hypot(...n)||1;const light=.68+.40*Math.abs((n[0]*.48+n[1]*.82+n[2]*.30)/norm);faces.push({q,depth:q.reduce((a,p)=>a+p[2],0)/q.length,color:shade(g===zone&&device===selected&&selected>=0?'#e3b375':m.color,light),smooth:m.smooth})}}
   faces.sort((a,b)=>a.depth-b.depth).forEach(f=>polygon(f.q,f.color,f.smooth?null:'#222d3240'));
   }
   ctx.textAlign='center';ctx.fillStyle='#f5e4c7';ctx.font='bold 12px monospace';const titlePos=project([0,0,-3.9]);ctx.fillText(t(scenes[scene].n)+' / '+t(state().n),w/2,Math.max(42,titlePos[1]-12));
@@ -884,7 +903,7 @@ function createIndustrialRenderer(canvas){
    for(const raw of m.polys){if(raw.length<3)continue;let f=raw.slice(),a=vertices[f[0]],b=vertices[f[1]],c=vertices[f[2]];
     let n=cross(b.map((x,i)=>x-a[i]),c.map((x,i)=>x-a[i]));if(Math.hypot(...n)<1e-10)continue;
     const mid=f.reduce((s,i)=>s.map((x,k)=>x+vertices[i][k]),[0,0,0]).map(x=>x/f.length);
-    if(n.reduce((sum,x,i)=>sum+x*(mid[i]-center[i]),0)<0){n=n.map(x=>-x);f.reverse()}
+    if(!m.oriented&&n.reduce((sum,x,i)=>sum+x*(mid[i]-center[i]),0)<0){n=n.map(x=>-x);f.reverse()}
     n=norm(n);faces.push({f,n});if(m.smooth&&f.length<=4)for(const i of f)normals[i]=normals[i].map((x,k)=>x+n[k]);
    }
    for(const {f,n} of faces)for(let i=1;i<f.length-1;i++)for(const k of [f[0],f[i],f[i+1]]){const normal=m.smooth&&f.length<=4&&Math.hypot(...normals[k])>.01?norm(normals[k]):n;data.push(...vertices[k],...normal,...color,rough,metalness)}
