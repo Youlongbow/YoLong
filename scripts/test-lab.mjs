@@ -21,7 +21,7 @@ try {
   await page.locator('#overview-hotspots button').first().waitFor({timeout:30000});
   assert(await page.locator('#lab-overview').isVisible());
   assert(await page.locator('#lab-studio').isHidden());
-  assert.equal(await page.locator('#overview-hotspots button').count(),15);
+  assert.equal(await page.locator('#overview-hotspots button').count(),16);
   assert.equal(await page.locator('#overview-layers button').count(),6);
   assert.equal(await page.locator('#overview-functions button').count(),6);
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.includes('WEBGL 2'),{},{timeout:30000});
@@ -38,6 +38,9 @@ try {
   }
   await page.locator('#overview-layers button').first().click();
   await page.locator('#overview-functions button').first().click();
+  await page.locator('#overview-list button').nth(2).click();
+  assert(await page.locator('#overview-detail h3').innerText());
+  assert.equal(await page.locator('#overview-list button').nth(2).getAttribute('aria-pressed'),'true');
   await page.locator('#overview-list button').first().click();
   await page.locator('#overview-detail .overview-links button').first().click();
   assert(await page.locator('#lab-library-panel').isVisible());
