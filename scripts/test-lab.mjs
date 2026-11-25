@@ -65,6 +65,7 @@ try {
   assert.equal(await page.locator('#overview-layers button').count(),6);
   await page.locator('details').filter({has:page.locator('#overview-functions')}).locator('summary').click();
   assert.equal(await page.locator('#overview-study-tabs button').count(),4);
+  const studyScenes=new Set();
   for(let i=0;i<4;i++){
    await page.locator('#overview-study-tabs button').nth(i).click();
    assert.equal(await page.locator('#overview-study-flow button').count(),4);
@@ -72,10 +73,14 @@ try {
     await page.locator('#overview-study-flow button').nth(j).click();
     assert(await page.locator('#overview-study-detail h4').innerText());
     assert.equal(await page.locator('#overview-study-visual svg').count(),1);
+    const sceneMarkup=await page.locator('#overview-study-visual svg').innerHTML();
+    assert(!studyScenes.has(sceneMarkup),`Repeated study illustration: system ${i}, step ${j}`);
+    studyScenes.add(sceneMarkup);
     assert(await page.locator('#overview-study-visual .study-record strong').innerText());
     assert((await page.locator('#overview-study-detail .overview-links button').count())>0);
    }
   }
+  assert.equal(studyScenes.size,16);
   await page.locator('#overview-layers button').first().click();
   await page.locator('#overview-list button').nth(2).click();
   if(captures&&lang==='zh')await page.locator('#overview-system-study').screenshot({path:captures+'/system-study.png'});
