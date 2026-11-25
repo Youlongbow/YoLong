@@ -21,13 +21,45 @@ function frames(){
  const p=(x,y)=>'<g transform="translate('+x+' '+y+')" fill="#d7c5a4"><circle cy="-9" r="4"/><path d="M-4-3h8l3 12H-7zM-4 9v10h3V9m2 0v10h3V9"/></g>';
  return tile(9,'<rect x="8" y="8" width="76" height="24" fill="#819899"/><rect x="8" y="47" width="76" height="13" fill="#b0a488"/>'+p(26,37)+p(64,38))+tile(114,'<rect x="10" y="10" width="72" height="21" fill="#7c9095"/><rect x="16" y="45" width="60" height="16" fill="#a3a99c"/>'+p(27,40)+p(65,40))+tile(219,'<path d="M5 66L46 8 87 66" fill="#788d80"/><circle cx="73" cy="14" r="11" fill="#768b6a"/>'+p(28,40)+p(58,43));
 }
+// Stage-specific service illustrations. Each is independent of the component icon.
+function stageScene(system,step,zh){
+ const ink='#d7c5a4', muted='#82999e', paper='#30464e', green='#76988a';
+ const rect=(x,y,w,h,fill=paper,rx=3)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+rx+'" fill="'+fill+'" stroke="'+muted+'"/>';
+ const line=(d)=>'<path d="'+d+'" fill="none" stroke="'+ink+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+ const label=(x,y,a,b)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" fill="#e1e7e6" font-size="10" font-family="system-ui,sans-serif">'+(zh?a:b)+'</text>';
+ const person=(x,y)=>'<g transform="translate('+x+' '+y+')" fill="'+ink+'"><circle cy="-11" r="5"/><path d="M-6-4H6L9 13H-9ZM-5 13V27H-1V13M1 13V27H5V13"/></g>';
+ const doc=(x,y)=>rect(x,y,47,55,'#40585f')+line('M'+(x+9)+' '+(y+13)+'h29m-29 10h29m-29 10h19');
+ const check=(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="12" fill="'+green+'"/>'+line('M'+(x-5)+' '+y+'l4 4 7-8');
+ const arrow=(x,y)=>line('M'+x+' '+y+'h24m-6-5 6 5-6 5');
+ const monitor=(x,y)=>rect(x,y,74,48)+rect(x+5,y+5,64,33,'#637c80')+line('M'+(x+37)+' '+(y+48)+'v9m-13 0h26');
+ const lamp=(x,y)=>line('M'+x+' '+y+'v-52h22')+'<path d="M'+(x+14)+' '+(y-52)+'h20l-3 7h-14z" fill="'+ink+'"/>';
+ const stages=[
+ ()=>frames()+label(55,105,'接待区','Reception')+label(160,105,'办公区','Office')+label(265,105,'公共区','Shared area'),
+ ()=>monitor(15,42)+arrow(96,67)+rect(130,39,60,56)+line('M140 51h40m-40 12h40m-40 12h40')+arrow(197,67)+monitor(230,42)+label(52,117,'图像服务','Image service')+label(160,117,'接口','Interface')+label(267,117,'使用终端','Client'),
+ ()=>monitor(20,34)+monitor(102,34)+rect(214,29,67,66)+line('M224 44h47m-47 14h47m-47 14h47')+label(96,119,'视频记录','Video records')+label(247,119,'保管责任','Custody'),
+ ()=>monitor(31,35)+person(137,64)+doc(209,35)+check(265,86)+label(68,121,'图像','Image')+label(137,121,'人员','Staff')+label(233,121,'记录','Record'),
+ ()=>person(37,55)+rect(73,45,73,37)+person(168,55)+doc(233,30)+label(105,119,'接待服务','Reception')+label(257,119,'预约信息','Appointment'),
+ ()=>rect(29,37,95,58)+rect(39,48,23,26,muted)+line('M70 55h43m-43 10h33m-33 10h24')+arrow(139,66)+doc(197,34)+check(263,71)+label(76,119,'凭证','Credential')+label(230,119,'授权记录','Authorization'),
+ ()=>rect(27,23,113,95)+rect(52,33,63,85,'#587278')+line('M103 75h6')+person(169,63)+rect(220,35,67,58)+line('M229 62h49m-24-15v30')+label(84,140,'通行构件','Assembly')+label(254,119,'使用验收','Use review'),
+ ()=>person(42,58)+doc(90,35)+arrow(151,62)+doc(196,35)+check(268,75)+label(116,120,'交接','Handover')+label(220,120,'完成记录','Completion'),
+ ()=>rect(20,31,101,64)+rect(34,45,32,36,muted)+rect(74,45,32,36)+doc(145,35)+doc(212,35)+label(70,120,'设施资产','Assets')+label(202,120,'资产台账','Register'),
+ ()=>rect(25,27,106,78)+line('M36 40h84v52H36zM52 40v52M75 40v52M98 40v52')+doc(181,35)+check(258,70)+label(78,126,'完整构件','Assembly')+label(212,126,'工程证据','Evidence'),
+ ()=>rect(25,25,120,88)+rect(67,53,38,60,'#5d757a')+person(169,66)+doc(230,34)+label(85,136,'建筑使用','Building use')+label(252,115,'接口记录','Interface'),
+ ()=>rect(25,32,95,65)+line('M39 46h67m-67 17h67m-67 17h67')+person(157,63)+doc(220,34)+check(281,78)+label(74,119,'构件状态','Condition')+label(245,119,'维护工单','Work order'),
+ ()=>rect(18,76,284,28,'#526d66')+person(57,62)+person(139,62)+person(239,62)+label(160,127,'公共活动与视觉需求','Shared activity and visual needs'),
+ ()=>lamp(70,100)+lamp(160,100)+lamp(250,100)+line('M25 102h270')+label(160,127,'灯具及使用功能','Luminaires and service'),
+ ()=>rect(26,30,107,62)+line('M38 46h83m-83 14h62m-62 14h70')+person(164,60)+doc(230,34)+label(80,120,'公共信息','Public information')+label(252,120,'服务记录','Record'),
+ ()=>lamp(62,102)+person(123,62)+doc(206,32)+check(273,72)+label(89,128,'功能检查','Service check')+label(230,128,'维护记录','Upkeep record')
+ ];
+ return stages[system*4+step]?.()||'';
+}
 export function renderSystemStudy(host,system,step,lang,icon){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
  host.replaceChildren();if(!data)return;
  const el=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt)n.textContent=txt;if(cls)n.className=cls;return n};
  const sample=el('div',null,'study-sample'),picture=el('div');
- const scene=system===0&&(step===0||step===2)?frames()+'<g fill="none" stroke="#d4b689" stroke-width="2"><path d="M55 89v20h105v17M160 89v37M265 89v20H160"/><rect x="126" y="126" width="68" height="20" rx="3"/></g>':'<g color="#cdbd9d" transform="translate(72 26) scale(2)">'+(icon||'')+'</g>';
+ const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
  const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);
