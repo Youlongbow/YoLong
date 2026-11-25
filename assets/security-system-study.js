@@ -112,6 +112,26 @@ function visitorScene(i,zh){
  v+='<rect x="8" y="188" width="304" height="24" rx="3" fill="#32444c"/><text x="160" y="204" text-anchor="middle" fill="#e4ebeb" font-size="10" font-family="system-ui,sans-serif">'+captions[i]+'</text>';
  return v;
 }
+// Independent architectural material exhibits, not a site plan or performance model.
+function boundaryExhibit(i,zh){
+ const title=(x,y,a,b)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="10" font-family="system-ui,sans-serif" fill="#e1e8e8">'+(zh?a:b)+'</text>';
+ const base='<rect width="320" height="180" fill="#202f36"/><path d="M16 125L148 84L304 130L173 170Z" fill="#a1a79c"/><path d="M16 125L173 170L304 130V137L173 177L16 132Z" fill="#687a77"/>';
+ const panel=(x,y,w,h,fill)=>'<path d="M'+x+' '+y+'h'+w+'v'+h+'h-'+w+'Z" fill="'+fill+'" stroke="#81949a" stroke-width="1"/>';
+ const sample1=()=>{
+  let v=base;
+  for(let n=0;n<3;n++){const x=36+n*81,y=51+n*9;v+=panel(x,y,70,61,'#34494f');for(let k=0;k<5;k++)v+='<path d="M'+(x+9+k*13)+' '+(y+4)+'v53" stroke="#a1b4b6" stroke-width="1"/>';for(let k=0;k<4;k++)v+='<path d="M'+(x+3)+' '+(y+10+k*13)+'h64" stroke="#a1b4b6" stroke-width="1"/>';v+=panel(x-4,y-4,7,69,'#b4bdb9');}
+  v+=panel(279,66,7,69,'#b4bdb9');
+  return v+title(160,26,'连续建筑围界外观','Architectural boundary assembly');
+ };
+ const sample2=()=>{
+  let v=base+panel(32,48,256,77,'#b5b3a6');
+  for(let n=0;n<5;n++)v+=panel(34+n*51,48,2,77,'#8d958e');
+  v+=panel(29,43,263,8,'#c6c6b8')+panel(29,121,263,5,'#999e95');
+  return v+title(160,26,'实体墙体外观','Solid wall assembly');
+ };
+ const sample3=()=>base+panel(60,43,200,90,'#b8b8aa')+panel(73,57,76,76,'#50656d')+panel(82,64,58,69,'#7a989f')+panel(171,57,76,76,'#52686e')+panel(180,64,58,60,'#89a5a9')+title(160,26,'建筑门窗与使用环境','Door and glazing exhibit');
+ return [sample1,sample2,sample3][i]?.()||'';
+}
 // Independent practice consoles; all records and illustrations are fictional.
 function systemPractice(host,system,zh,options={}){
  const e=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n};
@@ -119,11 +139,11 @@ function systemPractice(host,system,zh,options={}){
  const specs=[
  {title:['视频监控工作站','Video review workstation'],names:[['接待区','Reception'],['办公区','Office'],['公共活动区','Shared activity'],['公共通行空间','Shared circulation']],messages:[['访客正在接待柜台办理业务。','A visitor is being served at the reception counter.'],['员工正在办公区域开展日常工作。','Staff are conducting routine office work.'],['人员正在公共区域活动。','People are using a shared space.'],['人员正在建筑公共通行空间正常活动。','People are using ordinary shared circulation space.']],fields:[['图像来源','Image source'],['图像复核','Image review']],action:['登记图像复核','Record image review'],result:['已登记：图像来源、正常业务活动、复核责任。','Recorded: image source, ordinary activity and review ownership.']},
  {title:['访客接待服务台','Visitor reception console'],names:[['预约信息','Appointment'],['凭证信息','Credential'],['访问结束','Visit completion']],messages:[['已安排的业务访问：确认业务联系人及预约信息。','Scheduled visit: confirm host and appointment information.'],['查看虚构的访客凭证及登记用途。','Review the sample visitor credential and registration purpose.'],['访问结束后登记服务完成与凭证交接。','Record service completion and credential handover.']],fields:[['当前业务环节','Service stage'],['接待记录','Reception record']],action:['登记当前环节','Record this stage'],result:['当前服务环节已记录。','This service stage has been recorded.']},
- {title:['围界设施工程台账','Boundary assembly register'],names:[['围界资产','Boundary assets'],['构件交付','Assembly handover'],['维护记录','Maintenance record']],messages:[['核对资产名称与设施管理责任。','Review asset identity and facility ownership.'],['查看完整构件的工程验收记录。','Review assembly-level engineering acceptance evidence.'],['登记日常检查及维护工单。','Record routine inspection and upkeep orders.']],fields:[['工程记录','Engineering record'],['复核状态','Review status']],action:['登记复核','Record review'],result:['已登记本项工程资料复核。','Engineering-record review has been recorded.']},
+ {title:['建筑防护构件比较','Architectural assembly comparison'],names:[['金属围界','Metal boundary'],['实体墙体','Solid wall'],['建筑门窗','Door and glazing']],messages:[['观察连续金属围界的建筑外观及材料特征，了解完整产品资料的重要性。','Explore the appearance and materials of a metal boundary assembly and the importance of product documentation.'],['观察实体墙体的建筑外观，评审材料耐久性、环境适用性和维护责任。','Explore solid wall appearance, material durability, environmental suitability and upkeep ownership.'],['了解门窗作为建筑产品的使用需求、无障碍及适用消防要求。','Explore doors and glazing as building products, including usability, accessibility and applicable fire requirements.']],fields:[['构件示例','Assembly example'],['学习复核','Learning review']],action:['记录学习结果','Record learning review'],result:['已登记本构件学习结果。','Assembly learning review recorded.']},
  {title:['公共照明服务面板','Public lighting service panel'],names:[['日间公共活动','Daytime activity'],['夜间公共活动','Evening activity'],['维护交接','Maintenance handover']],messages:[['观察日间公共活动的视觉需求。','Observe the visual needs of daytime shared activity.'],['观察夜间照明服务的概念状态。','Observe a conceptual evening lighting service state.'],['确认设施维护及功能检查记录。','Confirm upkeep and functional inspection records.']],fields:[['服务状态','Service state'],['功能记录','Function record']],action:['记录功能检查','Record service check'],result:['已登记功能检查及维护交接。','Service check and maintenance handover recorded.']}
  ];
  const s=specs[system];if(!s)return;
- const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';if(system===1)panel.className+=' access-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
+ const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';if(system===1)panel.className+=' access-console';if(system===2)panel.className+=' boundary-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
  panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立绘制的虚构业务图像。编号用于对应三维示意设备，图像不属于实际摄像机画面。','Four independently drawn fictional business images. IDs link to illustrative assemblies; these are not actual camera feeds.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
  const tabs=e('div');tabs.style.cssText=system===0?'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0;min-width:0':'display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
  const figure=e('div');figure.className='practice-figure';figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
@@ -131,7 +151,7 @@ function systemPractice(host,system,zh,options={}){
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
-  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':'0 0 320 160',system===1?visitorScene(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
+  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':system===2?'0 0 320 180':'0 0 320 160',system===1?visitorScene(current,zh):system===2?boundaryExhibit(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
   figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':system===1?'340':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   if(system===0){figure.dataset.channel=String(current);const title=e('div','CAM 0'+(current+1)+' / '+tr(...s.names[current]));title.style.cssText='padding:9px 12px;font-weight:650;color:#e5eaea;border-top:1px solid #46555b;font-size:13px';figure.append(title)}
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
@@ -202,6 +222,21 @@ function addAccessReview(host,step,zh){
  panel.append(dl);const ref=el('a',zh?'NPSA 自动出入口控制系统用户指南 EIS0002':'NPSA User Guide on Automatic Access Control Systems EIS0002');ref.href='https://www.npsa.gov.uk/system/files/documents/eis0002-user-guide-on-automatic-access-control-systems.pdf';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
 }
 
+const boundaryReviewNotes=[
+ ['保护对象与建筑需求','Asset and building requirements','从资产用途、人员活动、设施管理和建筑环境确定需采购及维护的构件类别。','Define assembly categories from asset use, ordinary activity, facility management and the built environment.','经批准的保护需求、建筑使用要求及资产责任清单。','Approved requirements, building-use requirements and asset ownership register.'],
+ ['完整产品与材料适用性','Complete products and material suitability','评审产品文件、材料耐久性、当地环境、适用建筑要求及制造商声明。','Review product documents, material durability, local conditions, applicable building requirements and manufacturer declarations.','适用的产品证据、采购规格及交付资料。','Applicable product evidence, procurement specification and handover documents.'],
+ ['建筑接口与正常使用','Building interfaces and ordinary use','协调建筑用途、门窗使用、无障碍、消防及设施维护要求。','Coordinate building use, door and glazing usability, accessibility, fire requirements and facility upkeep.','建筑专业评审、使用验收及维护责任记录。','Building discipline review, usability acceptance and upkeep ownership records.'],
+ ['交付、维护与变更','Handover, upkeep and change','按批准的需求开展交付核查，建立资产记录、例行维护和变更管理责任。','Review handover against approved requirements and establish ownership for inventory, maintenance and change management.','产品交付文件、验收记录及维护计划。','Product handover documents, acceptance records and maintenance plan.']
+];
+function addBoundaryReview(host,step,zh){
+ const d=boundaryReviewNotes[step];if(!d)return;const l=zh?0:1;
+ const el=(tag,txt)=>{const n=document.createElement(tag);n.textContent=txt;return n};
+ const panel=document.createElement('section');panel.className='boundary-engineering-review';panel.style.cssText='grid-column:1/-1;border-top:1px solid #52626a;padding:14px 0;min-width:0';
+ panel.append(el('h4',d[l]));const dl=document.createElement('dl');
+ for(const [k,v] of [[zh?'设计评审':'Design review',d[2+l]],[zh?'验收依据':'Acceptance evidence',d[4+l]]])dl.append(el('dt',k),el('dd',v));
+ panel.append(dl);const ref=el('a',zh?'NPSA：保护资产参考入口':'NPSA: Protecting your assets');ref.href='https://www.npsa.gov.uk/threat-risk/protecting-your-assets';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
+}
+
 export function renderSystemStudy(host,system,step,lang,icon,options={}){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
@@ -211,5 +246,5 @@ export function renderSystemStudy(host,system,step,lang,icon,options={}){
  const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
- const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);if(system===1)addAccessReview(host,step,zh);systemPractice(host,system,zh,options);
+ const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);if(system===1)addAccessReview(host,step,zh);if(system===2)addBoundaryReview(host,step,zh);systemPractice(host,system,zh,options);
 }
