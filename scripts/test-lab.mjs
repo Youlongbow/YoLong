@@ -37,8 +37,21 @@ try {
   await page.locator('#overview-hotspots button').first().waitFor({timeout:30000});
   assert(await page.locator('#lab-overview').isVisible());
   assert(await page.locator('#lab-studio').isHidden());
-  assert.equal(await page.locator('#overview-hotspots button').count(),16);
+  assert.equal(await page.locator('#overview-hotspots button').count(),1);
+  const quick=page.locator('#overview-quick-components button');
+  assert.equal(await quick.count(),4);
+  assert(await page.locator('#overview-advanced').evaluate(n=>!n.open));
+  for(let k=0;k<4;k++){
+   await quick.nth(k).click();
+   assert.equal(await quick.nth(k).getAttribute('aria-pressed'),'true');
+   assert(await page.locator('#overview-detail .quick-purpose').innerText());
+   assert(await page.locator('#overview-detail .quick-model-link').first().isVisible());
+   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===1);
+  }
+  await quick.first().click();
   const viewControls=page.locator('#overview-views button');
+  await viewControls.nth(2).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
   await viewControls.nth(0).click();
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===0);
   const campusImage=()=>page.evaluate(()=>{const gl=document.querySelector('#overview-gl');return(getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas')).toDataURL()});
@@ -62,8 +75,9 @@ try {
   await viewControls.nth(3).click();
   assert(await page.locator('#overview-hotspots button').evaluateAll(nodes=>nodes.every(n=>Number.isFinite(parseFloat(n.style.left))&&Number.isFinite(parseFloat(n.style.top)))));
 
+  await page.locator('#overview-advanced > summary').click();
   assert.equal(await page.locator('#overview-layers button').count(),6);
-  await page.locator('details').filter({has:page.locator('#overview-functions')}).locator('summary').click();
+  await page.locator('#overview-advanced .overview-filter details').first().locator('summary').click();
   assert.equal(await page.locator('#overview-study-tabs button').count(),4);
   const studyScenes=new Set();
   for(let i=0;i<4;i++){
@@ -222,6 +236,7 @@ try {
   assert(await page.locator('#overview-detail h3').innerText());
   assert.equal(await page.locator('#overview-list button').nth(2).getAttribute('aria-pressed'),'true');
   await page.locator('#overview-list button').first().click();
+  await page.locator('#overview-detail .quick-disclosure > summary').click();
   await page.locator('#overview-detail .overview-links button').first().click();
   assert(await page.locator('#lab-library-panel').isVisible());
   await page.locator('#lab-back-scene').click();
@@ -248,6 +263,8 @@ try {
   const sc=page.locator('#studio-canvas');
   await page.locator('#studio-review-details > summary').click();
   await page.locator('#studio-roles-details > summary').click();
+  await page.locator('#studio-explore-advanced > summary').click();
+  await page.locator('#studio-operating-advanced > summary').click();
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#studio-engine')?.textContent.includes('WebGL 2'),{},{timeout:30000});
   const gpu=await page.locator('#studio-engine').innerText();
   console.log('STUDIO RENDERER',lang,gpu);
@@ -271,6 +288,7 @@ try {
     assert.equal(await production.getAttribute('data-industry'),String(s));
     assert.equal(await production.locator('svg').getAttribute('viewBox'),'0 0 320 130');
     assert.equal(await production.locator('.industry-production-tags span').count(),3);
+    await page.locator('#studio-case-advanced > summary').click();
     const exercise=page.locator('#studio-zone-detail .industry-exercise');
     assert.equal(await exercise.getAttribute('data-case-id'),String(s*3+i));
     assert.equal(await exercise.locator('button').count(),2);
