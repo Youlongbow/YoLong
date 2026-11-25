@@ -737,20 +737,29 @@ function initStudio(lang,library){
      B(0,.025,-.4,3.4,.025,6.4,'#424b50');B(0,.06,-.4,.045,.008,5.8,'#d9d0b3');
      B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');serviceRoom(-3.65,-1.8,2.65,1.65,1.12,'#b9c2bd','reception');building(-3.65,.85,2.5,1.1,.82);ordinaryCanopy(-3.65,1.67,2.45,.75,.87);
      B(3.65,.02,-.4,3.35,.04,5.1,'#8c9999');building(3.6,-1.5,2.5,1.9,1.05);tank(4.8,1.05,.88,.8);
+     // Ordinary refinery maintenance staging: wheeled service carts and bundled spare materials.
+     for(const xx of [2.6,3.05]){B(xx,.04,1.72,.34,.06,.44,'#626f73');for(const zz of [1.55,1.89])cyl(xx,.01,zz,.11,.055,.11,'#343e42');B(xx,.10,1.72,.29,.24,.39,'#a9aaa0');B(xx,.35,1.72,.26,.055,.36,'#7a8b8d')}
      vehicle(-.82,1.5,'truck','#b8c4c4',Math.PI/2);vehicle(.82,-.5,'pickup','#c0c6c3',Math.PI/2);person(-2.6,.4);person(2.6,1.05);
     }else if(scene===1){
      B(0,.022,-.25,4.8,.035,6.5,'#a59a85');B(-4,.025,-.8,2.9,.04,4.8,'#b4a48a');serviceRoom(-4,-1.7,2.6,1.5,.85,'#b4a48e','logistics');building(3.8,-1.7,2.75,1.45,.9,'#b8ac94','pitch');
      B(3.65,.026,.8,3.45,.025,2.15,'#918777');shed(3.65,.8,2.85,1.35,.98,'#8e9790');for(let i=0;i<4;i++)B(2.7+i*.59,.035,.85,.43,.29,.50,'#ad9d7c','rounded');
+     // Ordinary freight handling vignette: representative surface-mounted vehicle weighing platform.
+     B(-1.12,.028,.75,.96,.032,2.12,'#6c7778');for(const zz of [-.26,1.76])B(-1.12,.037,zz,.96,.012,.08,'#9da7a2');for(let j=0;j<6;j++)B(-1.12,.06,-.12+j*.34,.90,.008,.018,'#a3aaa2');
      vehicle(-1.12,.75,'truck','#c2a05c',Math.PI/2);vehicle(1.12,-1.2,'truck','#c3aa75',Math.PI/2);vehicle(-3.9,1.25,'pickup','#c6c6b6');person(-2.8,.6);person(3.0,.4);
     }else if(scene===2){
      B(.1,.022,-.4,2.45,.025,6.2,'#737d7b');B(-3.4,.025,-.5,3.9,.03,4.8,'#a4a999');
      serviceRoom(-3.6,-1.4,2.4,1.6,.81,'#c3c7b8','service');building(-3.5,.95,1.8,1.15,.72,'#b1b9b2');platform(-3.5,1.73,1.8,.45,'#abb3a5');
      for(let i=0;i<2;i++)for(let j=0;j<2;j++)panel(2.4+j*1.5,-1.6+i*1.5);
+     // PV maintenance spare-parts staging: packaging, pallets and module transport rack.
+     for(const xx of [-4.1,-3.45]){B(xx,.05,2.13,.50,.045,.34,'#9d8969');B(xx,.095,2.13,.44,.24,.30,'#b9aa8b');for(const off of [-.13,.13])B(xx+off,.10,2.13,.02,.24,.31,'#7a817b')}
      vehicle(.1,.65,'pickup','#d2d7d3',Math.PI/2);person(-2.4,.55,'#9fbaae');
     }else{
      B(0,.025,-.4,3.25,.025,6.3,'#424b50');B(0,.057,-.4,.045,.009,5.8,'#d1c9b1');
      B(-3.6,.025,-.4,3.75,.035,5.1,'#a1aaa5');serviceRoom(-3.65,-1.55,3.1,2.1,1.45,'#c1c8c6','shift');ordinaryCanopy(-3.65,-.07,2.55,.85,1.08);B(-3.6,.03,1.1,2.8,.025,.9,'#7d8c8d');
      B(3.55,.025,-.4,3.45,.03,5.0,'#919e9d');building(3.65,-1.65,2.75,1.85,1.25,'#aebbbb','pitch');B(3.55,.03,1.0,2.6,.35,.62,'#87989a','rounded');
+     // Shift handover assembly: ordinary staff seating and a timetable board.
+     for(const xx of [-4.55,-3.55]){B(xx,.21,1.65,.74,.09,.26,'#849896');B(xx,.30,1.52,.74,.26,.055,'#849896');for(const dx of [-.27,.27])B(xx+dx,.02,1.65,.065,.19,.20,'#6b787b')}
+     B(-4.96,.04,.85,.055,.88,.055,'#839295');B(-4.96,.64,.85,.65,.30,.06,'#4d6b73');for(let j=0;j<3;j++)B(-4.96,.69+j*.075,.89,.49,.015,.015,'#c0c9c1');
      vehicle(-.8,1.1,'pickup','#d4d5cc',Math.PI/2);vehicle(.8,-.9,'truck','#b0bdbd',Math.PI/2);person(-2.45,.7);person(2.75,.7);person(-3.35,1.65);
     }
    }else{
