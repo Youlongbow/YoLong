@@ -60,6 +60,16 @@ try {
   assert(await page.locator('#lab-library-panel').isVisible());
   await page.locator('#lab-back-scene').click();
   assert(await page.locator('#lab-overview').isVisible());
+  assert.equal(await page.locator('#overview-events button').count(),3);
+  for(let e=0;e<3;e++){
+   await page.locator('#overview-events button').nth(e).click();
+   assert.equal(await page.locator('#overview-event-steps button').count(),4);
+   for(let p=0;p<4;p++){
+    await page.locator('#overview-event-steps button').nth(p).click();
+    await page.locator('#overview-event-detail button').click();
+    assert(await page.locator('#overview-detail h3').innerText());
+   }
+  }
   if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/integrated-campus.png'});
   await page.locator('#overview-next button').nth(1).click();
   assert.equal(await page.locator('#studio-scenes button').nth(1).getAttribute('aria-pressed'),'true');
@@ -90,6 +100,15 @@ try {
    assert.equal(await page.locator('#studio-zones button').count(),3);
    for(let i=0;i<3;i++){
     await page.locator('#studio-zones button').nth(i).click();
+    assert.equal(await page.locator('#studio-system-interfaces .case-system-card').count(),3);
+    if(i===1||i===2){
+     const cutaway=page.locator('#studio-views button').last();
+     const previous=await cutaway.getAttribute('aria-pressed');
+     await cutaway.click();
+     assert.notEqual(await cutaway.getAttribute('aria-pressed'),previous);
+     await cutaway.click();
+     assert.equal(await cutaway.getAttribute('aria-pressed'),previous);
+    }
     assert.equal(await page.locator('#studio-config button').count(),3);
     const configurations=new Set();
     for(let v=0;v<3;v++){
