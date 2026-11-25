@@ -359,6 +359,7 @@ try {
   }
   assert.equal(titles.size,85);assert.equal(keys.size,85);
   const revisedAssemblies=[
+   ['安防照明','Security lighting',4],
    ['实体防护墙','Solid boundary wall',3],
    ['安全玻璃','Security glazing',2],
    ['安全储物柜','Secure storage cabinet',4],
@@ -390,7 +391,7 @@ try {
    }
    if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/assembly-'+en.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.png'});
   }
-  for(const [zh,en] of [['应急照明灯','Emergency luminaire'],['访客凭证打印机','Visitor badge printer'],['设备状态显示屏','Equipment status display']]){
+  for(const [zh,en] of [['安防照明','Security lighting'],['应急照明灯','Emergency luminaire'],['访客凭证打印机','Visitor badge printer'],['设备状态显示屏','Equipment status display']]){
    await page.locator('#lab-search').fill(en);
    const matches=page.locator('#lab-modules button');assert.equal(await matches.count(),1,en);
    await matches.first().click();
