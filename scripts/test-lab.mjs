@@ -372,7 +372,15 @@ try {
   assert.equal(await models.count(),1);
   await models.first().click();
   const modelURL=page.url();const modelKey=new URL(modelURL).searchParams.get('model');
-  const modelImage=()=>page.evaluate(()=>{const gpu=document.querySelector('#lab-gl');return(getComputedStyle(gpu).visibility==='visible'?gpu:document.querySelector('#lab-canvas')).toDataURL()});const before=await modelImage();
+  const modelImage=()=>page.evaluate(()=>{const gpu=document.querySelector('#lab-gl');return(getComputedStyle(gpu).visibility==='visible'?gpu:document.querySelector('#lab-canvas')).toDataURL()});
+  const productView=page.locator('[data-act=product]');
+  assert(await productView.isVisible());
+  const fullCamera=await modelImage();await productView.click();
+  assert.equal(await productView.getAttribute('aria-pressed'),'true');
+  assert.notEqual(await modelImage(),fullCamera);
+  if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/camera-product-close-up.png'});
+  await productView.click();assert.equal(await productView.getAttribute('aria-pressed'),'false');
+  const before=await modelImage();
   await page.locator('[data-act=right]').click();assert.notEqual(await modelImage(),before);
   await page.locator('[data-act=night]').click();assert.equal(await page.locator('[data-act=night]').getAttribute('aria-pressed'),'true');
   await page.locator('#lab-parts button').first().click();assert.equal(await page.locator('#lab-parts button').first().getAttribute('aria-pressed'),'true');
