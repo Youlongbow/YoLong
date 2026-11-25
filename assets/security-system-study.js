@@ -72,16 +72,44 @@ function stageScene(system,step,zh){
 }
 
 // Public workplace visitor-service illustrations. Not a floor plan or a live access-control system.
+// Isometric public reception exhibit: ordinary furniture, people and service functions.
 function visitorScene(i,zh){
- const label=(x,y,a,b)=>'<text x="'+x+'" y="'+y+'" fill="#e4ebeb" text-anchor="middle" font-size="10">'+(zh?a:b)+'</text>';
- const person=(x,y,k)=>'<g transform="translate('+x+' '+y+')"><circle cy="-14" r="7" fill="#c9b29a"/><path d="M-9-5H9L13 21H-13Z" fill="'+k+'"/><path d="M-7 21v22h5V21m4 0v22h5V21" fill="#70828a"/></g>';
- const desk='<rect x="105" y="63" width="112" height="53" rx="4" fill="#9c9382"/><rect x="101" y="60" width="120" height="8" rx="2" fill="#c2b6a0"/>';
- const header='<rect width="320" height="160" fill="#253940"/><path d="M0 116H320V160H0Z" fill="#34484e"/>';
- const v=[
- header+'<rect x="18" y="13" width="104" height="37" fill="#66818b"/><path d="M70 13V50" stroke="#9cabad"/>'+person(162,40,'#6c9199')+desk+person(67,75,'#a39480')+'<rect x="176" y="40" width="32" height="21" rx="2" fill="#34474e"/>'+label(162,140,'接待与沟通','Reception and communication'),
- header+'<rect x="26" y="28" width="111" height="80" rx="5" fill="#c2cecc"/><rect x="36" y="38" width="29" height="35" rx="3" fill="#68828a"/><circle cx="50" cy="49" r="7" fill="#a6b8b8"/><path d="M40 69Q50 52 60 69" fill="#a6b8b8"/><path d="M75 44h49m-49 12h38m-38 12h43" stroke="#65787f" stroke-width="3"/><rect x="183" y="28" width="109" height="80" rx="5" fill="#40565e" stroke="#849ba0"/><path d="M195 49h84m-84 17h84m-84 17h60" stroke="#91a7aa" stroke-width="2"/>'+label(81,132,'虚构凭证','Sample credential')+label(238,132,'管理记录','Service record'),
- header+person(64,63,'#829c93')+'<rect x="117" y="37" width="87" height="75" rx="3" fill="#778c93"/><rect x="128" y="48" width="65" height="64" fill="#435b65"/><path d="M160 48V112" stroke="#a8b8b9" stroke-width="2"/>'+person(255,65,'#b6a389')+label(160,139,'正常通行与服务交接','Ordinary use and handover')
- ];return v[i]||'';
+ const p=(x,y,z=0)=>[160+(x-y)*.83,116+(x+y)*.40-z];
+ const polygon=(pts,fill,stroke='none')=>'<polygon points="'+pts.map(v=>v.map(n=>n.toFixed(1)).join(',')).join(' ')+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width=".55"/>';
+ const cuboid=(x,y,w,d,h,color,z=0,selected=false)=>{
+  const a=p(x,y,z),b=p(x+w,y,z),c=p(x+w,y+d,z),e=p(x,y+d,z);
+  const A=p(x,y,z+h),B=p(x+w,y,z+h),C=p(x+w,y+d,z+h),E=p(x,y+d,z+h);
+  const shades=color.map(k=>selected?k.replace(/^#.*$/, '#c6a77a'):k);
+  return polygon([e,c,C,E],shades[1])+polygon([b,c,C,B],shades[2])+polygon([A,B,C,E],shades[0],selected?'#f3d9ab':'#76858a');
+ };
+ const person=(x,y,coat,seated=false)=>{
+  const [px,py]=p(x,y);
+  return '<g transform="translate('+px+' '+py+')"><ellipse cy="1" rx="9" ry="3" fill="#26343b" opacity=".4"/><path d="M-5 -18L-6 -1H-2L0-15L3-1H7L5-18Z" fill="#46575d"/><path d="M-8 -34Q0 -39 8 -34L10 -17H-10Z" fill="'+coat+'"/><circle cy="-43" r="7" fill="#c7ac95"/>'+(seated?'<path d="M-10 -3A12 12 0 1 1 12 -3" fill="none" stroke="#71868c" stroke-width="2"/>':'')+'</g>';
+ };
+ const tile=(x,y,w,d,fill)=>polygon([p(x,y),p(x+w,y),p(x+w,y+d),p(x,y+d)],fill);
+ let v='<rect width="320" height="220" fill="#202e35"/>';
+ v+=tile(-88,-83,176,166,'#a6aaa1');
+ // Decorative tile joints provide depth without implying a building plan.
+ for(let x=-88;x<=88;x+=22){const [ax,ay]=p(x,-83),[bx,by]=p(x,83);v+='<path d="M'+ax+' '+ay+'L'+bx+' '+by+'" stroke="#818e88" stroke-width=".5"/>'}
+ for(let y=-83;y<=83;y+=22){const [ax,ay]=p(-88,y),[bx,by]=p(88,y);v+='<path d="M'+ax+' '+ay+'L'+bx+' '+by+'" stroke="#818e88" stroke-width=".5"/>'}
+ // Furniture exhibit: a normal-height worktop and a lower public-service surface.
+ v+=person(-34,-51,'#537785');
+ v+=cuboid(-51,-38,75,25,38,['#d2c9b9','#968879','#aa9d89'],0,i===0);
+ v+=cuboid(-51,-40,77,29,4,['#e4ddcf','#b0a69a','#c3b9a8'],38,i===0);
+ v+=cuboid(24,-38,35,25,27,['#c8bcaa','#8e8274','#ac9e8d'],0,i===2);
+ v+=cuboid(24,-40,37,29,4,['#e4ddcf','#aea79a','#beb5a7'],27,i===2);
+ v+=cuboid(-23,-35,24,5,17,['#7f969e','#3a4c53','#51656d'],42,i===1);
+ v+=cuboid(-10,-29,15,9,2,['#74868b','#485b62','#52646b'],42);
+ v+=cuboid(-67,31,34,18,13,['#77908b','#536d69','#64807a']);
+ v+=cuboid(-67,30,34,4,15,['#8ca19a','#536d69','#64807a'],13);
+ v+=cuboid(-67,52,34,18,13,['#77908b','#536d69','#64807a']);
+ v+=cuboid(-67,51,34,4,15,['#8ca19a','#536d69','#64807a'],13);
+ v+=person(-6,6,'#a29582');
+ v+=person(43,7,'#7a968e',true);
+ v+=person(-41,54,'#9ca4a1');
+ const captions=zh?['接待沟通与服务需求','凭证及信息管理界面','无障碍使用与服务交接']:['Reception and service needs','Credential and information service','Accessible service and handover'];
+ v+='<rect x="8" y="188" width="304" height="24" rx="3" fill="#32444c"/><text x="160" y="204" text-anchor="middle" fill="#e4ebeb" font-size="10" font-family="system-ui,sans-serif">'+captions[i]+'</text>';
+ return v;
 }
 // Independent practice consoles; all records and illustrations are fictional.
 function systemPractice(host,system,zh,options={}){
@@ -102,8 +130,8 @@ function systemPractice(host,system,zh,options={}){
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
-  const view=system===0?['0 0 160 100',videoSample(current)]:['0 0 320 160',system===1?visitorScene(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
-  figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
+  const view=system===0?['0 0 160 100',videoSample(current)]:[system===1?'0 0 320 220':'0 0 320 160',system===1?visitorScene(current,zh):stageScene(system,system===3?(current===2?3:current):current,zh)];
+  figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':system===1?'340':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   if(system===0){figure.dataset.channel=String(current);const title=e('div','CAM 0'+(current+1)+' / '+tr(...s.names[current]));title.style.cssText='padding:9px 12px;font-weight:650;color:#e5eaea;border-top:1px solid #46555b;font-size:13px';figure.append(title)}
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
   state.textContent=tr(...s.fields[1])+'：'+(recorded.has(current)?tr(...s.result):tr('待登记','Not recorded'));
@@ -124,8 +152,8 @@ function systemPractice(host,system,zh,options={}){
   const main=e('div');main.style.minWidth='0';const mainTitle=e('h5',tr('当前选中图像','Selected image'));mainTitle.style.cssText='margin:0 0 8px;font-size:13px';main.append(mainTitle,figure);
   wall.append(grid,main);panel.append(wall,detail,state,controls,progress);
  }else if(system===1){
-  const journey=e('div');journey.className='visitor-journey';journey.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px;align-items:start';
-  tabs.style.cssText='display:grid;grid-template-columns:1fr;gap:7px';const copy=e('div');copy.append(detail,state,controls,progress);journey.append(tabs,figure,copy);panel.append(journey);
+  const journey=e('div');journey.className='visitor-journey';journey.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;align-items:start';
+  tabs.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:7px;margin:0 0 10px';tabs.style.gridColumn='1/-1';const copy=e('div');copy.append(detail,state,controls,progress);journey.append(tabs,figure,copy);panel.append(journey);
  }else panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
 }
 
