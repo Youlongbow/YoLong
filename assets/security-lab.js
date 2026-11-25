@@ -492,7 +492,7 @@ function initStudio(lang,library){
   return [j%2?3.8:-3.8,1.1,j%2?-1.8:1.55];
  }
  let lastSceneGeometry=[];
- const keyListBoundaryIndex=()=>keys(zone).findIndex(k=>/^(fence|welded-mesh-fence)$/.test(k));
+ const keyListBoundaryIndex=()=>keys(zone).indexOf('fence');
  function renderHotspots(project,w,h){
   const host=$('#studio-hotspots');if(!host)return;host.replaceChildren();
   if(!showDevices||!showFurniture)return;
@@ -503,7 +503,18 @@ function initStudio(lang,library){
   });
  }
 
- const state=()=>scenes[scene].zones[zone];const keys=i=>scenes[scene].zones[i].profiles[config[i]].devices;
+ const state=()=>scenes[scene].zones[zone];
+ const profileKeys=i=>scenes[scene].zones[i].profiles[config[i]].devices;
+ // Stable catalogue identity across operating topics. Actual scene representation and discussion topics remain separate.
+ const keys=i=>[...new Set([
+  ...scenes[scene].zones[i].profiles.flatMap(p=>p.devices),
+  'fence',
+  ...(i===0||i===1?['safety-and-security-signage']:[]),
+  ...(i===0||i===2?['security-lighting']:[]),
+  ...(i===1?['visitor-kiosk','parking-barrier','visitor-service-counter','incident-management-workstation','visitor-badge-printer','secure-storage-cabinet']:[]),
+  ...(i===2?['visitor-service-counter','incident-management-workstation','secure-storage-cabinet','equipment-enclosure','mesh-tool-cage']:[]),
+  ...(i===2&&scene!==2?['emergency-assistance-station']:[])
+ ])];
  const make=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
  function btn(host,text,action,pressed){const b=make('button',text);b.type='button';if(pressed!==undefined)b.setAttribute('aria-pressed',String(pressed));b.onclick=action;host.append(b);return b}
 
@@ -524,13 +535,31 @@ function initStudio(lang,library){
   const systemHost=$('#studio-system-interfaces');systemHost.replaceChildren();caseInterfaces[scene][zone].forEach((entry,i)=>{const card=make('article',undefined,'case-system-card');card.append(make('div','0'+(i+1),'over'),make('h4',entry[z?0:1]),make('p',entry[z?2:3]));systemHost.append(card)});
   const zoneTypes=$('#studio-access-zones');zoneTypes.replaceChildren();zoneTypes.append(make('p',z?'受限区域的三类术语；与当前行业的设施部位无固定对应关系。':'Three restricted-area categories; these do not correspond to fixed facility locations.'));for(const [name,desc] of conceptual.areas){const card=make('div');card.append(make('strong',t(name)),make('p',t(desc)));zoneTypes.append(card)}
   host=$('#studio-config');host.replaceChildren();q.profiles.forEach((profile,i)=>btn(host,t(profile.n),()=>{config[zone]=i;selected=-1;renderControls();draw()},config[zone]===i));
-  host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'系统组件与工程接口':'System components and engineering interfaces'));
-  const visualGeometry=geometry();keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const visible=visualGeometry.some(o=>o.g===zone&&o.device===j);const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span','0'+(j+1)+' / '+t(library.models[i].n)),make('div',t(library.models[i].cat)+' · '+t(devices[k]||library.models[i].d),'studio-component-role'),make('div',visible?(z?'场景中可见构件':'Visible scene assembly'):(z?'工程接口 / 设备库详解':'Engineering interface / equipment details'),'studio-device-context'));row.append(txt);if(visible)btn(row,z?'高亮':'Highlight',()=>{selected=j;renderControls();draw()},selected===j);else{const link=btn(row,z?'接口说明':'Interface notes',()=>{selected=j;renderControls();draw()},selected===j);link.title=t(library.models[i].p);if(selected===j)txt.append(make('p',t(library.models[i].p)))}btn(row,z?'设备详解':'Equipment details',()=>library.openModel(i,t(scenes[scene].n)+' / '+t(q.n)));host.append(row)});
+  host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'场景构件与当前议题':'Scene assemblies and current topic'));
+  const visualGeometry=geometry(),allKeys=keys(zone),topicKeys=new Set(profileKeys(zone));
+  const visibleKeys=allKeys.filter((k,j)=>visualGeometry.some(o=>o.g===zone&&o.device===j));
+  const sceneItems=allKeys.filter(k=>visibleKeys.includes(k)),interfaceItems=allKeys.filter(k=>topicKeys.has(k)&&!visibleKeys.includes(k));
+  const renderItem=(k,visible)=>{const j=allKeys.indexOf(k),i=find(k);if(i<0)return;const row=make('div',undefined,'studio-device'),txt=make('span');
+   row.dataset.model=k;row.dataset.sceneAssembly=String(visible);
+   txt.append(make('span',String(j+1).padStart(2,'0')+' / '+t(library.models[i].n)),make('div',t(library.models[i].cat)+' · '+t(devices[k]||library.models[i].d),'studio-component-role'),make('div',visible?(z?'场景中可见构件':'Visible scene assembly'):(z?'工程接口 / 设备库详解':'Engineering interface / equipment details'),'studio-device-context'));
+   if(visible&&topicKeys.has(k))txt.append(make('div',z?'当前议题相关':'Related to current topic','studio-component-role'));
+   row.append(txt);
+   if(visible)btn(row,z?'高亮':'Highlight',()=>{showDevices=true;selected=j;renderControls();draw()},selected===j);
+   else{const link=btn(row,z?'接口说明':'Interface notes',()=>{selected=j;renderControls();draw()},selected===j);link.title=t(library.models[i].p);if(selected===j)txt.append(make('p',t(library.models[i].p)))}
+   btn(row,z?'设备详解':'Equipment details',()=>library.openModel(i,t(scenes[scene].n)+' / '+t(q.n)));host.append(row);
+  };
+  host.append(make('h4',z?'三维场景中的构件':'Assemblies shown in 3D'),make('p',z?'这组构件随建筑视图变化，切换运营议题时保留。':'These assemblies follow the architectural view and remain across operating topics.'));
+  sceneItems.forEach(k=>renderItem(k,true));
+  if(!sceneItems.length)host.append(make('p',z?'当前视图没有可选构件。':'No selectable assemblies in this view.'));
+  host.append(make('h4',z?'当前议题的其他工程接口':'Other engineering interfaces for this topic'));
+  interfaceItems.forEach(k=>renderItem(k,false));
+  if(!interfaceItems.length)host.append(make('p',z?'本议题的示例均已在场景中展示。':'All examples for this topic are represented in the scene.'));
+
   host=$('#studio-roles');host.replaceChildren();host.className='studio-roles';host.append(make('label',z?'人员角色与授权示例':'Role and authorization example'));const select=make('select');select.setAttribute('aria-label',z?'人员角色':'Person role');[P('访客','Visitor'),P('普通员工','General employee'),P('指定业务责任人','Designated business owner')].forEach((a,i)=>{const opt=make('option',t(a));opt.value=i;select.append(opt)});select.value=String(role);select.onchange=()=>{role=Number(select.value);renderControls()};host.append(select,make('p',q.roles.includes(role)?(z?'该角色可按本区域规定办理正常业务。':'This role can conduct ordinary business under the zone policy.'):(z?'由区域责任人按业务需求另行办理授权。':'Separate authorization is arranged by the zone owner according to business need.')));
-  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'场景底色':'Scene tint',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'知识热点与示例组件':'Hotspots & sample components',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'工业环境':'Industrial context',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);if(zone===1||zone===2)btn(host,z?'建筑剖视':'Building cutaway',()=>{workspaceCutaway=!workspaceCutaway;renderControls();draw()},workspaceCutaway);
+  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'场景底色':'Scene tint',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'知识热点':'Knowledge hotspots',()=>{showDevices=!showDevices;if(!showDevices)selected=-1;renderControls();draw()},showDevices);btn(host,z?'工业环境':'Industrial context',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);if(zone===1||zone===2)btn(host,z?'建筑剖视':'Building cutaway',()=>{workspaceCutaway=!workspaceCutaway;renderControls();draw()},workspaceCutaway);
   const comparison=$('#studio-industry-compare');comparison.replaceChildren();
   scenes.forEach((industry,i)=>{const d=caseFocus[i][zone],card=make('article');card.append(make('div',t(industry.n),'over'),make('h3',z?d[0]:d[1]),make('p',z?d[4]:d[5]));btn(card,z?'查看案例':'Explore case',()=>{scene=i;selected=-1;config=[0,0,0];renderControls();draw()},scene===i);comparison.append(card)});
-  host=$('#studio-comparison');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>{const card=make('article');const label=make('div','AREA 0'+(i+1),'over');card.append(label,make('h3',t(q.n)),make('p',t(q.policy)),make('p',t(q.profiles[config[i]].n)+' · '+t(q.profiles[config[i]].rule)),make('p',(z?'配置：':'Configuration: ')+keys(i).map(k=>{const j=find(k);return j>=0?t(library.models[j].n):k}).join(z?'、':', ')));btn(card,z?'查看设施部位':'Explore area',()=>{zone=i;selected=-1;renderControls();draw()},zone===i);host.append(card)});
+  host=$('#studio-comparison');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>{const card=make('article');const label=make('div','AREA 0'+(i+1),'over');card.append(label,make('h3',t(q.n)),make('p',t(q.policy)),make('p',t(q.profiles[config[i]].n)+' · '+t(q.profiles[config[i]].rule)),make('p',(z?'配置：':'Configuration: ')+profileKeys(i).map(k=>{const j=find(k);return j>=0?t(library.models[j].n):k}).join(z?'、':', ')));btn(card,z?'查看设施部位':'Explore area',()=>{zone=i;selected=-1;renderControls();draw()},zone===i);host.append(card)});
   renderReview();$('#studio-legend').textContent=(z?'工业概念场景 · 空间知识热点':'Industrial concept scene · contextual learning hotspots')+' / '+t(scenes[scene].n);
  }
  const ctx=C.getContext('2d');const glCanvas=$('#studio-gl');let gpu=null;try{if(glCanvas)gpu=createIndustrialRenderer(glCanvas)}catch(e){console.warn('WebGL unavailable',e)}if(!ctx)return;
@@ -587,7 +616,7 @@ function initStudio(lang,library){
   // No security hardware placement, coverage, or construction performance is inferred.
   const serviceRoom=(x,z,w,d,h,col,kind)=>{
    if(!workspaceCutaway){building(x,z,w,d,h,col,'pitch');return}
-   const g=zone,local=keys(zone),item=(k,xx,yy,zz,ww,hh,dd,color,shape)=>put([xx,yy,zz,ww,hh,dd,color,shape],g,showDevices?local.indexOf(k):-1);
+   const g=zone,local=keys(zone),item=(k,xx,yy,zz,ww,hh,dd,color,shape)=>put([xx,yy,zz,ww,hh,dd,color,shape],g,local.indexOf(k));
    B(x,.015,z,w,.07,d,'#b8b9ad');B(x,.085,z-d/2,w,h,.09,col);B(x-w/2,.085,z,.09,h,d,col);B(x+w/2,.085,z,.09,h,d,col);
    for(let j=0;j<Math.max(1,Math.floor(w/.65));j++){const xx=x-w/2+.32+j*.65;B(xx,.55,z-d/2+.055,.40,.30,.02,glass)}
    if(kind==='sleep'){
@@ -693,7 +722,7 @@ function initStudio(lang,library){
      // Independent O&M service-space teaching vignette: ordinary business and welfare furnishings.
      // The cutaway deliberately represents an illustrative building, not an as-built or protective layout.
      const local=keys(zone);
-     const item=(k,x,y,z,w,h,d,color,shape)=>put([x,y,z,w,h,d,color,shape],zone,showDevices?local.indexOf(k):-1);
+     const item=(k,x,y,z,w,h,d,color,shape)=>put([x,y,z,w,h,d,color,shape],zone,local.indexOf(k));
      B(-2.65,.025,-1.1,5.6,.075,2.9,'#b0b8ad');
      if(workspaceCutaway){
       B(-2.65,.10,-2.50,5.6,1.18,.13,'#c2c6bb');B(-5.40,.10,-1.1,.13,1.18,2.9,'#c2c6bb');B(.10,.10,-1.1,.13,1.18,2.9,'#c2c6bb');
@@ -731,7 +760,7 @@ function initStudio(lang,library){
   }
   if(showFurniture){
    const keyList=keys(zone);
-   const boundaryIndex=keyList.findIndex(k=>/^(fence|welded-mesh-fence)$/.test(k));
+   const boundaryIndex=keyList.indexOf('fence');
    const frame=(x1,z1,x2,z2,id,solid=false)=>{
     const L=Math.hypot(x2-x1,z2-z1),a=Math.atan2(z2-z1,x2-x1),cx=(x1+x2)/2,cz=(z1+z2)/2,col=scene===1?'#a7a49a':'#98a5a7';
     const add=(p,spin=0)=>put(p,zone,id,0,spin);
@@ -741,7 +770,7 @@ function initStudio(lang,library){
     const m=Math.ceil(L/.17);for(let i=0;i<=m;i++){const f=i/m;add([x1+(x2-x1)*f,.13,z1+(z2-z1)*f,.015,.50,.015,col])}
    };
    // A continuous property boundary is part of the fictional architectural model, regardless of the teaching configuration.
-   const id=showDevices?boundaryIndex:-1,solid=false;
+   const id=boundaryIndex,solid=false;
    if(scene===1&&zone===0){
     // A representative managed service-yard boundary, not the mine lease or a real perimeter plan.
     frame(2.9,-2.3,5.75,-2.3,id,solid);frame(2.9,-2.3,2.9,.35,id,solid);frame(5.75,-2.3,5.75,.35,id,solid);frame(2.9,.35,5.75,.35,id,solid);
@@ -755,7 +784,7 @@ function initStudio(lang,library){
      for(let j=0;j<7;j++)put([xx-.48+j*.16,.14,2.95,.015,.54,.022,'#a8b4b2'],zone,id);
     }
    }
-   if(showDevices){
+   {
     const fit=(k,x,y,z,target,spin=0)=>{
      const i=find(k);if(i<0)return;const model=library.models[i],j=keyList.indexOf(k);
      const max=Math.max(.1,...model.b.map(p=>Math.max(Math.abs(p[0])+p[3]/2,Math.abs(p[2])+p[5]/2,Math.abs(p[1])+p[4])));
@@ -794,7 +823,7 @@ function initStudio(lang,library){
   function polygon(q,color,stroke){if(!q.length)return;ctx.beginPath();q.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=.55;ctx.stroke()}}
   function shade(color,v){let n=parseInt(color.slice(1),16);return 'rgb('+[n>>16,(n>>8)&255,n&255].map(x=>Math.round(Math.min(255,x*v))).join(',')+')'}
   lastSceneGeometry=geometry();let gpuOk=false;
-  if(gpu){try{gpuOk=gpu.draw({solids:lastSceneGeometry,mesh:library.mesh,zone,selected,key:[scene,zone,...config,showColors,showDevices,showFurniture,selected,workspaceCutaway].join('|'),w,h,s,yaw,pitch,d})}catch(e){console.warn('WebGL render fallback',e);gpu=null}}
+  if(gpu){try{gpuOk=gpu.draw({solids:lastSceneGeometry,mesh:library.mesh,zone,selected:showDevices?selected:-1,key:[scene,zone,...config,showColors,showDevices,showFurniture,selected,workspaceCutaway].join('|'),w,h,s,yaw,pitch,d})}catch(e){console.warn('WebGL render fallback',e);gpu=null}}
   if(glCanvas)glCanvas.style.visibility=gpuOk?'visible':'hidden';
   $('#studio-engine').textContent=gpuOk?(z?'WebGL 2 · 实时光影与材质':'WebGL 2 · Real-time materials and shadows'):(z?'兼容模式 · 三维概念模型':'Compatibility mode · 3D concept model');
   if(gpuOk)ctx.clearRect(0,0,w,h);else{
@@ -913,7 +942,7 @@ function initOverview(lang,library){
  const points=[
  H('public-info',P('公共信息与导向','Public information'),0,[],[0,2],[-3.15,.84,3.75],P('帮助正常使用者识别服务入口、空间用途及行为规则。','Helps legitimate users identify services, space uses and conduct expectations.'),P('公共信息、接待人员与社区沟通','Public information, reception and community engagement'),'safety-and-security-signage'),
  H('external-services',P('外部服务接口','External service interface'),0,[2],[2],[5.5,.3,5.03],P('组织与社区、公共服务及应急服务的日常协调。','Organizes routine coordination with community, public services and emergency services.'),P('联络责任、信息更新与服务协议','Liaison ownership, information updates and service agreements'),null),
- H('boundary',P('完整周界系统','Complete perimeter system'),1,[1],[0,2],[-6.25,.77,.0],P('沿园区边界连续展示围栏、立柱、网片、门体及连接构件。观察围界和出入口如何共同定义场地边界；保护性能由项目需求及完整构件验证确定。','Follow the boundary around the campus to examine fence panels, posts, gates and fittings. The boundary and entrances define the site together; performance is determined by project requirements and assembly evidence.'),P('边界构件、标识及设施管理','Boundary assemblies, signage and facilities management'),'welded-mesh-fence'),
+ H('boundary',P('完整周界系统','Complete perimeter system'),1,[1],[0,2],[-6.25,.77,.0],P('沿园区边界连续展示围栏、立柱、竖向填充构件和门体。观察围界和出入口如何共同定义场地边界；保护性能由项目需求及完整构件验证确定。','Follow the boundary around the campus to examine vertical infill, posts and gates. The boundary and entrances define the site together; performance is determined by project requirements and assembly evidence.'),P('边界构件、标识及设施管理','Boundary assemblies, signage and facilities management'),'fence'),
  H('arrival',P('出入口与访客管理','Entrance and visitor management'),1,[0],[0,1,2],[1.76,.86,3.05],P('协调人员到访、公共服务、正常车辆活动及无障碍需求。','Coordinates arrivals, public services, ordinary vehicle activity and accessibility.'),P('访客登记、交通组织及接待程序','Visitor registration, circulation and reception'),'visitor-kiosk'),
  H('movement',P('场区道路与步行空间','Circulation and walkways'),2,[],[0,2],[.65,.12,.4],P('减少正常人车活动冲突，保持路线信息及公共服务可达。','Reduces conflicts in ordinary circulation and maintains access to services and information.'),P('道路、导向及交通管理','Roads, wayfinding and traffic management'),'protective-railing'),
  H('lighting',P('公共空间照明系统','Public space lighting system'),2,[],[1,2],[2.1,1.35,1.46],P('根据人员活动和可视性需求审查照明、眩光及维护。','Review lighting, glare and maintenance against activity and visibility needs.'),P('照明、环境条件与设施管理','Lighting, environmental conditions and facilities management'),'security-lighting'),
