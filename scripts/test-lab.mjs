@@ -79,6 +79,14 @@ try {
     assert(await page.locator('#overview-study-visual .study-record strong').innerText());
     const practice=page.locator('#overview-study-visual .system-practice');
     assert.equal(await practice.count(),1);
+    const review=page.locator('.video-engineering-review');
+    assert.equal(await review.count(),i===0?1:0);
+    if(i===0){
+     assert.equal(await review.locator('dt').count(),3);
+     assert.equal(await review.locator('dd').count(),3);
+     assert(await review.locator('dd').evaluateAll(nodes=>nodes.every(n=>n.textContent.trim().length>20)));
+     assert((await review.locator('a').getAttribute('href')).startsWith('https://www.npsa.gov.uk/'));
+    }
     if(j===0){
      const tabs=practice.locator('button');
      const channels=i===0?4:3;
