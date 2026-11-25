@@ -45,6 +45,12 @@ try {
    await quick.nth(k).click();
    assert.equal(await quick.nth(k).getAttribute('aria-pressed'),'true');
    assert(await page.locator('#overview-detail .quick-purpose').innerText());
+   const thumbnail=quick.nth(k).locator('svg');
+   const preview=page.locator('#overview-detail .quick-product-preview svg');
+   assert(await thumbnail.locator('polygon').count()>10);
+   assert.equal(await preview.innerHTML(),await thumbnail.innerHTML());
+   assert(await preview.locator('polygon').evaluateAll(nodes=>nodes.every(n=>n.getAttribute('points').split(/[ ,]+/).every(v=>Number.isFinite(Number(v))))));
+
    assert(await page.locator('#overview-detail .quick-model-link').first().isVisible());
    await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===1);
   }
