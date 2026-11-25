@@ -6,6 +6,7 @@ on:
       - 'assets/security-lab.js'
       - 'assets/security-lab-quizzes.js'
       - 'assets/security-system-study.js'
+      - 'assets/security-industry-exercises.js'
       - 'assets/app.js'
       - 'assets/share.js'
       - 'scripts/build.mjs'
@@ -28,6 +29,7 @@ jobs:
           node --input-type=module --check < assets/security-lab.js
           node --input-type=module --check < assets/security-lab-quizzes.js
           node --input-type=module --check < assets/security-system-study.js
+          node --input-type=module --check < assets/security-industry-exercises.js
       - run: node scripts/build.mjs
       - run: npm install --no-save playwright@1.56.1
       - run: npx playwright install --with-deps chromium
