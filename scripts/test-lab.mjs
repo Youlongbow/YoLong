@@ -178,6 +178,33 @@ try {
    await page.locator('[data-act=explode]').click();
   }
   assert.equal(titles.size,85);assert.equal(keys.size,85);
+  const revisedAssemblies=[
+   ['安全储物柜','Secure storage cabinet',4],
+   ['门磁状态传感器','Door contact',3],
+   ['访客自助终端','Visitor kiosk',4],
+   ['访客服务柜台','Visitor service counter',2],
+   ['紧急求助终端','Emergency assistance station',4],
+   ['访客凭证打印机','Visitor badge printer',4],
+   ['事件管理工作站','Incident management workstation',4],
+   ['便携对讲机','Portable radio',5],
+   ['应急照明灯','Emergency luminaire',5]
+  ];
+  for(const [zh,en,count] of revisedAssemblies){
+   await page.locator('#lab-search').fill(lang==='zh'?zh:en);
+   const match=page.locator('#lab-modules button').filter({hasText:lang==='zh'?zh:en});
+   await match.first().click();
+   const parts=page.locator('#lab-parts button');
+   assert.equal(await parts.count(),count,en+' assembly groups');
+   for(let i=0;i<count;i++){
+    await parts.nth(i).click();
+    assert.equal(await parts.nth(i).getAttribute('aria-pressed'),'true');
+    await parts.nth(i).click();
+    assert.equal(await parts.nth(i).getAttribute('aria-pressed'),'false');
+   }
+   if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/assembly-'+en.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.png'});
+  }
+  await page.locator('#lab-search').fill('');
+
   const search=page.locator('#lab-search');await search.fill(lang==='zh'?'枪式摄像机':'Bullet camera');
   assert.equal(await models.count(),1);
   await models.first().click();
