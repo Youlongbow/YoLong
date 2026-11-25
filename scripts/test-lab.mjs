@@ -84,6 +84,11 @@ try {
     if(i===1){
      assert.equal(await accessReview.locator('dd').count(),2);
      assert.equal(await practice.locator('.visitor-journey').count(),1);
+     const exhibit=practice.locator('.practice-figure svg');
+     assert.equal(await exhibit.getAttribute('viewBox'),'0 0 320 220');
+     assert(await exhibit.locator('polygon').count()>20);
+     assert(await exhibit.locator('polygon').evaluateAll(nodes=>nodes.every(n=>n.getAttribute('points').split(/[ ,]+/).every(v=>Number.isFinite(Number(v))))));
+
      assert((await accessReview.locator('a').getAttribute('href')).includes('eis0002'));
     }
     const review=page.locator('.video-engineering-review');
