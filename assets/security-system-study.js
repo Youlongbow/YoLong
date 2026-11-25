@@ -55,7 +55,7 @@ function stageScene(system,step,zh){
 }
 
 // Independent practice consoles; all records and illustrations are fictional.
-function systemPractice(host,system,zh){
+function systemPractice(host,system,zh,options={}){
  const e=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n};
  const tr=(a,b)=>zh?a:b;
  const specs=[
@@ -70,22 +70,24 @@ function systemPractice(host,system,zh){
  const tabs=e('div');tabs.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
  const figure=e('div');figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
  const detail=e('p'),state=e('p');state.setAttribute('aria-live','polite');const action=e('button',tr(...s.action));action.type='button';
- let current=0;const recorded=new Set();
+ const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
   const view=system===0?[(current*105+9)+' 12 92 72',frames()]:['0 0 320 160',stageScene(system,system===3?(current===2?3:current):current,zh)];
   figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:200px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
   state.textContent=tr(...s.fields[1])+'：'+(recorded.has(current)?tr(...s.result):tr('待登记','Not recorded'));
-  state.dataset.recorded=String(recorded.has(current));action.disabled=recorded.has(current);
+  memory.current=current;state.dataset.recorded=String(recorded.has(current));action.disabled=recorded.has(current);progress.textContent=tr('本系统已完成记录：','System records completed: ')+recorded.size+' / 3';progress.dataset.completed=String(recorded.size);
  };
  s.names.forEach((name,i)=>{const b=e('button',tr(...name));b.type='button';b.onclick=()=>{current=i;render()};tabs.append(b)});
  action.onclick=()=>{recorded.add(current);render()};const reset=e('button',tr('重置演示','Reset demonstration'));reset.type='button';reset.onclick=()=>{recorded.clear();current=0;render()};
  const controls=e('div');controls.style.cssText='display:flex;flex-wrap:wrap;gap:8px';controls.append(action,reset);
- panel.append(tabs,figure,detail,state,controls);host.append(panel);render();
+ const progress=e('p');progress.className='system-practice-progress';
+ if(options.locate){const locate=e('button',tr('在综合场景中查看','View in integrated scene'));locate.type='button';locate.dataset.locate='true';locate.onclick=()=>options.locate(current);controls.append(locate);}
+ panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
 }
 
-export function renderSystemStudy(host,system,step,lang,icon){
+export function renderSystemStudy(host,system,step,lang,icon,options={}){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
  host.replaceChildren();if(!data)return;
@@ -94,5 +96,5 @@ export function renderSystemStudy(host,system,step,lang,icon){
  const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
- const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);systemPractice(host,system,zh);
+ const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);systemPractice(host,system,zh,options);
 }
