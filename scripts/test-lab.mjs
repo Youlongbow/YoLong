@@ -18,11 +18,15 @@ try {
   page.on('pageerror',e=>errors.push(lang+': '+e.message));
   const response=await page.goto(base+'/lab/'+lang+'/',{waitUntil:'domcontentloaded',timeout:60000});
   assert.equal(response.status(),200);
-  await page.locator('#lab-modules button').first().waitFor({timeout:30000});
+  await page.locator('#studio-scenes button').first().waitFor({timeout:30000});
+  assert(await page.locator('#lab-library-panel').isHidden());
+  assert.equal(await page.locator('#lab-mode-scene').getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('#lab-modules button').count(),85);
   await page.locator('#studio-scenes button').first().waitFor();
   assert.equal(await page.locator('#studio-scenes button').count(),4);
   const sc=page.locator('#studio-canvas');
+  await page.locator('#studio-review-details > summary').click();
+  await page.locator('#studio-roles-details > summary').click();
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#studio-engine')?.textContent.includes('WebGL 2'),{},{timeout:30000});
   const gpu=await page.locator('#studio-engine').innerText();
   console.log('STUDIO RENDERER',lang,gpu);
@@ -62,8 +66,16 @@ try {
     assert.equal(configurations.size,3);
    }
   }
+  const priorPath=await page.locator('#studio-path').innerText();
   await page.locator('#studio-components .studio-device button').nth(1).click();
+  assert(await page.locator('#lab-library-panel').isVisible());
+  assert(await page.locator('#lab-studio').isHidden());
+  assert(await page.locator('#lab-device-origin').isVisible());
   assert(await page.locator('#lab-info h2').innerText());
+  await page.locator('#lab-back-scene').click();
+  assert(await page.locator('#lab-studio').isVisible());
+  assert.equal(await page.locator('#studio-path').innerText(),priorPath);
+  await page.locator('#lab-mode-library').click();
   console.log('STUDIO PASS',lang,'4 industries, 12 areas, 36 configurations');
   const categories=await page.locator('#lab-categories button').allTextContents();
   assert.equal(categories.length,5);
@@ -107,8 +119,9 @@ try {
  for(const width of [390,320]){
   const page=await browser.newPage({viewport:{width,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
   page.on('pageerror',e=>errors.push('mobile '+width+': '+e.message));
-  await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#lab-info h2').waitFor();
-  assert(await page.locator('#studio-canvas').isVisible());assert(await page.locator('#lab-canvas').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'No mobile horizontal overflow');
+  await page.goto(base+'/lab/zh/',{waitUntil:'domcontentloaded'});await page.locator('#studio-scenes button').first().waitFor();
+  assert(await page.locator('#studio-canvas').isVisible());assert(await page.locator('#lab-canvas').isHidden());
+  await page.locator('#lab-mode-library').click();await page.locator('#lab-info h2').waitFor();assert(await page.locator('#lab-canvas').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'No mobile horizontal overflow');
   await page.locator('#lab-categories button').last().click();assert.equal(await page.locator('#lab-modules button').count(),10);
   await page.locator('[data-act=base]').click();assert.equal(await page.locator('[data-act=base]').getAttribute('aria-pressed'),'false');
   console.log('LAB MOBILE PASS',width);await page.close();
