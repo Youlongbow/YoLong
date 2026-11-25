@@ -36,12 +36,13 @@ try {
   assert(await page.locator('#overview-hotspots button').evaluateAll(nodes=>nodes.every(n=>Number.isFinite(parseFloat(n.style.left))&&Number.isFinite(parseFloat(n.style.top)))));
 
   assert.equal(await page.locator('#overview-layers button').count(),6);
-  assert.equal(await page.locator('#overview-functions button').count(),6);
+  assert.equal(await page.locator('#overview-functions button').count(),4);
+  assert.equal(await page.locator('#overview-framework .concept-definition').count(),7);
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.includes('WEBGL 2'),{},{timeout:30000});
   for(let l=0;l<6;l++){
    await page.locator('#overview-layers button').first().click();
    if(l)await page.locator('#overview-layers button').nth(l).click();
-   for(let f=0;f<6;f++){
+   for(let f=0;f<4;f++){
     await page.locator('#overview-functions button').first().click();
     if(f)await page.locator('#overview-functions button').nth(f).click();
     await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
@@ -78,12 +79,13 @@ try {
   for(let s=0;s<4;s++){
    await page.locator('#studio-scenes button').nth(s).click();
    assert.equal(await page.locator('#studio-layers button').count(),5);
-   assert.equal(await page.locator('#studio-functions button').count(),5);
+   assert.equal(await page.locator('#studio-functions button').count(),3);
+   assert.equal(await page.locator('#studio-framework .concept-definition').count(),7);
    for(let j=0;j<5;j++){
     await page.locator('#studio-layers button').nth(j).click();
     assert(await page.locator('#studio-layer-copy').innerText());
-    await page.locator('#studio-functions button').nth(j).click();
-    assert(await page.locator('#studio-function-copy').innerText());
+    if(j<3){await page.locator('#studio-functions button').nth(j).click();
+    assert(await page.locator('#studio-function-copy').innerText());}
    }
    assert.equal(await page.locator('#studio-zones button').count(),3);
    for(let i=0;i<3;i++){
