@@ -1170,7 +1170,7 @@ function initOverview(lang,library){
   detail.replaceChildren();detail.append(el('h4',t(step.n)),el('p',t(step.p)));
   const links=el('div',undefined,'overview-links');step.links.forEach(k=>{const i=library.models.findIndex((_,j)=>library.modelKey(j)===k);if(i>=0)button(links,t(library.models[i].n),()=>library.openModel(i,t(item.n)))});
   detail.append(links);
-  renderSystemStudy($('#overview-study-visual'),studyIndex,studyStep,lang,studyIcons[step.icon],{memory:practiceMemory[studyIndex],locate:state=>locatePractice(studyIndex,state)});
+  renderSystemStudy($('#overview-study-visual'),studyIndex,studyStep,lang,studyIcons[step.icon],{memory:practiceMemory[studyIndex],locate:state=>locatePractice(studyIndex,state),onSelect:state=>{if(studyIndex===0&&selected===15){cameraFocus=state;renderControls();draw()}}});
   $('#overview-system-active').textContent=(z?'当前学习系统：':'Current system: ')+t(item.n)+(z?'。选择下方步骤了解系统构成。':'. Explore the stages below.');
  }
  renderStudy();
