@@ -22,6 +22,19 @@ try {
   assert(await page.locator('#lab-overview').isVisible());
   assert(await page.locator('#lab-studio').isHidden());
   assert.equal(await page.locator('#overview-hotspots button').count(),16);
+  const viewControls=page.locator('#overview-views button');
+  await viewControls.nth(0).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===0);
+  await viewControls.nth(1).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
+  await viewControls.nth(2).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===1);
+  await viewControls.nth(2).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
+  await viewControls.nth(4).click();
+  await viewControls.nth(3).click();
+  assert(await page.locator('#overview-hotspots button').evaluateAll(nodes=>nodes.every(n=>Number.isFinite(parseFloat(n.style.left))&&Number.isFinite(parseFloat(n.style.top)))));
+
   assert.equal(await page.locator('#overview-layers button').count(),6);
   assert.equal(await page.locator('#overview-functions button').count(),6);
   if(requireGPU)await page.waitForFunction(()=>document.querySelector('#overview-engine')?.textContent.includes('WEBGL 2'),{},{timeout:30000});
