@@ -69,6 +69,14 @@ try {
   await viewControls.nth(1).click();
   await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
   assert.notEqual(await campusImage(),naturalImage,'Selection changes rendered campus');
+  const focusedImage=await campusImage();
+  await viewControls.nth(0).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===0);
+  assert.equal(await campusImage(),naturalImage,'Natural view restores original colors');
+  await viewControls.nth(1).click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===16);
+  assert.equal(await campusImage(),focusedImage,'Focus view is reproducible');
+
   if(captures&&lang==='zh')await page.locator('.overview-stack').screenshot({path:captures+'/campus-system-focus.png'});
 
   await viewControls.nth(2).click();
@@ -333,7 +341,7 @@ try {
      await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
      const visibleCount=await page.locator('#studio-components .studio-device-context').evaluateAll(nodes=>nodes.filter(n=>/Visible scene assembly|场景中可见构件/.test(n.textContent)).length);
      assert.equal(await page.locator('#studio-hotspots button').count(),visibleCount);
-     if(visibleCount){await page.locator('#studio-hotspots button').first().click();await page.waitForFunction(()=>document.querySelector('#studio-hotspots button')?.getAttribute('aria-pressed')==='true');}
+     if(visibleCount){await page.locator('#studio-hotspots button').first().click();await page.waitForFunction(()=>document.querySelector('#studio-hotspots button')?.getAttribute('aria-pressed')==='true');const restore=page.locator('#studio-views button').filter({hasText:lang==='zh'?'恢复原色':'Restore colors'});await restore.click();assert.equal(await restore.getAttribute('aria-pressed'),'true');}
      await page.locator('#studio-components .studio-device button').first().click();
      await page.locator('#studio-roles select').selectOption('2');
      assert(await page.locator('#studio-roles p').innerText());
