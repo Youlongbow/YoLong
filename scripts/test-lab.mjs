@@ -90,12 +90,14 @@ try {
     if(j===0){
      const tabs=practice.locator('button');
      const channels=i===0?4:3;
+     if(i===0){assert.equal(await practice.locator('.video-channel svg').count(),4);assert.equal(await practice.locator('.video-wall-layout').count(),1);}
      assert.equal(await tabs.count(),channels+3);
      const images=new Set();
      for(let k=0;k<channels;k++){
       await tabs.nth(k).click();
-      const visual=await practice.locator('svg').evaluate(node=>node.getAttribute('viewBox')+node.innerHTML+node.style.background);
+      const visual=await practice.locator('.practice-figure svg').evaluate(node=>node.getAttribute('viewBox')+node.innerHTML+node.style.background);
       images.add(visual);
+      if(i===0)assert.equal(await practice.locator('.practice-figure').getAttribute('data-channel'),String(k));
       assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'false');
       await tabs.nth(channels).click();
       assert.equal(await practice.locator('[data-recorded]').getAttribute('data-recorded'),'true');
