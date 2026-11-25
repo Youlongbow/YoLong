@@ -502,7 +502,7 @@ function initStudio(lang,library){
   host=$('#studio-components');host.replaceChildren();host.append(make('label',z?'系统组件与工程接口':'System components and engineering interfaces'));
   const visualGeometry=geometry();keys(zone).forEach((k,j)=>{const i=find(k);if(i<0)return;const visible=visualGeometry.some(o=>o.g===zone&&o.device===j);const row=make('div',undefined,'studio-device'),txt=make('span');txt.append(make('span','0'+(j+1)+' / '+t(library.models[i].n)),make('div',t(library.models[i].cat)+' · '+t(devices[k]||library.models[i].d),'studio-component-role'),make('div',visible?(z?'场景中可见构件':'Visible scene assembly'):(z?'工程接口 / 设备库详解':'Engineering interface / equipment details'),'studio-device-context'));row.append(txt);if(visible)btn(row,z?'高亮':'Highlight',()=>{selected=j;renderControls();draw()},selected===j);else{const link=btn(row,z?'接口说明':'Interface notes',()=>{selected=j;renderControls();draw()},selected===j);link.title=t(library.models[i].p);if(selected===j)txt.append(make('p',t(library.models[i].p)))}btn(row,z?'设备详解':'Equipment details',()=>library.openModel(i,t(scenes[scene].n)+' / '+t(q.n)));host.append(row)});
   host=$('#studio-roles');host.replaceChildren();host.className='studio-roles';host.append(make('label',z?'人员角色与授权示例':'Role and authorization example'));const select=make('select');select.setAttribute('aria-label',z?'人员角色':'Person role');[P('访客','Visitor'),P('普通员工','General employee'),P('指定业务责任人','Designated business owner')].forEach((a,i)=>{const opt=make('option',t(a));opt.value=i;select.append(opt)});select.value=String(role);select.onchange=()=>{role=Number(select.value);renderControls()};host.append(select,make('p',q.roles.includes(role)?(z?'该角色可按本区域规定办理正常业务。':'This role can conduct ordinary business under the zone policy.'):(z?'由区域责任人按业务需求另行办理授权。':'Separate authorization is arranged by the zone owner according to business need.')));
-  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'场景底色':'Scene tint',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'知识热点与示例组件':'Hotspots & sample components',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'工业环境':'Industrial context',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);if(zone===2)btn(host,z?'建筑剖视':'Building cutaway',()=>{workspaceCutaway=!workspaceCutaway;renderControls();draw()},workspaceCutaway);
+  host=$('#studio-views');host.replaceChildren();btn(host,z?'三维视图':'3D view',()=>{yaw=.62;pitch=.62;zoom=1;draw()});btn(host,z?'平面俯视':'Top view',()=>{yaw=0;pitch=1.5;zoom=1;draw()});btn(host,'+',()=>{zoom=Math.min(1.5,zoom*1.15);draw()});btn(host,'−',()=>{zoom=Math.max(.65,zoom/1.15);draw()});btn(host,z?'场景底色':'Scene tint',()=>{showColors=!showColors;renderControls();draw()},showColors);btn(host,z?'知识热点与示例组件':'Hotspots & sample components',()=>{showDevices=!showDevices;renderControls();draw()},showDevices);btn(host,z?'工业环境':'Industrial context',()=>{showFurniture=!showFurniture;renderControls();draw()},showFurniture);if(zone===1||zone===2)btn(host,z?'建筑剖视':'Building cutaway',()=>{workspaceCutaway=!workspaceCutaway;renderControls();draw()},workspaceCutaway);
   const comparison=$('#studio-industry-compare');comparison.replaceChildren();
   scenes.forEach((industry,i)=>{const d=caseFocus[i][zone],card=make('article');card.append(make('div',t(industry.n),'over'),make('h3',z?d[0]:d[1]),make('p',z?d[4]:d[5]));btn(card,z?'查看案例':'Explore case',()=>{scene=i;selected=-1;config=[0,0,0];renderControls();draw()},scene===i);comparison.append(card)});
   host=$('#studio-comparison');host.replaceChildren();scenes[scene].zones.forEach((q,i)=>{const card=make('article');const label=make('div','AREA 0'+(i+1),'over');card.append(label,make('h3',t(q.n)),make('p',t(q.policy)),make('p',t(q.profiles[config[i]].n)+' · '+t(q.profiles[config[i]].rule)),make('p',(z?'配置：':'Configuration: ')+keys(i).map(k=>{const j=find(k);return j>=0?t(library.models[j].n):k}).join(z?'、':', ')));btn(card,z?'查看设施部位':'Explore area',()=>{zone=i;selected=-1;renderControls();draw()},zone===i);host.append(card)});
@@ -545,10 +545,20 @@ function initStudio(lang,library){
     const n=Math.max(1,Math.floor(w/.85));for(let j=0;j<n;j++){const xx=x-w/2+.43+j*.85;B(xx,.10,z-.08,.55,.18,d*.59,'#929b96');B(xx,.28,z-.08,.53,.09,d*.57,'#d3d1bd','rounded');B(xx,.37,z-d*.24,.46,.055,.23,'#eee7ce','rounded');B(xx,.08,z+d*.30,.25,.30,.23,'#a5a18c')}
    }else if(kind==='dining'){
     const n=Math.max(1,Math.floor(w/1.05));for(let j=0;j<n;j++){const xx=x-w/2+.53+j*1.05;B(xx,.1,z,.08,.38,.08,'#7e8c88');B(xx,.48,z,.67,.045,.51,'#b4a78d');for(const dz of [-.43,.43]){B(xx,.10,z+dz,.31,.24,.28,'#84948f');B(xx,.33,z+dz,.31,.23,.055,'#84948f')}}
-   }else if(kind==='office'){
-    B(x-w*.22,.1,z-d*.12,.90,.38,.46,'#a1aaa4');B(x-w*.22,.48,z-d*.12,.95,.045,.50,'#c4c0ae');
-    item('visitor-service-counter',x+w*.20,.10,z+d*.04,.85,.48,.42,'#9aaba4');item('visitor-service-counter',x+w*.20,.58,z+d*.04,.90,.045,.46,'#b6bcae');
-    B(x-w*.22,.53,z-d*.12,.29,.22,.06,glass);B(x-w*.22,.10,z+d*.25,.32,.33,.32,'#778e91','rounded');
+   }else if(['office','reception','logistics','service','shift'].includes(kind)){
+    // Furnish the public-facing administrative room according to its ordinary business use.
+    const dx=x-w*.22,dz=z-d*.12,cx=x+w*.20,cz=z+d*.04;
+    B(dx,.1,dz,.90,.38,.46,'#a1aaa4');B(dx,.48,dz,.95,.045,.50,'#c4c0ae');
+    item('visitor-service-counter',cx,.10,cz,.85,.48,.42,'#9aaba4');item('visitor-service-counter',cx,.58,cz,.90,.045,.46,'#b6bcae');
+    item('incident-management-workstation',dx,.53,dz,.29,.22,.06,glass);B(dx,.10,z+d*.25,.32,.33,.32,'#778e91','rounded');
+    if(kind==='reception'||kind==='shift'){
+     item('visitor-badge-printer',cx+.19,.625,cz,.23,.13,.21,'#a5b1ae');B(cx+.19,.755,cz+.04,.15,.018,.09,'#e3ded0');
+     B(dx-.21,.53,dz-.06,.13,.035,.23,'#c9c8bc');
+    }
+    if(kind==='logistics'){for(const zz of [z-d*.28,z+d*.26]){B(x-w*.33,.09,zz,.36,.63,.29,'#9daba4');for(let j=0;j<3;j++)B(x-w*.33,.16+j*.17,zz+.16,.29,.035,.025,'#6a7d7e')}}
+    if(kind==='service'){item('secure-storage-cabinet',x+w*.35,.10,z-d*.27,.35,.62,.35,'#87999c');item('secure-storage-cabinet',x+w*.35,.37,z-d*.27+.18,.30,.28,.025,'#aab7b0')}
+    if(kind==='shift'){B(x,.93,z-d/2+.065,.72,.24,.025,'#72888c');for(let j=0;j<4;j++)B(x-.27+j*.18,.99,z-d/2+.081,.12,.018,.01,'#d4d8cd')}
+
    }else if(kind==='store'){
     for(let j=0;j<Math.max(1,Math.floor(w/.65));j++){const xx=x-w/2+.36+j*.65;B(xx,.08,z-d*.18,.47,.77,.42,'#8b9c98');for(let k=0;k<3;k++){B(xx,.17+k*.23,z-d*.18,.44,.045,.41,'#b3bdb2');B(xx,.22+k*.23,z-d*.18,.32,.13,.31,'#a99d83','rounded')}}
     B(x,.09,z+d*.24,Math.min(w*.55,1.3),.38,.36,'#99aaa3');B(x,.47,z+d*.24,Math.min(w*.58,1.4),.045,.40,'#c2bdab');
@@ -604,21 +614,21 @@ function initStudio(lang,library){
     // Distinct ordinary business activities, depicted as fictional architectural scenes.
     if(scene===0){
      B(0,.025,-.4,3.4,.025,6.4,'#424b50');B(0,.06,-.4,.045,.008,5.8,'#d9d0b3');
-     B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');building(-3.65,-1.8,2.65,1.65,1.12);building(-3.65,.85,2.5,1.1,.82);ordinaryCanopy(-3.65,1.67,2.45,.75,.87);
+     B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');serviceRoom(-3.65,-1.8,2.65,1.65,1.12,'#b9c2bd','reception');building(-3.65,.85,2.5,1.1,.82);ordinaryCanopy(-3.65,1.67,2.45,.75,.87);
      B(3.65,.02,-.4,3.35,.04,5.1,'#8c9999');building(3.6,-1.5,2.5,1.9,1.05);tank(4.8,1.05,.88,.8);
      vehicle(-.82,1.5,'truck','#b8c4c4',Math.PI/2);vehicle(.82,-.5,'pickup','#c0c6c3',Math.PI/2);person(-2.6,.4);person(2.6,1.05);
     }else if(scene===1){
-     B(0,.022,-.25,4.8,.035,6.5,'#a59a85');B(-4,.025,-.8,2.9,.04,4.8,'#b4a48a');building(-4,-1.7,2.6,1.5,.85,'#b4a48e','pitch');building(3.8,-1.7,2.75,1.45,.9,'#b8ac94','pitch');
+     B(0,.022,-.25,4.8,.035,6.5,'#a59a85');B(-4,.025,-.8,2.9,.04,4.8,'#b4a48a');serviceRoom(-4,-1.7,2.6,1.5,.85,'#b4a48e','logistics');building(3.8,-1.7,2.75,1.45,.9,'#b8ac94','pitch');
      B(3.65,.026,.8,3.45,.025,2.15,'#918777');shed(3.65,.8,2.85,1.35,.98,'#8e9790');for(let i=0;i<4;i++)B(2.7+i*.59,.035,.85,.43,.29,.50,'#ad9d7c','rounded');
      vehicle(-1.12,.75,'truck','#c2a05c',Math.PI/2);vehicle(1.12,-1.2,'truck','#c3aa75',Math.PI/2);vehicle(-3.9,1.25,'pickup','#c6c6b6');person(-2.8,.6);person(3.0,.4);
     }else if(scene===2){
      B(.1,.022,-.4,2.45,.025,6.2,'#737d7b');B(-3.4,.025,-.5,3.9,.03,4.8,'#a4a999');
-     building(-3.6,-1.4,2.4,1.6,.81,'#c3c7b8');building(-3.5,.95,1.8,1.15,.72,'#b1b9b2');platform(-3.5,1.73,1.8,.45,'#abb3a5');
+     serviceRoom(-3.6,-1.4,2.4,1.6,.81,'#c3c7b8','service');building(-3.5,.95,1.8,1.15,.72,'#b1b9b2');platform(-3.5,1.73,1.8,.45,'#abb3a5');
      for(let i=0;i<2;i++)for(let j=0;j<2;j++)panel(2.4+j*1.5,-1.6+i*1.5);
      vehicle(.1,.65,'pickup','#d2d7d3',Math.PI/2);person(-2.4,.55,'#9fbaae');
     }else{
      B(0,.025,-.4,3.25,.025,6.3,'#424b50');B(0,.057,-.4,.045,.009,5.8,'#d1c9b1');
-     B(-3.6,.025,-.4,3.75,.035,5.1,'#a1aaa5');building(-3.65,-1.55,3.1,2.1,1.45,'#c1c8c6');ordinaryCanopy(-3.65,-.07,2.55,.85,1.08);B(-3.6,.03,1.1,2.8,.025,.9,'#7d8c8d');
+     B(-3.6,.025,-.4,3.75,.035,5.1,'#a1aaa5');serviceRoom(-3.65,-1.55,3.1,2.1,1.45,'#c1c8c6','shift');ordinaryCanopy(-3.65,-.07,2.55,.85,1.08);B(-3.6,.03,1.1,2.8,.025,.9,'#7d8c8d');
      B(3.55,.025,-.4,3.45,.03,5.0,'#919e9d');building(3.65,-1.65,2.75,1.85,1.25,'#aebbbb','pitch');B(3.55,.03,1.0,2.6,.35,.62,'#87989a','rounded');
      vehicle(-.8,1.1,'pickup','#d4d5cc',Math.PI/2);vehicle(.8,-.9,'truck','#b0bdbd',Math.PI/2);person(-2.45,.7);person(2.75,.7);person(-3.35,1.65);
     }
