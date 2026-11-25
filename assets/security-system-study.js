@@ -113,24 +113,31 @@ function visitorScene(i,zh){
  return v;
 }
 // Independent architectural material exhibits, not a site plan or performance model.
+// Three freestanding architectural product samples on a common exhibition board.
+// The illustrations describe appearance and materials, not a protective layout.
 function boundaryExhibit(i,zh){
- const title=(x,y,a,b)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="10" font-family="system-ui,sans-serif" fill="#e1e8e8">'+(zh?a:b)+'</text>';
- const base='<rect width="320" height="180" fill="#202f36"/><path d="M16 125L148 84L304 130L173 170Z" fill="#a1a79c"/><path d="M16 125L173 170L304 130V137L173 177L16 132Z" fill="#687a77"/>';
- const panel=(x,y,w,h,fill)=>'<path d="M'+x+' '+y+'h'+w+'v'+h+'h-'+w+'Z" fill="'+fill+'" stroke="#81949a" stroke-width="1"/>';
- const sample1=()=>{
-  let v=base;
-  for(let n=0;n<3;n++){const x=36+n*81,y=51+n*9;v+=panel(x,y,70,61,'#34494f');for(let k=0;k<5;k++)v+='<path d="M'+(x+9+k*13)+' '+(y+4)+'v53" stroke="#a1b4b6" stroke-width="1"/>';for(let k=0;k<4;k++)v+='<path d="M'+(x+3)+' '+(y+10+k*13)+'h64" stroke="#a1b4b6" stroke-width="1"/>';v+=panel(x-4,y-4,7,69,'#b4bdb9');}
-  v+=panel(279,66,7,69,'#b4bdb9');
-  return v+title(160,26,'连续建筑围界外观','Architectural boundary assembly');
+ const label=(x,y,a,b,size=10)=>'<text x="'+x+'" y="'+y+'" text-anchor="middle" font-size="'+size+'" font-family="system-ui,sans-serif" fill="#e1e8e8">'+(zh?a:b)+'</text>';
+ const p=(x,y,z=0)=>[160+(x-y)*.87,118+(x+y)*.36-z];
+ const poly=(pts,fill,stroke='none')=>'<polygon points="'+pts.map(q=>q.map(n=>n.toFixed(1)).join(',')).join(' ')+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width=".6"/>';
+ const box=(x,y,w,d,h,palette,z=0)=>{
+  const a=p(x,y,z),b=p(x+w,y,z),c=p(x+w,y+d,z),e=p(x,y+d,z),A=p(x,y,z+h),B=p(x+w,y,z+h),C=p(x+w,y+d,z+h),E=p(x,y+d,z+h);
+  return poly([e,c,C,E],palette[1])+poly([b,c,C,B],palette[2])+poly([A,B,C,E],palette[0],'#7c9093');
  };
- const sample2=()=>{
-  let v=base+panel(32,48,256,77,'#b5b3a6');
-  for(let n=0;n<5;n++)v+=panel(34+n*51,48,2,77,'#8d958e');
-  v+=panel(29,43,263,8,'#c6c6b8')+panel(29,121,263,5,'#999e95');
-  return v+title(160,26,'实体墙体外观','Solid wall assembly');
- };
- const sample3=()=>base+panel(60,43,200,90,'#b8b8aa')+panel(73,57,76,76,'#50656d')+panel(82,64,58,69,'#7a989f')+panel(171,57,76,76,'#52686e')+panel(180,64,58,60,'#89a5a9')+title(160,26,'建筑门窗与使用环境','Door and glazing exhibit');
- return [sample1,sample2,sample3][i]?.()||'';
+ const base=(x,y,active)=>box(x,y,86,37,4,active?['#d1bea0','#89775f','#b09b7b']:['#b1bab5','#647772','#82938d']);
+ const panel=(x,y,w,h,color,z=4)=>poly([p(x,y,z),p(x+w,y,z),p(x+w,y,z+h),p(x,y,z+h)],color,'#87999e');
+ const steel=['#c0cbcc','#788d93','#9aaeb1'],stone=['#c8c7bb','#8e9891','#a7ada3'],frame=['#b2c3c7','#667e87','#8da4ab'];
+ let v='<rect width="320" height="180" fill="#202f36"/>';
+ // Independent exhibition plinths do not represent the relative placement of building measures.
+ const x=[-116,-22,72],y=[16,16,16];
+ for(let n=0;n<3;n++){
+  v+=base(x[n],y[n],i===n);
+  if(n===0){v+=panel(x[n]+10,y[n]+12,65,53,'#4a5e64');for(let j=0;j<7;j++){const A=p(x[n]+12+j*10,y[n]+12,7),B=p(x[n]+12+j*10,y[n]+12,54);v+='<path d="M'+A.join(' ')+'L'+B.join(' ')+'" stroke="#aabdbf" stroke-width=".7"/>'}for(let j=0;j<4;j++){const A=p(x[n]+10,y[n]+12,12+j*12),B=p(x[n]+75,y[n]+12,12+j*12);v+='<path d="M'+A.join(' ')+'L'+B.join(' ')+'" stroke="#aabdbf" stroke-width=".7"/>'}v+=box(x[n]+7,y[n]+10,4,4,56,steel,4)+box(x[n]+74,y[n]+10,4,4,56,steel,4);}
+  if(n===1){v+=box(x[n]+8,y[n]+12,70,9,47,stone,4)+box(x[n]+6,y[n]+10,74,13,4,['#d5d4c9','#a7aca2','#b9beb4'],51);}
+  if(n===2){v+=box(x[n]+8,y[n]+11,69,8,55,frame,4)+panel(x[n]+12,y[n]+10,29,47,'#7197a4',8)+panel(x[n]+44,y[n]+10,29,47,'#7197a4',8);v+=panel(x[n]+17,y[n]+9,19,2,'#d6d4c9',29)+panel(x[n]+49,y[n]+9,19,2,'#d6d4c9',29);}
+ }
+ const captions=zh?['金属围界外观','实体墙体外观','建筑门窗外观']:['Metal boundary exhibit','Solid wall exhibit','Door and glazing exhibit'];
+ v+='<rect x="8" y="7" width="304" height="22" rx="3" fill="#32444c"/><text x="160" y="22" text-anchor="middle" fill="#e1e8e8" font-size="10" font-family="system-ui,sans-serif">'+captions[i]+'</text>';
+ return v;
 }
 // Independent practice consoles; all records and illustrations are fictional.
 function systemPractice(host,system,zh,options={}){
@@ -175,6 +182,13 @@ function systemPractice(host,system,zh,options={}){
  }else if(system===1){
   const journey=e('div');journey.className='visitor-journey';journey.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;align-items:start';
   tabs.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:7px;margin:0 0 10px';tabs.style.gridColumn='1/-1';const copy=e('div');copy.append(detail,state,controls,progress);journey.append(tabs,figure,copy);panel.append(journey);
+ }else if(system===2){
+  const exhibit=e('div');exhibit.className='boundary-gallery';exhibit.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;align-items:start;min-width:0';
+  tabs.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr));gap:8px';tabs.style.gridColumn='1/-1';
+  const copy=e('div');const material=e('p');material.className='boundary-material';material.style.cssText='padding:10px;background:#263940;border-left:3px solid #b4a080;line-height:1.6';
+  const materials=zh?['材料外观：金属表面与涂层。','材料外观：混凝土或砌体表面。','材料外观：玻璃与金属框架。']:['Material appearance: metal surfaces and finishes.','Material appearance: concrete or masonry surfaces.','Material appearance: glass and metal frames.'];
+  const syncMaterial=()=>{material.textContent=materials[memory.current]};tabs.querySelectorAll('button').forEach(b=>{const old=b.onclick;b.onclick=()=>{old();syncMaterial()}});const oldReset=reset.onclick;reset.onclick=()=>{oldReset();syncMaterial()};syncMaterial();
+  copy.append(material,detail,state,controls,progress);exhibit.append(tabs,figure,copy);panel.append(exhibit);
  }else panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
 }
 
