@@ -100,6 +100,14 @@ try {
      assert(await practice.locator('.practice-figure svg polygon').count()>20);
      assert(await practice.locator('.boundary-material').innerText());
     }
+    const lightingReview=page.locator('.lighting-engineering-review');
+    assert.equal(await lightingReview.count(),i===3?1:0);
+    if(i===3){
+     assert.equal(await lightingReview.locator('dd').count(),2);
+     assert.equal(await practice.locator('.lighting-gallery').count(),1);
+     assert.equal(await practice.locator('.practice-figure svg').getAttribute('viewBox'),'0 0 320 200');
+     assert(await practice.locator('.lighting-appearance-note').innerText());
+    }
     const review=page.locator('.video-engineering-review');
     assert.equal(await review.count(),i===0?1:0);
     if(i===0){
