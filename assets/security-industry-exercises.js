@@ -212,3 +212,35 @@ export function renderCaseExercise(host,scene,zone,lang){
  const buttons=make('div');buttons.style.cssText='display:grid;gap:8px;margin:10px 0';const feedback=make('div');feedback.setAttribute('aria-live','polite');
  const options=[d[4+l],d[6+l]];options.forEach((label,i)=>{const b=make('button',label);b.type='button';b.style.cssText='text-align:left;white-space:normal;padding:10px';b.setAttribute('aria-pressed','false');b.onclick=()=>{buttons.querySelectorAll('button').forEach((x,j)=>x.setAttribute('aria-pressed',String(j===i)));feedback.replaceChildren();const correct=i===d[8];feedback.dataset.result=correct?'correct':'review';feedback.append(make('strong',correct?(z?'符合业务要求':'Meets operating requirements'):(z?'重新考虑':'Review the choice')),make('p',d[9+l]));if(correct){feedback.append(make('label',z?'业务流程':'Workflow'),make('p',d[11+l]),make('label',z?'交付记录':'Deliverable records'),make('p',d[13+l]));}};buttons.append(b)});panel.append(buttons,feedback);host.append(panel);
 }
+
+
+// Public industry context illustrations. These are independent production exhibits, not facility plans.
+const industryContext=[
+ {name:['炼油厂 · 连续工艺','Refinery · continuous process'],tags:[['储罐','Storage vessels'],['工艺设备','Process equipment'],['检修与交接','Maintenance and handover']],note:['连续工艺生产需要工艺、设备、检修和人员服务之间的协调。','Continuous-process operations coordinate production, equipment, maintenance and staff services.']},
+ {name:['矿山 · 露天采矿与物料','Mine · extraction and materials'],tags:[['采掘','Extraction'],['物料运输','Material transport'],['设备服务','Equipment services']],note:['采掘、运输及维修服务随生产阶段变化；设施管理需要跟进业务需求。','Extraction, haulage and maintenance change with production phases; facilities management follows operational needs.']},
+ {name:['光伏 · 分布式发电设备','Solar PV · distributed equipment'],tags:[['光伏组件','PV modules'],['电气设备','Electrical equipment'],['运维服务','O&M services']],note:['分布式发电设备的管理涉及资产登记、工单、备件及电气专业服务。','Distributed generation involves asset records, work orders, spares and specialist electrical services.']},
+ {name:['电站 · 发电与设备服务','Power station · generation and services'],tags:[['发电厂房','Generation building'],['冷却设施','Cooling equipment'],['轮班与检修','Shift and maintenance']],note:['发电生产、设备检修与轮班人员服务需要协调管理。','Generation, equipment servicing and shift-worker services require coordinated ownership.']}
+];
+function industryIllustration(i){
+ const rect=(x,y,w,h,col)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="'+col+'"/>';
+ const line=(d,col='#aebcba',w=1.2)=>'<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="'+w+'"/>';
+ const cyl=(x,y,w,h)=>rect(x-w/2,y,w,h,'#9aa9ab')+'<ellipse cx="'+x+'" cy="'+y+'" rx="'+w/2+'" ry="7" fill="#c0c9c7"/>'+line('M'+(x-w/2)+' '+(y+h*.55)+'h'+w,'#75878a');
+ const building=(x,y,w,h)=>rect(x,y,w,h,'#9faea9')+'<path d="M'+(x-4)+' '+y+'L'+(x+w/2)+' '+(y-13)+'L'+(x+w+4)+' '+y+'Z" fill="#72858a"/>'+rect(x+9,y+12,w*.23,h*.47,'#45636f');
+ const base='<rect width="320" height="130" fill="#263840"/><path d="M8 108H312" stroke="#84928e" stroke-width="1"/>';
+ const views=[
+ ()=>base+cyl(48,66,43,42)+cyl(101,57,49,51)+cyl(178,27,20,81)+cyl(211,43,18,65)+line('M151 48h86M151 71h86M151 94h86','#9ca9a7',2)+building(251,75,54,33),
+ ()=>base+'<path d="M13 40L75 61L94 78H146L159 93H182L194 108H13Z" fill="#b29e83"/>'+line('M13 58H62L82 76H121M13 80H77L100 94H153','#d4bea0',2)+rect(201,80,81,19,'#bda069')+rect(202,65,26,25,'#c6a873')+rect(232,70,50,20,'#a18a64')+['218','271'].map(x=>'<circle cx="'+x+'" cy="101" r="10" fill="#3c4a50" stroke="#829092" stroke-width="2"/>').join(''),
+ ()=>{let v=base;for(let row=0;row<2;row++)for(let col=0;col<3;col++){let x=14+col*72+row*14,y=39+row*33;v+='<path d="M'+x+' '+y+'h58l-8 24h-58z" fill="#3e647c" stroke="#a0b1b6"/>'+line('M'+(x+14)+' '+y+'l-8 24m22-24-8 24m22-24-8 24M'+(x-4)+' '+(y+12)+'h58','#8ca6ad',.6);}return v+rect(251,52,48,56,'#aeb9b6')+rect(260,61,30,22,'#5e777c');},
+ ()=>base+building(20,63,140,45)+'<path d="M186 108Q208 68 192 28H234Q217 68 242 108Z" fill="#9ba8a5"/><ellipse cx="213" cy="28" rx="21" ry="5" fill="#c1cac5"/><path d="M250 108Q264 75 256 47H287Q277 75 294 108Z" fill="#aab4ae"/><ellipse cx="271.5" cy="47" rx="15.5" ry="4" fill="#c5cec8"/>'
+ ];return views[i]?.()||'';
+}
+export function renderIndustryContext(host,scene,lang){
+ const d=industryContext[scene];if(!d||!host)return;const z=lang==='zh',l=z?0:1;
+ const el=(tag,txt)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;return n};
+ const section=el('section');section.className='industry-production-context';section.dataset.industry=String(scene);section.style.cssText='border:1px solid #46555b;border-radius:6px;padding:12px;margin:0 0 16px;min-width:0';
+ section.append(el('h4',d.name[l]));
+ const fig=el('div');fig.innerHTML='<svg viewBox="0 0 320 130" role="img" aria-label="'+d.name[l]+'" style="display:block;width:100%;height:auto;max-height:220px;border-radius:4px">'+industryIllustration(scene)+'</svg>';section.append(fig);
+ const tags=el('div');tags.className='industry-production-tags';tags.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,96px),1fr));gap:6px;margin:8px 0';
+ for(const name of d.tags){const tag=el('span',name[l]);tag.style.cssText='font-size:12px;padding:6px;background:#263940;border-radius:3px;text-align:center';tags.append(tag)}
+ section.append(tags,el('p',d.note[l]));host.append(section);
+}
