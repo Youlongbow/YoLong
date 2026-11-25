@@ -33,6 +33,14 @@ try {
 
   for(let s=0;s<4;s++){
    await page.locator('#studio-scenes button').nth(s).click();
+   assert.equal(await page.locator('#studio-layers button').count(),5);
+   assert.equal(await page.locator('#studio-functions button').count(),5);
+   for(let j=0;j<5;j++){
+    await page.locator('#studio-layers button').nth(j).click();
+    assert(await page.locator('#studio-layer-copy').innerText());
+    await page.locator('#studio-functions button').nth(j).click();
+    assert(await page.locator('#studio-function-copy').innerText());
+   }
    assert.equal(await page.locator('#studio-zones button').count(),3);
    for(let i=0;i<3;i++){
     await page.locator('#studio-zones button').nth(i).click();
@@ -49,6 +57,10 @@ try {
      await reviewCheck.uncheck();
 
      configurations.add(await page.locator('#studio-components').innerText());
+     await page.locator('#studio-hotspots button').first().waitFor();
+     assert.equal(await page.locator('#studio-hotspots button').count(),4);
+     await page.locator('#studio-hotspots button').first().click();
+     await page.waitForFunction(()=>document.querySelector('#studio-hotspots button')?.getAttribute('aria-pressed')==='true');
      await page.locator('#studio-components .studio-device button').first().click();
      await page.locator('#studio-roles select').selectOption('2');
      assert(await page.locator('#studio-roles p').innerText());
