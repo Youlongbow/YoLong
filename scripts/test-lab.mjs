@@ -349,6 +349,8 @@ try {
   }
   assert.equal(titles.size,85);assert.equal(keys.size,85);
   const revisedAssemblies=[
+   ['实体防护墙','Solid boundary wall',3],
+   ['安全玻璃','Security glazing',2],
    ['安全储物柜','Secure storage cabinet',4],
    ['门磁状态传感器','Door contact',3],
    ['凭证读取器','Credential reader',4],
