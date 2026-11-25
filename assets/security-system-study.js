@@ -79,12 +79,13 @@ function visitorScene(i,zh){
  const cuboid=(x,y,w,d,h,color,z=0,selected=false)=>{
   const a=p(x,y,z),b=p(x+w,y,z),c=p(x+w,y+d,z),e=p(x,y+d,z);
   const A=p(x,y,z+h),B=p(x+w,y,z+h),C=p(x+w,y+d,z+h),E=p(x,y+d,z+h);
-  const shades=color.map(k=>selected?k.replace(/^#.*$/, '#c6a77a'):k);
+  const shades=selected?['#e2cba8','#a88762','#c2a47a']:color;
   return polygon([e,c,C,E],shades[1])+polygon([b,c,C,B],shades[2])+polygon([A,B,C,E],shades[0],selected?'#f3d9ab':'#76858a');
  };
  const person=(x,y,coat,seated=false)=>{
   const [px,py]=p(x,y);
-  return '<g transform="translate('+px+' '+py+')"><ellipse cy="1" rx="9" ry="3" fill="#26343b" opacity=".4"/><path d="M-5 -18L-6 -1H-2L0-15L3-1H7L5-18Z" fill="#46575d"/><path d="M-8 -34Q0 -39 8 -34L10 -17H-10Z" fill="'+coat+'"/><circle cy="-43" r="7" fill="#c7ac95"/>'+(seated?'<path d="M-10 -3A12 12 0 1 1 12 -3" fill="none" stroke="#71868c" stroke-width="2"/>':'')+'</g>';
+  if(seated)return '<g transform="translate('+px+' '+py+')"><ellipse cy="2" rx="14" ry="4" fill="#26343b" opacity=".4"/><circle cx="-7" cy="-9" r="10" fill="#36474e" stroke="#a7b5b6" stroke-width="2"/><circle cx="12" cy="-2" r="4" fill="#36474e"/><path d="M-9-18H8L13-4H19" fill="none" stroke="#72868c" stroke-width="3"/><path d="M-8-27L5-25L5-17H-9Z" fill="'+coat+'"/><path d="M-6-18H8L13-7" fill="none" stroke="#46575d" stroke-width="6"/><circle cx="-1" cy="-34" r="6" fill="#c7ac95"/></g>';
+  return '<g transform="translate('+px+' '+py+')"><ellipse cy="1" rx="9" ry="3" fill="#26343b" opacity=".4"/><path d="M-5 -18L-6 -1H-2L0-15L3-1H7L5-18Z" fill="#46575d"/><path d="M-8 -34Q0 -39 8 -34L10 -17H-10Z" fill="'+coat+'"/><circle cy="-43" r="7" fill="#c7ac95"/></g>';
  };
  const tile=(x,y,w,d,fill)=>polygon([p(x,y),p(x+w,y),p(x+w,y+d),p(x,y+d)],fill);
  let v='<rect width="320" height="220" fill="#202e35"/>';
