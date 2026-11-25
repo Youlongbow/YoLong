@@ -95,8 +95,10 @@ try {
     assert.equal(await boundaryReview.count(),i===2?1:0);
     if(i===2){
      assert.equal(await boundaryReview.locator('dd').count(),2);
-     assert.equal(await practice.locator('.practice-figure svg').getAttribute('viewBox'),'0 0 320 180');
-     assert(await practice.locator('.practice-figure svg path').count()>8 || j>0);
+     assert.equal(await practice.locator('.practice-figure svg').getAttribute('viewBox'),'0 0 320 210');
+     assert.equal(await practice.locator('.boundary-gallery').count(),1);
+     assert(await practice.locator('.practice-figure svg polygon').count()>20);
+     assert(await practice.locator('.boundary-material').innerText());
     }
     const review=page.locator('.video-engineering-review');
     assert.equal(await review.count(),i===0?1:0);
