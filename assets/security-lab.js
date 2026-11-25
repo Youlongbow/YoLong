@@ -711,21 +711,22 @@ function initOverview(lang,library){
  P('通过事件评估、通知、责任分工、外部协调与恢复实现组织响应。','Support organizational response through assessment, notification, accountability, coordination and recovery.')];
  const H=(id,n,layer,fn,sys,anchor,why,rel,device)=>({id,n,layer,fn,sys,anchor,why,rel,device});
  const points=[
- H('public-info',P('公共信息与导向','Public information'),0,[0,3],[0,2],[-4.8,.5,3.55],P('帮助正常使用者识别服务入口、空间用途及行为规则。','Helps legitimate users identify services, space uses and conduct expectations.'),P('公共信息、接待人员与社区沟通','Public information, reception and community engagement'),'safety-and-security-signage'),
- H('external-services',P('外部服务接口','External service interface'),0,[3,4],[2],[3.9,.3,3.55],P('组织与社区、公共服务及应急服务的日常协调。','Organizes routine coordination with community, public services and emergency services.'),P('联络责任、信息更新与服务协议','Liaison ownership, information updates and service agreements'),null),
- H('boundary',P('空间边界','Spatial boundary'),1,[0,2],[0,2],[-5.6,.65,-.3],P('建立明确的空间界面，构件需与正常使用、材料及维护条件协调。','Defines a clear spatial interface; assemblies must suit ordinary use, materials and upkeep.'),P('边界构件、标识及设施管理','Boundary assemblies, signage and facilities management'),'welded-mesh-fence'),
- H('arrival',P('到访与通行管理','Arrival and circulation'),1,[0,3],[0,1,2],[.15,.65,2.75],P('协调人员到访、公共服务、正常车辆活动及无障碍需求。','Coordinates arrivals, public services, ordinary vehicle activity and accessibility.'),P('访客登记、交通组织及接待程序','Visitor registration, circulation and reception'),'visitor-kiosk'),
+ H('public-info',P('公共信息与导向','Public information'),0,[0,3],[0,2],[-3.15,.84,3.75],P('帮助正常使用者识别服务入口、空间用途及行为规则。','Helps legitimate users identify services, space uses and conduct expectations.'),P('公共信息、接待人员与社区沟通','Public information, reception and community engagement'),'safety-and-security-signage'),
+ H('external-services',P('外部服务接口','External service interface'),0,[3,4],[2],[5.5,.3,5.03],P('组织与社区、公共服务及应急服务的日常协调。','Organizes routine coordination with community, public services and emergency services.'),P('联络责任、信息更新与服务协议','Liaison ownership, information updates and service agreements'),null),
+ H('boundary',P('完整周界系统','Complete perimeter system'),1,[0,2],[0,2],[-6.25,.77,.0],P('沿园区边界连续展示围栏、立柱、网片、门体及连接构件。观察围界和出入口如何共同定义场地边界；保护性能由项目需求及完整构件验证确定。','Follow the boundary around the campus to examine fence panels, posts, gates and fittings. The boundary and entrances define the site together; performance is determined by project requirements and assembly evidence.'),P('边界构件、标识及设施管理','Boundary assemblies, signage and facilities management'),'welded-mesh-fence'),
+ H('arrival',P('出入口与访客管理','Entrance and visitor management'),1,[0,3],[0,1,2],[1.76,.86,3.05],P('协调人员到访、公共服务、正常车辆活动及无障碍需求。','Coordinates arrivals, public services, ordinary vehicle activity and accessibility.'),P('访客登记、交通组织及接待程序','Visitor registration, circulation and reception'),'visitor-kiosk'),
  H('movement',P('场区道路与步行空间','Circulation and walkways'),2,[3],[0,2],[.65,.12,.4],P('减少正常人车活动冲突，保持路线信息及公共服务可达。','Reduces conflicts in ordinary circulation and maintains access to services and information.'),P('道路、导向及交通管理','Roads, wayfinding and traffic management'),'protective-railing'),
- H('lighting',P('公共空间照明','Public space lighting'),2,[0,3],[1,2],[3.25,1.15,1.65],P('根据人员活动和可视性需求审查照明、眩光及维护。','Review lighting, glare and maintenance against activity and visibility needs.'),P('照明、环境条件与设施管理','Lighting, environmental conditions and facilities management'),'security-lighting'),
+ H('lighting',P('公共空间照明系统','Public space lighting system'),2,[0,3],[1,2],[2.1,1.35,1.46],P('根据人员活动和可视性需求审查照明、眩光及维护。','Review lighting, glare and maintenance against activity and visibility needs.'),P('照明、环境条件与设施管理','Lighting, environmental conditions and facilities management'),'security-lighting'),
  H('assistance',P('人员求助与公共服务','Assistance and welfare'),2,[3,4],[1,2],[-3.6,.7,1.65],P('为人员提供可识别的求助服务，明确接听及后续责任。','Provides recognizable assistance services with defined answering and follow-up duties.'),P('求助终端、接待和公共信息','Assistance terminals, reception and public information'),'emergency-assistance-station'),
  H('common-space',P('公共活动空间','Shared outdoor space'),2,[0,3],[0,2],[3.8,.15,-.15],P('通过维护、空间使用和环境品质支持正常活动。','Supports ordinary activity through maintenance, use and environmental quality.'),P('景观、人员服务及日常维护','Landscape, personnel services and routine upkeep'),'natural-surveillance'),
- H('reception',P('建筑接待','Building reception'),3,[0,3],[0,1,2],[-3.25,1.1,-1.35],P('在建筑使用界面提供接待、业务信息及授权服务。','Provides reception, business information and authorization services at the building interface.'),P('接待柜台、访客信息及服务职责','Reception counter, visitor information and service duties'),'visitor-service-counter'),
- H('assembly',P('建筑门窗构件','Building assemblies'),3,[2,3],[0,2],[-1.6,1.45,-2.5],P('将门窗作为完整构件，按功能要求审查认证、安装、消防及维护。','Review doors and windows as assemblies against function, certification, installation, fire safety and maintenance.'),P('建筑、门窗及工程验收','Architecture, assemblies and engineering acceptance'),'security-door'),
+ H('reception',P('建筑接待','Building reception'),3,[0,3],[0,1,2],[-3.25,1.1,-1.15],P('在建筑使用界面提供接待、业务信息及授权服务。','Provides reception, business information and authorization services at the building interface.'),P('接待柜台、访客信息及服务职责','Reception counter, visitor information and service duties'),'visitor-service-counter'),
+ H('assembly',P('建筑门窗构件','Building assemblies'),3,[2,3],[0,2],[-4.45,1.05,.1],P('将门窗作为完整构件，按功能要求审查认证、安装、消防及维护。','Review doors and windows as assemblies against function, certification, installation, fire safety and maintenance.'),P('建筑、门窗及工程验收','Architecture, assemblies and engineering acceptance'),'security-door'),
  H('workspace',P('业务空间与使用权限','Workspaces and authorized use'),3,[0,3],[0,1,2],[2.85,1.1,-1.85],P('以工作职责、正常使用及个人隐私为基础开展授权管理。','Base authorization management on work responsibilities, ordinary use and privacy.'),P('人员授权、凭证管理与正常疏散','Personnel authorization, credential management and ordinary egress'),'credential-reader'),
- H('records',P('信息与文件管理','Information and records'),4,[2,3],[0,2],[-2.2,.8,-.35],P('明确文件分类、合法访问、保管责任和交接记录。','Define record classification, lawful access, custody and handover records.'),P('储物设施、信息治理与人员责任','Storage, information governance and personnel accountability'),'document-safe'),
- H('equipment',P('设备与物资管理','Equipment and materials'),4,[2,3],[0,2],[3.75,.75,-.8],P('建立资产登记、领用归还、维护及更新要求。','Define inventory, issue and return, maintenance and replacement requirements.'),P('储物构件、资产台账与工作单','Storage assemblies, inventory and work orders'),'secure-storage-cabinet'),
- H('event',P('事件信息与评估','Event information and assessment'),4,[1,4],[1,2],[.1,.85,-2.8],P('明确事件信息的合法用途、记录、评估与责任交接。','Define lawful event-information purposes, recording, assessment and handover.'),P('信息系统、人员报告与事件管理','Information systems, staff reports and event management'),'incident-management-workstation'),
- H('continuity',P('运行连续性与协调','Continuity and coordination'),4,[3,4],[1,2],[1.05,.8,-1.55],P('从关键业务服务出发明确供电、通信、维护及恢复责任。','Define power, communications, maintenance and recovery responsibilities from essential service needs.'),P('备用供电、设施状态和业务连续性程序','Backup power, facility status and continuity procedures'),'backup-power')
+ H('records',P('信息与文件管理','Information and records'),4,[2,3],[0,2],[-2.2,.8,-.46],P('明确文件分类、合法访问、保管责任和交接记录。','Define record classification, lawful access, custody and handover records.'),P('储物设施、信息治理与人员责任','Storage, information governance and personnel accountability'),'document-safe'),
+ H('equipment',P('设备与物资管理','Equipment and materials'),4,[2,3],[0,2],[3.46,.75,-.65],P('建立资产登记、领用归还、维护及更新要求。','Define inventory, issue and return, maintenance and replacement requirements.'),P('储物构件、资产台账与工作单','Storage assemblies, inventory and work orders'),'secure-storage-cabinet'),
+ H('event',P('事件信息与评估','Event information and assessment'),4,[1,4],[1,2],[.1,.85,-2.32],P('明确事件信息的合法用途、记录、评估与责任交接。','Define lawful event-information purposes, recording, assessment and handover.'),P('信息系统、人员报告与事件管理','Information systems, staff reports and event management'),'incident-management-workstation'),
+ H('continuity',P('运行连续性与协调','Continuity and coordination'),4,[3,4],[1,2],[4.25,.8,-.69],P('从关键业务服务出发明确供电、通信、维护及恢复责任。','Define power, communications, maintenance and recovery responsibilities from essential service needs.'),P('备用供电、设施状态和业务连续性程序','Backup power, facility status and continuity procedures'),'backup-power'),
+ H('video',P('建筑视频监控','Building video surveillance'),3,[1],[1,2],[-4.5,1.9,-1.23],P('观察同一视频系统中多个建筑摄像机的共同作用。视频图像支持合法的观察、事件评估和记录；使用和维护应有明确责任。','Explore multiple building cameras as part of one video system. Images support lawful observation, event assessment and recording; use and upkeep require accountable ownership.'),P('视频管理、照明、信息保护及人员评估','Video management, lighting, information protection and human assessment'),'bullet-camera')
  ];
  const industries=[
  [P('炼油厂','Oil refinery'),P('工艺环境与连续生产','Process environment and continuity')],
@@ -756,53 +757,101 @@ function initOverview(lang,library){
  const next=$('#overview-next');industries.forEach((a,i)=>{const b=button(next,'',()=>library.openIndustry(i));b.append(el('strong',t(a[0])),el('span',t(a[1])))});
  function solids(){
   const out=[];
-  const B=(x,y,z,w,h,d,k,shape,group=-1,device=-1)=>out.push({p:[x,y,z,w,h,d,k,shape],g:group,device,tilt:0,spin:0});
+  const B=(x,y,z,w,h,d,k,shape,group=-1,device=-1,spin=0)=>out.push({p:[x,y,z,w,h,d,k,shape],g:group,device,tilt:0,spin});
   const cyl=(x,y,z,w,h,d,k,g=-1,id=-1)=>B(x,y,z,w,h,d,k,'cylinder',g,id);
-  const grass='#78836c',pavement='#aaa79a',dark='#515b5f',wall='#b8bbb4',glass='#526e7b',steel='#929fa3';
-  B(0,-.4,0,14.4,.35,10.6,'#414e54');
-  B(0,-.05,0,14.15,.05,10.3,grass);
-  B(0,.01,4.3,14,.025,1.36,'#62696b',null,0);
-  B(0,.04,4.3,13.85,.008,.045,'#c5c2ad',null,0);
-  B(-4.3,.025,3.12,3.2,.06,1.0,pavement,null,0);
-  B(3.9,.025,3.12,3.5,.06,1.0,pavement,null,0);
-  B(0,.025,1.4,12,.05,1.6,'#8f9996',null,2);
-  B(.2,.025,-.5,1.5,.06,5.1,pavement,null,2);
-  B(-3.1,.025,-.5,4.2,.06,4.1,'#9b9f8e',null,3);
-  B(3.3,.025,-.5,4.0,.06,4.0,'#9b9f8e',null,3);
-  const tree=(x,z)=>{cyl(x,.05,z,.11,.68,.11,'#776855');B(x,.54,z,.75,.7,.72,'#667c57','sphere');B(x-.22,.5,z+.12,.48,.5,.48,'#738765','sphere');};
-  for(const [x,z] of [[-6.4,3.25],[6.4,3.2],[-6,-3.75],[5.9,-3.8],[-4.9,2.5],[4.8,2.65],[4.5,.35],[3.1,.35]])tree(x,z);
-  // Architectural boundary example within the teaching artwork.
-  for(let i=0;i<7;i++){const x=-5.65+i*.52;B(x,.04,-.12,.055,.72,.055,steel,null,1,2)}
-  for(let i=0;i<2;i++)B(-4.09,.15+i*.5,-.12,3.12,.036,.04,steel,null,1,2);
-  for(let i=0;i<24;i++)B(-5.61+i*.13,.16,-.12,.018,.49,.022,'#a5aca9',null,1,2);
-  const building=(x,z,w,d,h,color,group,id)=>{
-   B(x,0,z,w,h,d,color,null,group,id);B(x,h,z,w+.13,.10,d+.13,'#68767a',null,group,id);
-   for(let f=0;f<Math.floor(h/.72);f++)for(let j=0;j<Math.floor(w/.6);j++){let xx=x-w/2+.33+j*.6,yy=.24+f*.71;B(xx,yy,z+d/2+.018,.42,.36,.03,'#7f8d8c',null,group,id);B(xx,yy+.035,z+d/2+.045,.34,.28,.012,glass,null,group,id);B(xx,yy+.035,z+d/2+.055,.018,.28,.01,'#c3c9c7',null,group,id)}
-   for(let f=0;f<Math.floor(h/.72);f++)for(let j=0;j<Math.floor(d/.65);j++){let zz=z-d/2+.36+j*.65;B(x+w/2+.018,.24+f*.71,zz,.025,.36,.43,glass,null,group,id)}
-   B(x+.22,0,z+d/2+.06,.48,.68,.06,glass,null,group,id);B(x+.22,.72,z+d/2+.16,1.1,.09,.56,'#a9b7b7',null,group,id);
-   B(x+.65,h+.10,z-.35,.64,.17,.5,'#9ba6a7',null,group,id);
+  const grass='#82946f',pavement='#b6b8b1',road='#545c60',steel='#869a9e',glass='#527580';
+  B(0,-.38,0,15.6,.34,11.8,'#485459');B(0,-.04,0,15.3,.04,11.5,grass);
+  // Ordinary streets, parking, pedestrian paths and landscaped context.
+  B(0,.008,4.76,15.3,.025,1.58,road,null,0);
+  for(let i=0;i<12;i++)B(-7+i*1.25,.038,4.76,.62,.01,.037,'#e5e0c7',null,0);
+  B(0,.018,3.76,15.3,.07,.35,pavement,null,0);
+  B(0,.026,2.04,11.7,.035,1.38,road,null,2,4);
+  B(.10,.025,3.35,2.25,.035,1.9,road,null,2,4);
+  B(.1,.026,-.85,1.65,.035,4.7,road,null,2,4);
+  B(-3.25,.028,-.05,4.5,.035,2.05,pavement,null,2,4);
+  B(3.4,.028,.08,4.1,.035,1.75,pavement,null,2,4);
+  B(-4.1,.03,1.07,3.5,.03,.45,'#d2cfc1',null,2,4);
+  B(4.05,.03,1.07,3.4,.03,.45,'#d2cfc1',null,2,4);
+  B(-3.4,.035,2.95,3.3,.02,.66,'#717b7c',null,2,4);
+  for(let i=0;i<5;i++)B(-5+i*.75,.061,2.95,.025,.01,.66,'#dedbca',null,2,4);
+  // Continuous architectural property boundary and ordinary entrance openings.
+  function fence(x1,z1,x2,z2,id=2){
+   const L=Math.hypot(x2-x1,z2-z1),a=Math.atan2(z2-z1,x2-x1),co=Math.cos(a),si=Math.sin(a),cx=(x1+x2)/2,cz=(z1+z2)/2;
+   const n=Math.ceil(L/.68),steps=Math.ceil(L/.145);
+   for(let i=0;i<=n;i++){let f=i/n;B(x1+(x2-x1)*f,.025,z1+(z2-z1)*f,.048,.78,.048,steel,null,1,id);B(x1+(x2-x1)*f,.025,z1+(z2-z1)*f,.11,.055,.11,'#9c9f92',null,1,id)}
+   for(const y of [.16,.43,.73])B(cx,y,cz,L,.026,.026,steel,null,1,id,a);
+   for(let i=0;i<=steps;i++){let f=i/steps;B(x1+(x2-x1)*f,.16,z1+(z2-z1)*f,.012,.57,.012,'#a5b5b4',null,1,id)}
+  }
+  fence(-6.25,-4.25,6.25,-4.25);fence(-6.25,-4.25,-6.25,3.45);fence(6.25,-4.25,6.25,3.45);
+  fence(-6.25,3.45,-1.32,3.45);fence(1.32,3.45,6.25,3.45);
+  // The gate is depicted as an ordinary architectural access point, with no performance claims.
+  fence(-1.32,3.45,0,3.45,3);fence(0,3.45,1.32,3.45,3);
+  for(const x of [-1.34,1.34])B(x,.02,3.45,.14,.91,.14,'#687d81',null,1,3);
+  B(1.76,.035,3.08,.90,.07,1.20,pavement,null,1,3);
+  B(1.76,.105,3.05,.72,.68,.86,'#c0c8c7',null,1,3);
+  B(1.76,.79,3.05,.87,.08,1.01,'#58686d',null,1,3);
+  B(1.76,.45,3.50,.54,.27,.025,glass,null,1,3);B(1.38,.45,3.05,.022,.27,.56,glass,null,1,3);
+  B(-1.14,.04,3.10,.17,.43,.17,'#9daaa9',null,1,3);B(-1.14,.35,3.22,.11,.09,.02,glass,null,1,3);
+  for(let i=0;i<5;i++)B(-.92+i*.46,.064,2.85,.24,.01,.49,'#dddacb',null,2,4);
+  // A readable, inhabited campus rather than a collection of models.
+  const building=(x,z,w,d,h,color,id,roofType='flat')=>{
+   B(x,.035,z,w,h,d,color,null,3,id);
+   B(x,h+.035,z,w+.12,roofType==='roof'?.34:.10,d+.12,'#697d81',roofType==='roof'?'roof':null,3,id);
+   B(x,.04,z,w+.04,.08,d+.04,'#a1aaa4',null,3,id);
+   for(let f=0;f<Math.max(1,Math.floor(h/.66));f++)for(let j=0;j<Math.floor(w/.56);j++){
+    const xx=x-w/2+.29+j*.56,yy=.22+f*.64;
+    B(xx,yy,z+d/2+.018,.43,.37,.032,'#7d9194',null,3,id);B(xx,yy+.035,z+d/2+.045,.35,.29,.012,glass,null,3,id);B(xx,yy+.035,z+d/2+.06,.018,.29,.012,'#becac8',null,3,id);
+    B(xx,yy,z-d/2-.018,.40,.32,.025,glass,null,3,id);
+   }
+   for(let f=0;f<Math.max(1,Math.floor(h/.66));f++)for(let j=0;j<Math.floor(d/.58);j++){
+    const zz=z-d/2+.32+j*.58;B(x+w/2+.025,.22+f*.64,zz,.028,.33,.40,glass,null,3,id);B(x-w/2-.025,.22+f*.64,zz,.028,.33,.40,glass,null,3,id);
+   }
+   B(x+.22,.04,z+d/2+.066,.53,.76,.075,'#48616a',null,3,id);B(x+.22,.80,z+d/2+.19,1.0,.09,.57,'#a4b5b6',null,3,id);
+   if(roofType!=='roof'){for(const dx of [-.43,.43]){B(x+dx,h+.135,z-.25,.46,.18,.45,'#a3aeac',null,3,id);B(x+dx,h+.315,z-.25,.36,.018,.36,'#727f83',null,3,id)}}
   };
-  building(-3.2,-2.1,3.45,1.9,1.70,wall,3,8);
-  building(3.15,-2.1,3.4,1.9,1.35,'#c0b9a8',3,10);
-  building(.05,-3.0,1.9,1.55,.98,'#9eacaf',3,13);
-  B(-3.2,.05,-.35,2.4,.08,.9,'#9ba6a4',null,3,8);
-  B(-3.2,.12,-.35,1.6,.39,.53,'#a78d73',null,3,8);B(-3.2,.51,-.35,1.7,.06,.6,'#cfcbc0',null,3,8);
-  B(-2.2,.05,-.35,.48,.85,.5,'#6f8188',null,4,11);B(-2.2,.28,-.086,.35,.4,.04,'#8d9c9e',null,4,11);
-  B(3.75,.05,-.8,.75,.75,.48,'#849596',null,4,12);for(let j=0;j<3;j++)B(3.75,.12+j*.21,-.54,.65,.16,.025,'#a5aeaa',null,4,12);
-  B(1.05,.05,-1.55,.52,.75,.48,'#7e8f95',null,4,14);B(1.05,.53,-1.29,.33,.13,.025,glass,null,4,14);
-  B(.1,.05,-2.0,.95,.44,.55,'#9caaad',null,4,13);B(.1,.5,-2.08,.6,.35,.09,glass,null,4,13);
-  for(const x of [-4.8,-1.1,3.25,5.3]){cyl(x,.02,1.65,.055,1.38,.055,steel,2,5);B(x,1.37,1.65,.32,.09,.18,'#d2d0bb',null,2,5)}
-  B(-4.8,.04,3.55,.055,.64,.055,steel,null,0,0);B(-4.8,.56,3.55,.67,.3,.08,'#d5d2bc',null,0,0);
-  B(.15,.05,2.75,.36,.70,.3,'#9daaa9',null,1,3);B(.15,.55,2.91,.24,.19,.025,glass,null,1,3);
-  B(-3.6,.05,1.65,.26,.76,.22,'#62879b',null,2,6);B(-3.6,.48,1.77,.16,.15,.025,'#d1b296',null,2,6);
-  for(const x of [3.4,4.2]){B(x,.05,.15,.7,.21,.27,'#9e8c74',null,2,7);B(x,.23,.25,.7,.27,.06,'#9e8c74',null,2,7);}
-  for(const [x,z] of [[-4.4,1.2],[-2.55,.65],[.8,1.0],[3.9,2.15],[4.9,.8]]){B(x-.035,.04,z,.05,.22,.07,'#4c5a63');B(x+.035,.04,z,.05,.22,.07,'#4c5a63');B(x,.25,z,.16,.19,.095,'#b0a28b','rounded');B(x,.44,z,.10,.11,.10,'#bda087','sphere')}
+  building(-3.5,-2.45,3.45,2.35,1.96,'#cbc8b9',8);
+  building(3.45,-2.35,3.5,2.2,1.35,'#bfc5c2',10,'roof');
+  building(.05,-3.30,1.67,1.1,1.12,'#a6b5b8',13);
+  building(-4.45,.10,1.75,1.25,.98,'#c9c5b5',9);
+  // Landscape, parking and service areas.
+  const tree=(x,z)=>{cyl(x,.05,z,.10,.61,.10,'#817057');B(x,.50,z,.66,.73,.65,'#617b53','sphere');B(x-.19,.55,z+.14,.43,.45,.47,'#759064','sphere')};
+  for(const [x,z] of [[-7,3.65],[6.9,3.64],[-5.75,-3.75],[5.7,-3.7],[-5.5,1.1],[5.45,1.0],[2.1,.3],[4.75,.4],[-1.65,-.5],[6.9,-2],[-7,-1.3]])tree(x,z);
+  B(3.65,.05,.04,2.1,.06,1.05,'#93a17d',null,2,7);
+  for(const x of [3.0,4.25]){B(x,.12,.21,.65,.13,.29,'#9d886d',null,2,7);B(x,.25,.34,.65,.25,.055,'#a38f71',null,2,7)}
+  // Several recognisable lighting fixtures in the same public-space system.
+  for(const [x,z] of [[-5.4,1.46],[-2.1,1.46],[2.1,1.46],[5.35,1.46],[-.94,-1.75],[1.0,-1.75]]){
+   cyl(x,.04,z,.053,1.25,.053,steel,2,5);B(x,1.28,z,.31,.075,.12,'#c8d0c9',null,2,5);B(x,1.27,z+.015,.23,.018,.08,'#f2e1aa',null,2,5);
+  }
+  // Visible camera examples attached to ordinary building facades.
+  for(const [x,y,z] of [[-4.5,1.68,-1.23],[-2.6,1.68,-1.23],[2.4,1.13,-1.21],[4.45,1.13,-1.21]]){
+   B(x,y,z,.10,.045,.16,'#87989b',null,3,15);B(x,y+.035,z+.12,.18,.11,.25,'#c4cdcd','rounded',3,15);B(x,y+.05,z+.255,.12,.07,.025,'#384b55',null,3,15);
+  }
+  for(const [x,z] of [[-3.15,3.75],[4.6,3.75],[-5.8,.7]]){B(x,.04,z,.06,.58,.06,steel,null,0,0);B(x,.56,z,.65,.28,.05,'#d8d3bd',null,0,0)}
+  for(const [x,z] of [[-3.6,1.23],[4.75,1.18]]){B(x,.05,z,.22,.64,.20,'#628a9d',null,2,6);B(x,.46,z+.11,.13,.12,.025,'#e1cc9e',null,2,6)}
+  const car=(x,z,color,group=2,id=4)=>{
+   B(x,.15,z,.78,.16,.39,color,'rounded',group,id);B(x-.06,.31,z,.43,.16,.35,color,'rounded',group,id);
+   B(x-.06,.40,z,.32,.05,.35,glass,'rounded',group,id);
+   for(const dx of [-.23,.23])for(const dz of [-.20,.20])B(x+dx,.04,z+dz,.18,.18,.075,'#2d373a','wheel',group,id);
+   B(x+.396,.22,z,.015,.07,.32,'#dfe1ca',null,group,id);
+  };
+  car(-4.7,2.95,'#d4d5c9');car(-3.85,2.95,'#78919c');car(-2.95,2.95,'#bbb0a1');car(3.0,2.12,'#d0d0c3');car(-2.5,4.48,'#b1b9bc',0,1);car(5.5,5.03,'#a2b2b7',0,1);
+  for(const [x,z] of [[-4.4,1.2],[-2.55,.65],[.8,1.0],[3.9,1.13],[4.9,.8],[1.65,3.5],[-3,3.78]]){
+   B(x-.04,.04,z,.06,.22,.08,'#4c5a63');B(x+.04,.04,z,.06,.22,.08,'#4c5a63');B(x,.25,z,.17,.2,.10,'#b6a384','rounded');B(x,.45,z,.11,.12,.11,'#bd9f83','sphere');
+  }
+  // Exposed teaching exhibit adjacent to the buildings: asset and operational concepts, not a floor plan.
+  B(-3.20,.06,-.50,2.25,.065,.90,'#d2d1c4',null,3,8);
+  B(-3.52,.13,-.48,1.18,.34,.42,'#9c8b79',null,3,8);B(-3.52,.47,-.48,1.25,.045,.47,'#ded8ca',null,3,8);
+  for(const x of [-2.65,-2.2]){B(x,.12,-.46,.36,.66,.41,'#829195',null,4,11);B(x,.31,-.235,.26,.34,.025,'#b0b9b7',null,4,11)}
+  for(const x of [2.70,3.46]){B(x,.08,-.65,.62,.64,.45,'#8b9d9d',null,4,12);for(let j=0;j<3;j++)B(x,.16+j*.17,-.41,.54,.13,.025,'#b4bcb7',null,4,12)}
+  B(4.25,.08,-.69,.46,.71,.47,'#809397',null,4,14);B(4.25,.52,-.44,.31,.13,.025,glass,null,4,14);
+  B(.10,.08,-2.32,.95,.36,.54,'#b2bdba',null,4,13);
+  for(const x of [-.18,.28]){B(x,.45,-2.38,.37,.29,.08,glass,null,4,13);B(x,.42,-2.38,.10,.08,.15,'#849596',null,4,13)}
   return out;
  }
  function draw(){if(raf)cancelAnimationFrame(raf);raf=requestAnimationFrame(render)}
  function render(){
   raf=0;const w=C.clientWidth,h=C.clientHeight;if(!w||!h)return;const d=Math.min(window.devicePixelRatio||1,2);C.width=w*d;C.height=h*d;ctx.scale(d,d);
-  const s=Math.min(w/17.1,h/12.7)*zoom,co=Math.cos(yaw),si=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
+  const s=Math.min(w/19.0,h/14.5)*zoom,co=Math.cos(yaw),si=Math.sin(yaw),cp=Math.cos(pitch),sp=Math.sin(pitch);
   const project=([x,y,z])=>{const X=x*co-z*si,Z=x*si+z*co;return[w/2+X*s,h*.48+(Z*sp-y*cp)*s,Z*cp+y*sp]};
   const scene=solids().map(o=>{if(layer>=0&&o.g>=0&&o.g!==layer){o.p=o.p.slice();const n=parseInt(o.p[6].slice(1),16),rgb=[n>>16,(n>>8)&255,n&255];o.p[6]='#'+rgb.map(v=>Math.round(v*.62+40).toString(16).padStart(2,'0')).join('')}return o});
   let gpuOk=false;if(gpu)try{gpuOk=gpu.draw({solids:scene,mesh:library.mesh,zone:selected>=0?points[selected].layer:-1,selected,key:[layer,selected].join('|'),w,h,s,yaw,pitch,d})}catch(e){console.warn('Overview compatibility mode',e);gpu=null}
