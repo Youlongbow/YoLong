@@ -82,16 +82,16 @@ function systemPractice(host,system,zh,options={}){
  {title:['公共照明服务面板','Public lighting service panel'],names:[['日间公共活动','Daytime activity'],['夜间公共活动','Evening activity'],['维护交接','Maintenance handover']],messages:[['观察日间公共活动的视觉需求。','Observe the visual needs of daytime shared activity.'],['观察夜间照明服务的概念状态。','Observe a conceptual evening lighting service state.'],['确认设施维护及功能检查记录。','Confirm upkeep and functional inspection records.']],fields:[['服务状态','Service state'],['功能记录','Function record']],action:['记录功能检查','Record service check'],result:['已登记功能检查及维护交接。','Service check and maintenance handover recorded.']}
  ];
  const s=specs[system];if(!s)return;
- const panel=e('section');panel.className='system-practice';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
+ const panel=e('section');panel.className='system-practice';if(system===0)panel.className+=' video-console';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
  panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立绘制的虚构业务图像。编号用于对应三维示意设备，图像不属于实际摄像机画面。','Four independently drawn fictional business images. IDs link to illustrative assemblies; these are not actual camera feeds.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
- const tabs=e('div');tabs.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
+ const tabs=e('div');tabs.style.cssText=system===0?'display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,145px),1fr));gap:6px;margin:12px 0':'display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
  const figure=e('div');figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
  const detail=e('p'),state=e('p');state.setAttribute('aria-live','polite');const action=e('button',tr(...s.action));action.type='button';
  const memory=options.memory||{current:0,recorded:new Set()};let current=memory.current;const recorded=memory.recorded;
  const render=()=>{
   tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===current)));
   const view=system===0?['0 0 320 208',videoWall(current,zh)]:['0 0 320 160',stageScene(system,system===3?(current===2?3:current):current,zh)];
-  figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'360':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
+  figure.innerHTML='<svg viewBox="'+view[0]+'" role="img" aria-label="'+tr(...s.names[current])+'" style="display:block;width:100%;max-height:'+(system===0?'460':'200')+'px;background:'+(system===3&&current===1?'#101722':'#253940')+'">'+view[1]+'</svg>';
   detail.textContent=tr(...s.fields[0])+'：'+tr(...s.names[current])+' · '+tr(...s.messages[current]);
   state.textContent=tr(...s.fields[1])+'：'+(recorded.has(current)?tr(...s.result):tr('待登记','Not recorded'));
   memory.current=current;state.dataset.recorded=String(recorded.has(current));action.disabled=recorded.has(current);progress.textContent=tr('本系统已完成记录：','System records completed: ')+recorded.size+' / '+s.names.length;progress.dataset.completed=String(recorded.size);
@@ -104,6 +104,35 @@ function systemPractice(host,system,zh,options={}){
  panel.append(tabs,figure,detail,state,controls,progress);host.append(panel);render();
 }
 
+// Professional notes for the civilian workplace example. Requirements are agreed with the service owner.
+const videoReviewNotes=[
+ {title:['从业务需求定义图像用途','Define the purpose of images'],rows:[
+ [['需求','Requirement'],['明确使用图像要完成的业务任务、责任方及使用理由。','Define the business task, accountable owner and legitimate reason for using images.']],
+ [['设计评审','Design review'],['比较固定式、球型与可转动设备的基本使用特点，并结合环境、维护与个人隐私审查适用性。','Compare general characteristics of fixed, dome and movable devices; review suitability against environment, upkeep and privacy.']],
+ [['验收依据','Acceptance evidence'],['经批准的业务需求、图像使用政策及样本图像复核记录。','Approved business requirements, image-use policy and sample-image review.']]]},
+ {title:['理解信息服务与系统接口','Understand information services and interfaces'],rows:[
+ [['需求','Requirement'],['图像信息应在经授权的业务终端得到正确处理与呈现。','Image information should be correctly processed and presented at authorized service terminals.']],
+ [['设计评审','Design review'],['明确设备与应用兼容性、信息保密及系统维护责任，协调设施和信息技术部门。','Define device/application compatibility, information confidentiality and maintenance ownership with facilities and IT.']],
+ [['验收依据','Acceptance evidence'],['接口清单、功能测试记录、信息管理责任与服务交接文件。','Interface register, functional test records, information ownership and service handover documents.']]]},
+ {title:['区分视频管理与记录服务','Distinguish video management from record services'],rows:[
+ [['需求','Requirement'],['授权用户能够按业务目的查看及检索所需记录。','Authorized users can view and retrieve records required for their legitimate tasks.']],
+ [['设计评审','Design review'],['视频管理平台承担查看与管理功能，记录服务承担保存与检索。按业务目的及适用规则定义保留期限、使用权限和交接。','The video platform provides viewing and management; recording services support storage and retrieval. Define retention, access rights and handover according to purpose and applicable rules.']],
+ [['验收依据','Acceptance evidence'],['使用权限清单、检索功能测试、记录保留及删除政策。','Authorized-use register, retrieval tests, retention and deletion policy.']]]},
+ {title:['将图像信息转化为负责的业务行动','Translate image information into accountable action'],rows:[
+ [['需求','Requirement'],['图像由具备相应职责的人员复核，依据事实记录并协调后续业务。','Responsible staff review images, record facts and coordinate follow-up.']],
+ [['设计评审','Design review'],['重视显示界面可读性、人员培训、信息交接、隐私及审计责任。','Review display readability, staff training, information handover, privacy and audit ownership.']],
+ [['验收依据','Acceptance evidence'],['操作培训记录、经批准的程序、服务演练记录及管理复核。','Training records, approved procedures, service exercises and management review.']]]}
+];
+function addVideoReview(host,step,zh){
+ const d=videoReviewNotes[step];if(!d)return;const l=zh?0:1;
+ const el=(tag,txt)=>{const n=document.createElement(tag);n.textContent=txt;return n};
+ const panel=document.createElement('section');panel.className='video-engineering-review';panel.style.cssText='grid-column:1/-1;border-top:1px solid #52626a;padding:14px 0 4px;min-width:0';
+ panel.append(el('h4',d.title[l]));
+ const dl=document.createElement('dl');dl.style.cssText='display:grid;grid-template-columns:minmax(0,1fr);gap:5px;margin:8px 0';
+ for(const [key,copy] of d.rows){const dt=el('dt',key[l]),dd=el('dd',copy[l]);dt.style.cssText='font-weight:650;color:#d7bb93';dd.style.cssText='margin:0 0 9px;line-height:1.65';dl.append(dt,dd)}
+ panel.append(dl);const ref=el('a',zh?'NPSA：工作场所 CCTV 指导（英文 PDF）':'NPSA: CCTV in the Workplace (PDF)');ref.href='https://www.npsa.gov.uk/system/files/documents/a7/eb/20200203%20CCTV%20in%20the%20Workplace.pdf';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
+}
+
 export function renderSystemStudy(host,system,step,lang,icon,options={}){
  if(!host)return;
  const zh=lang==='zh',l=zh?0:1,data=rows[system*4+step];
@@ -113,5 +142,5 @@ export function renderSystemStudy(host,system,step,lang,icon,options={}){
  const scene=stageScene(system,step,zh);
  picture.innerHTML='<svg viewBox="0 0 320 160" aria-hidden="true"><rect width="320" height="160" fill="#18262c"/>'+scene+'</svg>';
  sample.append(el('h4',data[l]),picture,el('p',zh?'业务功能示意':'Illustrative service function'));
- const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);systemPractice(host,system,zh,options);
+ const record=el('div',null,'study-record');record.append(el('h4',zh?'业务与工程记录':'Service and engineering records'),el('strong',data[2+l]),el('p',data[4+l]));host.append(sample,record);if(system===0)addVideoReview(host,step,zh);systemPractice(host,system,zh,options);
 }
