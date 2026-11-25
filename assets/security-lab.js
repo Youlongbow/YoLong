@@ -808,6 +808,27 @@ function initStudio(lang,library){
   };
   const serviceCabinet=(x,z,w=.60,col='#a5aeaa')=>{B(x,.02,z,w,.065,.52,'#8f9a94');B(x,.085,z,w*.88,.68,.44,col);B(x,.37,z+.229,w*.70,.40,.025,'#b8c1b9');B(x+w*.27,.43,z+.25,.045,.12,.018,'#687a7e')};
   const ordinaryCanopy=(x,z,w,d,h)=>{shed(x,z,w,d,h,'#7b8d8d');B(x,h-.08,z+d/2,.90,.055,.025,'#c3c8bc')};
+  // Refinery-themed ordinary architectural details and office furniture.
+  // These decorative pieces are untagged and do not alter the protective-system geometry.
+  const refineryCladding=(x,z,w,d,h)=>{
+   for(let j=0;j<Math.floor(w/.16);j++){
+    const xx=x-w/2+.08+j*.16;
+    B(xx,.12,z-d/2-.02,.017,h*.75,.017,'#8d9c9d');
+   }
+   B(x,h*.80,z-d/2-.025,w*.92,.045,.035,'#d0d5ce');
+  };
+  const workTable=(x,z)=>{
+   table(x,z,.74,.38,.47);
+   B(x-.17,.52,z,.22,.12,.20,'#aab3aa','rounded');
+   B(x+.15,.52,z,.18,.06,.17,'#d0c8b6');
+   B(x+.16,.58,z,.11,.018,.12,'#e5e0d0');
+  };
+  const welfareFurniture=(x,z)=>{
+   B(x,.085,z,.66,.23,.36,'#839b95','rounded');
+   B(x,.315,z-.145,.66,.24,.075,'#839b95','rounded');
+   B(x-.30,.30,z,.065,.14,.34,'#899d97','rounded');
+   B(x+.30,.30,z,.065,.14,.34,'#899d97','rounded');
+  };
   // Fictional industrial context used for spatial learning.
   B(0,-.30,0,12.7,.28,8.1,'#2b3338');
   B(0,-.025,-.60,12.4,.025,6.6,scene===1?sand:asphalt);
@@ -816,7 +837,7 @@ function initStudio(lang,library){
    if(zone===0){
     if(scene===0){
      // Process silhouette and ordinary industrial civil works, not a protective layout.
-     platform(-2.2,-1.35,6.0,3.20,'#8b9591');tank(-4.3,-1.0,1.80,1.45);tank(-2.15,-1.7,1.65,1.25);tank(-.15,-.9,1.65,1.55);tower(1.9,-1.55,2.75);tower(3.05,-1.15,2.1);building(4.65,-1.25,1.75,1.6,.90);
+     platform(-2.2,-1.35,6.0,3.20,'#8b9591');tank(-4.3,-1.0,1.80,1.45);tank(-2.15,-1.7,1.65,1.25);tank(-.15,-.9,1.65,1.55);tower(1.9,-1.55,2.75);tower(3.05,-1.15,2.1);building(4.65,-1.25,1.75,1.6,.90);refineryCladding(4.65,-1.25,1.75,1.6,.90);
      for(const x of [1.40,2.15,2.90,3.65]){B(x,.03,-2.67,.07,.94,.07,'#7c8b8d');B(x,.91,-2.67,.13,.06,.29,'#a1abaa')}
      for(const z of [-2.80,-2.65,-2.50])put([2.55,.98,z,.055,.055,2.55,'#b4bcba','cylinderZ'],-1,-1,0,Math.PI/2);
      B(-2.2,.09,-3.0,5.65,.13,.09,'#a0aaa2');B(-2.2,.09,.25,5.65,.13,.09,'#a0aaa2');
@@ -846,11 +867,11 @@ function initStudio(lang,library){
     // Distinct ordinary business activities, depicted as fictional architectural scenes.
     if(scene===0){
      B(0,.025,-.4,3.4,.025,6.4,'#424b50');B(0,.06,-.4,.045,.008,5.8,'#d9d0b3');
-     B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');serviceRoom(-3.65,-1.8,2.65,1.65,1.12,'#b9c2bd','reception');building(-3.65,.85,2.5,1.1,.82);ordinaryCanopy(-3.65,1.67,2.45,.75,.87);
-     B(3.65,.02,-.4,3.35,.04,5.1,'#8c9999');building(3.6,-1.5,2.5,1.9,1.05);tank(4.8,1.05,.88,.8);
+     B(-3.7,.02,-.55,3.3,.04,5.3,'#a3aaa5');serviceRoom(-3.65,-1.8,2.65,1.65,1.12,'#b9c2bd','reception');building(-3.65,.85,2.5,1.1,.82);ordinaryCanopy(-3.65,1.67,2.45,.75,.87);refineryCladding(-3.65,.85,2.5,1.1,.82);
+     B(3.65,.02,-.4,3.35,.04,5.1,'#8c9999');building(3.6,-1.5,2.5,1.9,1.05);refineryCladding(3.6,-1.5,2.5,1.9,1.05);tank(4.8,1.05,.88,.8);
      // Ordinary refinery maintenance staging: wheeled service carts and bundled spare materials.
      for(const xx of [2.6,3.05]){B(xx,.04,1.72,.34,.06,.44,'#626f73');for(const zz of [1.55,1.89])cyl(xx,.01,zz,.11,.055,.11,'#343e42');B(xx,.10,1.72,.29,.24,.39,'#a9aaa0');B(xx,.35,1.72,.26,.055,.36,'#7a8b8d')}
-     vehicle(-.82,1.5,'truck','#b8c4c4',Math.PI/2);vehicle(.82,-.5,'pickup','#c0c6c3',Math.PI/2);person(-2.6,.4);person(2.6,1.05);
+     workTable(3.72,.45);vehicle(-.82,1.5,'truck','#b8c4c4',Math.PI/2);vehicle(.82,-.5,'pickup','#c0c6c3',Math.PI/2);person(-2.6,.4);person(2.6,1.05);
     }else if(scene===1){
      B(0,.022,-.25,4.8,.035,6.5,'#a59a85');B(-4,.025,-.8,2.9,.04,4.8,'#b4a48a');serviceRoom(-4,-1.7,2.6,1.5,.85,'#b4a48e','logistics');building(3.8,-1.7,2.75,1.45,.9,'#b8ac94','pitch');
      B(3.65,.026,.8,3.45,.025,2.15,'#918777');shed(3.65,.8,2.85,1.35,.98,'#8e9790');for(let i=0;i<4;i++)B(2.7+i*.59,.035,.85,.43,.29,.50,'#ad9d7c','rounded');
@@ -877,7 +898,7 @@ function initStudio(lang,library){
     B(0,.022,.30,10.4,.035,1.1,'#899493');
     if(scene===0){
      for(const x of [-3.8,0,3.8])serviceRoom(x,-1.85,3.0,1.55,1.02,'#bfc3b9','sleep');
-     serviceRoom(-3.7,1.45,3.0,1.30,1.05,'#c2c3b6','dining');serviceRoom(3.75,1.45,2.75,1.30,.82,'#b7c1bc','office');tree(-1.1,1.3);tree(1.1,1.3);vehicle(2.75,.30);
+     serviceRoom(-3.7,1.45,3.0,1.30,1.05,'#c2c3b6','dining');serviceRoom(3.75,1.45,2.75,1.30,.82,'#b7c1bc','office');if(workspaceCutaway){welfareFurniture(.05,1.65);table(.05,2.08,.56,.30,.32);}tree(-1.1,1.3);tree(1.1,1.3);vehicle(2.75,.30);
     }else if(scene===1){
      for(const x of [-4.4,-2.2,0,2.2,4.4])serviceRoom(x,-1.85,1.88,1.3,.80,'#b8aa91','sleep');
      serviceRoom(-3.65,1.5,3.15,1.35,.93,'#bdb19b','dining');serviceRoom(3.65,1.55,3.2,1.25,.86,'#a9aa9a','store');vehicle(1.1,.3,'pickup','#c1b59c');B(0,.02,1.52,2.7,.04,1.35,'#b5a88e');
