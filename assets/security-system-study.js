@@ -83,7 +83,7 @@ function systemPractice(host,system,zh,options={}){
  ];
  const s=specs[system];if(!s)return;
  const panel=e('section');panel.className='system-practice';panel.style.cssText='grid-column:1/-1;border:1px solid #46555b;border-radius:6px;padding:14px;margin-top:12px;min-width:0';
- panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立的虚构图像示例，可选择查看并登记复核。','Four independent fictional image examples; select and review a sample.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
+ panel.append(e('h4',tr(...s.title)),e('p',system===0?tr('四个独立绘制的虚构业务图像。编号用于对应三维示意设备，图像不属于实际摄像机画面。','Four independently drawn fictional business images. IDs link to illustrative assemblies; these are not actual camera feeds.'):tr('互动演示 · 虚构业务样本','Interactive demonstration · fictional service sample')));
  const tabs=e('div');tabs.style.cssText='display:flex;gap:6px;flex-wrap:wrap;margin:8px 0';
  const figure=e('div');figure.style.cssText='background:#18262c;border:1px solid #46555b;border-radius:5px;overflow:hidden';
  const detail=e('p'),state=e('p');state.setAttribute('aria-live','polite');const action=e('button',tr(...s.action));action.type='button';
@@ -96,8 +96,8 @@ function systemPractice(host,system,zh,options={}){
   state.textContent=tr(...s.fields[1])+'：'+(recorded.has(current)?tr(...s.result):tr('待登记','Not recorded'));
   memory.current=current;state.dataset.recorded=String(recorded.has(current));action.disabled=recorded.has(current);progress.textContent=tr('本系统已完成记录：','System records completed: ')+recorded.size+' / '+s.names.length;progress.dataset.completed=String(recorded.size);
  };
- s.names.forEach((name,i)=>{const b=e('button',tr(...name));b.type='button';b.onclick=()=>{current=i;render()};tabs.append(b)});
- action.onclick=()=>{recorded.add(current);render()};const reset=e('button',tr('重置演示','Reset demonstration'));reset.type='button';reset.onclick=()=>{recorded.clear();current=0;render()};
+ s.names.forEach((name,i)=>{const b=e('button',(system===0?'CAM 0'+(i+1)+' / ':'')+tr(...name));b.type='button';b.onclick=()=>{current=i;render();options.onSelect?.(i)};tabs.append(b)});
+ action.onclick=()=>{recorded.add(current);render()};const reset=e('button',tr('重置演示','Reset demonstration'));reset.type='button';reset.onclick=()=>{recorded.clear();current=0;render();options.onSelect?.(0)};
  const controls=e('div');controls.style.cssText='display:flex;flex-wrap:wrap;gap:8px';controls.append(action,reset);
  const progress=e('p');progress.className='system-practice-progress';
  if(options.locate){const locate=e('button',tr('在综合场景中查看','View in integrated scene'));locate.type='button';locate.dataset.locate='true';locate.onclick=()=>options.locate(current);controls.append(locate);}
