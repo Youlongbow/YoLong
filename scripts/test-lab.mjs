@@ -21,6 +21,16 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),148);
+  const workspace=page.locator('#rd-tool'),normalWidth=(await canvas.boundingBox()).width;
+  await cmd('toggle-library').click();assert(!(await page.locator('#rd-palette').isVisible()));
+  await cmd('toggle-inspector').click();assert(!(await page.locator('#rd-inspector').isVisible()));
+  assert((await canvas.boundingBox()).width>normalWidth);
+  await cmd('workspace-expand').click();assert(await workspace.evaluate(n=>n.classList.contains('rd-expanded')));
+  await canvas.focus();await page.keyboard.press('Escape');
+  assert(!(await workspace.evaluate(n=>n.classList.contains('rd-expanded'))));
+  await canvas.focus();await page.keyboard.press('t');assert(await page.locator('#rd-inspector').isVisible());
+  await page.keyboard.press('Shift+t');assert(await page.locator('#rd-palette').isVisible());
+
   await page.locator('#rd-category').selectOption('terrain');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),3);
   await cmd('new').click();await page.locator('[data-add="drainage_v"]').click();
@@ -82,7 +92,7 @@ try{
   assert(await canvas.locator('[data-object] polygon').count()>60,'civilian rotorcraft geometry');
   await cmd('fit').click();await cmd('example').click();
 
-  assert.equal(await page.locator('#rd-shortcuts kbd').count(),44);
+  assert.equal(await page.locator('#rd-shortcuts kbd').count(),46);
   assert(!(await page.locator('#rd-shortcuts').textContent()).includes('Cmd'));
   assert((await page.locator('#rd-shortcuts kbd').allTextContents()).includes('Ctrl + Z'));
   assert((await page.locator('#rd-shortcuts kbd').allTextContents()).includes(lang==='zh'?'按住鼠标右键拖动':'Right-button drag'));
