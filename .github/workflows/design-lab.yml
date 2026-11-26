@@ -71,6 +71,20 @@ jobs:
             if(!r.ok)throw Error('HTTP '+r.status+' '+url);
             return {bytes:Buffer.from(await r.arrayBuffer()),cache:r.headers.get('cf-cache-status')||'-',age:r.headers.get('age')||'-',etag:r.headers.get('etag')||'-'};
           };
+          // Direct expected-asset probes distinguish old route HTML from missing deployed artifacts.
+          async function releaseProbe(origin,nonce){
+            const out={origin,expected};
+            for(const [key,path] of [['manifest','/content/lab-release.json'],['expectedAsset','/assets/security-lab.'+expected+'.js'],['stableApp','/assets/app.js']]){
+              try{
+                const x=await fetchBytes(origin+path+'?labcheck='+nonce);
+                out[key]={hash:digest(x.bytes),cache:x.cache,age:x.age};
+                if(key==='manifest')out[key].release=JSON.parse(x.bytes.toString('utf8'));
+                if(key==='stableApp')out[key].renderer=x.bytes.toString('utf8').match(/security-lab\.([a-f0-9]{12})\.js/)?.[1]||null;
+              }catch(e){out[key]={error:String(e)}}
+            }
+            console.log('LAB RELEASE PROBE',JSON.stringify(out));
+          }
+          await Promise.all(origins.map(origin=>releaseProbe(origin,process.env.GITHUB_RUN_ID+'-initial')));
           let last=[];
           for(let attempt=1;attempt<=48;attempt++){
             const nonce=process.env.GITHUB_RUN_ID+'-'+attempt+'-'+Date.now();
@@ -108,5 +122,6 @@ jobs:
             }
             await new Promise(r=>setTimeout(r,5000));
           }
+          await Promise.all(origins.map(origin=>releaseProbe(origin,process.env.GITHUB_RUN_ID+'-final')));
           throw Error('Lab publication not verified: '+JSON.stringify(last));
           NODE
