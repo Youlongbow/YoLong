@@ -20,16 +20,18 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),67);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),76);
+  await page.locator('#rd-category').selectOption('cargo');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
   await page.locator('#rd-category').selectOption('lighting');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),6);
   await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),67);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),76);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,48);
+  assert.equal(newTypes.length,57);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
@@ -49,6 +51,16 @@ try{
   const unlit=await canvas.innerHTML();await cmd('state').click();assert.notEqual(await canvas.innerHTML(),unlit);
   await cmd('save').click();await cmd('new').click();await cmd('load').click();assert.equal(await count(),'2');
   await page.locator('[data-layer="lighting"]').uncheck();assert.equal(await count(),'1');await page.locator('[data-layer="lighting"]').check();
+  await cmd('new').click();
+  await page.locator('[data-add="id_badge"]').click();
+  assert.equal(await page.locator('[data-prop="d"]').inputValue(),'0.03');
+  await page.locator('#rd-units').fill('2.5');await page.locator('#rd-units').press('Tab');
+  await cmd('save').click();await cmd('new').click();
+  await page.locator('#rd-units').fill('1');await page.locator('#rd-units').press('Tab');
+  await cmd('load').click();assert.equal(await page.locator('#rd-units').inputValue(),'2.5');
+  await page.locator('#rd-objects button').first().click();
+  assert.equal(await page.locator('[data-prop="d"]').inputValue(),'0.03');
+  await page.locator('#rd-units').fill('1');await page.locator('#rd-units').press('Tab');
   await cmd('new').click();assert.equal(await count(),'0');
   for(const type of ['building','fence','door','light','car','person'])await page.locator('[data-add="'+type+'"]').click();
   assert.equal(await count(),'6');
