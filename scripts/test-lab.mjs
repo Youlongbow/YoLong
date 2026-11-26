@@ -21,6 +21,11 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),202);
+  await cmd('architecture-gallery').click();assert.equal(await count(),'10');assert.equal(await canvas.getAttribute('data-selected'),'0');
+  assert.equal(await canvas.locator('[data-object]').count(),10);
+  await page.locator('#rd-object-category').selectOption('ecp_visual');assert.equal(await page.locator('#rd-objects button[data-select]').count(),5);
+  await page.locator('#rd-object-category').selectOption('');
+  await cmd('undo').click();assert.equal(await count(),'5');
   await cmd('entry-exhibit').click();assert.equal(await count(),'19');assert.equal(await canvas.getAttribute('data-selected'),'0');
   assert.equal(await canvas.locator('[data-object]').count(),19);
   await cmd('toggle-roofs').click();assert.equal(await count(),'18');assert.equal(await cmd('toggle-roofs').getAttribute('aria-pressed'),'false');
