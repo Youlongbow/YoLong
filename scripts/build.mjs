@@ -58,6 +58,9 @@ const appRevision=createHash('sha256').update(appContent)
 const versionedApp='app.'+appRevision+'.js';
 writeFileSync(join('dist','assets',versionedApp),appContent);
 writeFileSync(join('dist','assets','app.js'),appContent);
+ // Public deployment identity: no credentials, only content-addressed artifact names.
+ writeFileSync(join('dist','content','lab-release.json'),JSON.stringify({schema:1,renderer:labRevision,rendererPath:'/assets/'+labFile,app:appRevision,appPath:'/assets/'+versionedApp},null,2)+'\n');
+
 
 // Content-addressed stylesheet URLs keep CDN and browser caches from serving an old hero.
 const cssContent=readFileSync('assets/editorial.css');
@@ -87,7 +90,9 @@ writeFileSync('dist/_headers',[
   '/assets/app.js',
   '  Cache-Control: no-cache, must-revalidate',
   '/lab/*',
-  '  Cache-Control: no-cache, must-revalidate',
+  '  Cache-Control: no-store, max-age=0, must-revalidate',
+  '/lab',
+  '  Cache-Control: no-store, max-age=0, must-revalidate',
   '/about/*',
   '  Cache-Control: no-cache, must-revalidate',
   '/experience/*',
