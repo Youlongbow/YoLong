@@ -56,6 +56,19 @@ try{
   const pngPromise=page.waitForEvent('download');await cmd('render-png').click();const pngFile=await pngPromise;
   assert.equal(pngFile.suggestedFilename(),'raven-scene.png');const png=await readFile(await pngFile.path());
   assert.equal(png.readUInt32BE(16),1600);assert.equal(png.readUInt32BE(20),1040);
+  await page.locator('#rd-render-view').selectOption('iso');
+  await page.locator('#rd-render-light').selectOption('night');
+  await page.locator('#rd-render-style').selectOption('clay');
+  await page.locator('#rd-render-yaw').fill('45');await page.locator('#rd-render-yaw').dispatchEvent('change');
+  await page.locator('#rd-render-tilt').fill('60');await page.locator('#rd-render-tilt').dispatchEvent('change');
+  await page.locator('#rd-render-zoom').fill('130');await page.locator('#rd-render-zoom').dispatchEvent('change');
+  assert.equal(await page.locator('#rd-render-yaw-value').textContent(),'45°');
+  assert.equal(await page.locator('#rd-render-tilt-value').textContent(),'60°');
+  assert.equal(await page.locator('#rd-render-zoom-value').textContent(),'130%');
+  const styledPromise=page.waitForEvent('download');await cmd('render-svg').click();const styledFile=await styledPromise;
+  const styledSvg=await readFile(await styledFile.path(),'utf8');
+  assert(styledSvg.includes('data-render-light="night"'));assert(styledSvg.includes('data-render-style="clay"'));assert.notEqual(styledSvg,svgText);
+  await cmd('render-reset').click();assert.equal(await page.locator('#rd-render-zoom').inputValue(),'100');
   await cmd('render-close').click();assert.equal(await canvas.innerHTML(),sceneBeforeRender);
 
 
