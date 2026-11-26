@@ -141,6 +141,18 @@ try{
   await cmd('undo').click();assert.equal(await count(),'4');
   await cmd('new').click();await page.locator('[data-view="iso"]').click();await cmd('fit').click();await cmd('example').click();
 
+  for(const [opening,insert,w,h,y] of [['wall_opening','door',.9,2.072,0],['window_wall','window',1.14,1.064,1.008]]){
+    await cmd('new').click();await page.locator('[data-view="top"]').click();await cmd('fit').click();
+    const scene={version:1,objects:[{type:opening,x:0,z:0,w:3,d:.16,h:2.8,r:90,y:0}]};
+    await page.locator('#rd-file').setInputFiles({name:'opening.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(scene))});
+    await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.count==='1');
+    await canvas.evaluate((node,type)=>{const p=node.createSVGPoint();p.x=400;p.y=260;const q=p.matrixTransform(node.getScreenCTM()),d=new DataTransfer();d.setData('application/x-raven-model',type);node.dispatchEvent(new DragEvent('drop',{bubbles:true,clientX:q.x,clientY:q.y,dataTransfer:d}))},insert);
+    assert.equal(await count(),'2');
+    for(const [k,v] of [['x',0],['z',0],['r',90],['w',w],['h',h],['y',y]])assert.equal(Number(await page.locator('[data-prop="'+k+'"]').inputValue()),v,insert+' '+k);
+    assert((await canvas.getAttribute('data-snap-notice')).length>0);
+    await cmd('undo').click();assert.equal(await count(),'1');
+  }
+  await cmd('new').click();await page.locator('[data-view="iso"]').click();await cmd('fit').click();
   await cmd('new').click();await page.locator('[data-add="building"]').click();
   assert(await page.locator('#rd-building-plus').isVisible());
   await cmd('building-add-floor').click();
