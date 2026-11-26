@@ -136,12 +136,13 @@ try {
      assert(await exhibit.locator('polygon').count()>20);
      assert(await exhibit.locator('polygon').evaluateAll(nodes=>nodes.every(n=>n.getAttribute('points').split(/[ ,]+/).every(v=>Number.isFinite(Number(v))))));
 
-     assert((await accessReview.locator('a').getAttribute('href')).includes('eis0002'));
+     assert.equal(await accessReview.locator('a').count(),0);
     }
     const boundaryReview=page.locator('.boundary-engineering-review');
     assert.equal(await boundaryReview.count(),i===2?1:0);
     if(i===2){
      assert.equal(await boundaryReview.locator('dd').count(),2);
+     assert.equal(await boundaryReview.locator('a').count(),0);
      assert.equal(await practice.locator('.practice-figure svg').getAttribute('viewBox'),'0 0 320 210');
      assert.equal(await practice.locator('.boundary-gallery').count(),1);
      assert(await practice.locator('.practice-figure svg polygon').count()>20);
@@ -161,7 +162,7 @@ try {
      assert.equal(await review.locator('dt').count(),3);
      assert.equal(await review.locator('dd').count(),3);
      assert(await review.locator('dd').evaluateAll(nodes=>nodes.every(n=>n.textContent.trim().length>20)));
-     assert((await review.locator('a').getAttribute('href')).startsWith('https://www.npsa.gov.uk/'));
+     assert.equal(await review.locator('a').count(),0);
     }
     if(j===0){
      const tabs=practice.locator('button');
@@ -314,6 +315,7 @@ try {
     assert(await page.locator('#studio-function-copy').innerText());}
    }
    assert.equal(await page.locator('#studio-zones button').count(),3);
+   assert(!/FM 3-19\.30|分类依据：|NPSA：|NPSA:|Source: FM/i.test(await page.locator('.raven-lab').innerText()));
    for(let i=0;i<3;i++){
     await page.locator('#studio-zones button').nth(i).click();
     assert.equal(await page.locator('#studio-system-interfaces .case-system-card').count(),3);
