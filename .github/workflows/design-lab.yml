@@ -48,34 +48,65 @@ jobs:
           retention-days: 14
   live-route:
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 12
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Verify published localized routes and exact renderer revision
         run: |
           node --input-type=module <<'NODE'
           import {createHash} from 'node:crypto';
           import {readFileSync} from 'node:fs';
-          const hash=createHash('sha256').update(readFileSync('assets/security-lab.js')).digest('hex').slice(0,12);
-          for(const origin of ['https://www.ravenlong.com','https://yolong.bournelong511.workers.dev']){
-            let passed=false;
-            for(let attempt=1;attempt<=24;attempt++){
+          import {execFileSync} from 'node:child_process';
+          const digest=b=>createHash('sha256').update(b).digest('hex').slice(0,12);
+          const expected=digest(readFileSync('assets/security-lab.js'));
+          const origins=['https://www.ravenlong.com','https://yolong.bournelong511.workers.dev'];
+          const langs=['zh','en'];
+          const fetchBytes=async(url)=>{
+            const r=await fetch(url,{cache:'no-store',headers:{'Cache-Control':'no-cache','Pragma':'no-cache'},signal:AbortSignal.timeout(12000)});
+            if(!r.ok)throw Error('HTTP '+r.status+' '+url);
+            return {bytes:Buffer.from(await r.arrayBuffer()),cache:r.headers.get('cf-cache-status')||'-',age:r.headers.get('age')||'-',etag:r.headers.get('etag')||'-'};
+          };
+          let last=[];
+          for(let attempt=1;attempt<=48;attempt++){
+            const nonce=process.env.GITHUB_RUN_ID+'-'+attempt+'-'+Date.now();
+            const result=await Promise.all(origins.flatMap(origin=>langs.map(async lang=>{
               try{
-                for(const lang of ['zh','en']){
-                  const res=await fetch(origin+'/lab/'+lang+'/?check='+attempt,{cache:'no-store',signal:AbortSignal.timeout(12000)});
-                  if(!res.ok)throw Error('Route '+res.status);
-                  const html=await res.text(),app=html.match(/src="(\/assets\/app\.[a-f0-9]{12}\.js)"/)?.[1];
-                  if(!app||!html.includes('/lab/'+lang+'/'))throw Error('Missing localized route metadata');
-                  const code=await fetch(origin+app,{signal:AbortSignal.timeout(12000)}).then(r=>r.text());
-                  if(!code.includes('security-lab.'+hash+'.js'))throw Error('Stale lab revision');
-                  const model=await fetch(origin+'/assets/security-lab.'+hash+'.js',{signal:AbortSignal.timeout(12000)});
-                  if(!model.ok)throw Error('Renderer asset '+model.status);
-                  const bytes=Buffer.from(await model.arrayBuffer());
-                  if(createHash('sha256').update(bytes).digest('hex').slice(0,12)!==hash)throw Error('Renderer hash differs');
-                }
-                console.log('LAB LIVE PASS',origin,hash);passed=true;break;
-              }catch(e){console.log('LAB LIVE RETRY',origin,attempt,String(e));await new Promise(r=>setTimeout(r,5000))}
+                const page=await fetchBytes(origin+'/lab/'+lang+'/?labcheck='+nonce);
+                const html=page.bytes.toString('utf8'),app=html.match(/src="(\/assets\/app\.[a-f0-9]{12}\.js)"/)?.[1];
+                if(!app||!html.includes('/lab/'+lang+'/'))throw Error('Missing localized route metadata');
+                const code=await fetchBytes(origin+app+'?labcheck='+nonce);
+                const actual=code.bytes.toString('utf8').match(/security-lab\.([a-f0-9]{12})\.js/)?.[1];
+                if(!actual)throw Error('Missing versioned renderer import');
+                const renderer=await fetchBytes(origin+'/assets/security-lab.'+actual+'.js?labcheck='+nonce);
+                const bodyHash=digest(renderer.bytes);
+                return {origin,lang,app,actual,bodyHash,expected,cache:page.cache,age:page.age,etag:page.etag,pass:actual===expected&&bodyHash===expected};
+              }catch(e){return{origin,lang,expected,error:String(e),pass:false}}
+            })));
+            last=result;
+            for(const item of result)console.log('LAB LIVE OBSERVATION',JSON.stringify(item));
+            if(result.every(x=>x.pass)){
+              console.log('LAB LIVE PASS ALL HOSTS AND LANGUAGES',expected);
+              process.exit(0);
             }
-            if(!passed)throw Error('Lab publication not verified: '+origin)
+            // Distinguish a newer main revision from an actual stale or corrupted deployment.
+            // An old workflow never passes on the strength of a different renderer.
+            if(attempt%4===0){
+              try{
+                execFileSync('git',['fetch','--depth=1','origin','main'],{stdio:'pipe'});
+                const latest=digest(execFileSync('git',['show','FETCH_HEAD:assets/security-lab.js']));
+                if(latest!==expected&&result.every(x=>x.actual===latest&&x.bodyHash===latest)){
+                  console.log('LAB LIVE SUPERSEDED: checked renderer',expected,'current main renderer',latest,'is live on all routes');
+                  throw Error('Original revision superseded; use current-main acceptance run');
+                }
+                console.log('LAB LIVE MAIN HASH',latest,'CHECKED HASH',expected);
+              }catch(e){console.log('LAB LIVE REVISION DIAGNOSTIC',String(e));if(String(e).includes('Original revision superseded'))throw e}
+            }
+            await new Promise(r=>setTimeout(r,5000));
           }
+          throw Error('Lab publication not verified: '+JSON.stringify(last));
           NODE
