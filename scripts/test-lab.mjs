@@ -53,13 +53,25 @@ try{
   const staticBurst=await canvas.locator('[data-object]').innerHTML();
   await cmd('burst-play').click();
   await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.burstPlaying==='true');
-  assert(!(await page.locator('#rd-burst-dialog').isVisible()),'playback stays on canvas');
+  assert.equal(await page.locator('#rd-burst-dialog').count(),0,'retired playback dialog removed');
+  const playback=page.locator('#rd-burst-controls');
+  assert(await playback.isVisible());
   assert.notEqual(await canvas.locator('[data-object]').innerHTML(),staticBurst,'animated geometry');
+  await playback.locator('[data-cmd="burst-pause"]').click();
+  assert.equal(await canvas.getAttribute('data-burst-paused'),'true');
+  const pausedGeometry=await canvas.locator('[data-object]').innerHTML(),pausedProgress=await page.locator('#rd-burst-progress').inputValue();
+  await page.waitForTimeout(250);
+  assert.equal(await canvas.locator('[data-object]').innerHTML(),pausedGeometry);
+  assert.equal(await page.locator('#rd-burst-progress').inputValue(),pausedProgress);
+  await playback.locator('[data-cmd="burst-pause"]').click();
+  assert.equal(await canvas.getAttribute('data-burst-paused'),'false');
   await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.burstPlaying==='false',{},{timeout:10000});
   assert.equal(await canvas.locator('[data-object]').innerHTML(),staticBurst,'original model restored');
-  await cmd('burst-play').click();await cmd('burst-stop').click();
+  await cmd('burst-play').click();await page.locator('#rd-burst-controls [data-cmd="burst-stop"]').click();
   assert.equal(await canvas.getAttribute('data-burst-playing'),'false');
   assert.equal(await count(),'1');
+  await cmd('burst-play').click();await page.locator('#rd-burst-controls [data-cmd="burst-pause"]').click();
+  await cmd('new').click();assert.equal(await canvas.getAttribute('data-burst-playing'),'false');assert(!(await playback.isVisible()));
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   assert.equal(await page.locator('#rd-chapter').count(),0);
