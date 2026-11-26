@@ -20,10 +20,21 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),156);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),158);
+  assert.equal(await page.locator('#rd-chapter').count(),0);
+  assert(!/FM 3-19\.30|教材|资料|引用|章节|Reference chapter/i.test(await page.locator('#rd-tool').textContent()));
+  for(const type of ['open_viewing_tower','enclosed_viewing_tower']){
+    await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
+    assert.equal(await count(),'1');assert(await canvas.locator('[data-object] polygon').count()>12);
+    await page.locator('[data-asset-detail="'+type+'"]').click();
+    assert(await page.locator('#rd-asset-preview polygon').count()>12);
+    await cmd('asset-close').click();
+  }
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   await cmd('new').click();
   const equipmentAsset=page.locator('[data-add="equipment_suv"]');
-  const equipmentLabel=lang==='zh'?'电子车':'Electronic Equipment Vehicle';
+  const equipmentLabel=lang==='zh'?'干扰仪车':'Jammer Vehicle';
   assert.equal(await equipmentAsset.locator('span').textContent(),equipmentLabel,'published asset name');
   await equipmentAsset.click();
   assert.equal(await page.locator('#rd-inspector > strong').textContent(),equipmentLabel,'selected vehicle name');
@@ -110,7 +121,7 @@ try{
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   assert(!(await page.locator('.rd-blast').textContent()).includes(lang==='zh'?'不计算爆炸压力':'no blast pressure'));
-  for(const [category,size] of [['rooms',3],['interior_equipment',5],['public_building',2],['aviation',4]]){
+  for(const [category,size] of [['rooms',3],['interior_equipment',5],['public_building',4],['aviation',4]]){
     await page.locator('#rd-category').selectOption(category);
     assert.equal(await page.locator('#rd-palette [data-add]').count(),size);
   }
@@ -310,31 +321,28 @@ try{
   await page.locator('[data-asset-detail="steel_door"]').click();
   const dialog=page.locator('#rd-asset-dialog');
   assert(await dialog.isVisible());
-  assert((await page.locator('#rd-asset-description').textContent()).includes('8-1'));
+  assert(!/FM 3-19\.30|教材|资料|引用|章节|Reference chapter/i.test(await page.locator('#rd-asset-description').textContent()));
   assert(await page.locator('#rd-asset-preview polygon').count()>0);
   const beforeDetail=await page.locator('#rd-asset-preview').innerHTML();
   await page.locator('[data-asset-view="rotate"]').click();
   assert.notEqual(await page.locator('#rd-asset-preview').innerHTML(),beforeDetail);
   assert.equal(await count(),'5');
   await cmd('asset-related').click();
-  assert.equal(await page.locator('#rd-chapter').inputValue(),'8');
+  assert.equal(await page.locator('#rd-category').inputValue(),'locks');
   await page.locator('[data-asset-detail="steel_door"]').click();
   await cmd('asset-place').click();assert.equal(await count(),'6');
-  await cmd('example').click();await page.locator('#rd-chapter').selectOption('');
-  await page.locator('#rd-chapter').selectOption('6');
+  await cmd('example').click();await page.locator('#rd-category').selectOption('electronic');
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="safety_helmet"]').count(),0);
   await cmd('new').click();await page.locator('[data-add="video_amplifier"]').click();
-  await page.locator('[data-reference-chapter="6"]').click();
-  assert.equal(await page.locator('#rd-chapter').inputValue(),'6');
-  await page.locator('#rd-chapter').selectOption('2');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),0);
-  assert((await page.locator('#rd-chapter-info').textContent()).includes('2-1'));
-  await page.locator('#rd-chapter').selectOption('supplement');
+  await page.locator('[data-related-category="electronic"]').click();
+  assert.equal(await page.locator('#rd-category').inputValue(),'electronic');
+  assert.equal(await page.locator('#rd-chapter').count(),0);
+  await page.locator('#rd-category').selectOption('furniture');
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
-  await page.locator('#rd-chapter').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),156);
+  await page.locator('#rd-category').selectOption('');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),158);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),12);
@@ -393,9 +401,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),156);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),158);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,137);
+  assert.equal(newTypes.length,139);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
@@ -409,7 +417,7 @@ try{
      assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>100);
      await cmd('gpu').click();
    }
-   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition','office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','security_guard','soldier','police_officer','unidentified_person','hostile_role','woman_black_robe','civilian_woman','hesco_visual','concrete_partition','portable_cabin','aircraft_hangar','water_tank','medical_stretcher','first_aid_tent','portable_toilet','wood_pallet','civilian_ambulance','forklift','operations_room','meeting_room','patient_room','display_wall','desktop_computer','workstation_desk','server_rack','patient_bed','public_police_station','hospital_building','airport_terminal','airport_tower','civilian_helicopter','helipad_visual','building_storey','communications_van','utility_pickup','welded_mesh_panel','vertical_bar_fence','y_fence_visual','coil_fence_visual','gabion_y_visual','gabion_coil_visual','drainage_v','drainage_u','landscape_mound','equipment_suv','unattended_backpack','unattended_case','unattended_box','exercise_marker','inert_training_block','training_warning_card','incident_location_pin'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
+   assert(!/FM 3-19\.30|教材|资料|引用|章节|Reference chapter/i.test(await page.locator('#rd-inspector').textContent()),type+' has functional description only');
    await page.locator('[data-view="top"]').click();
    assert.equal(await count(),'1');
    assert(await object.locator('polygon,line').count()>0,type+' top geometry');
