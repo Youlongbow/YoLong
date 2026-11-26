@@ -144,7 +144,7 @@ const catalog=[
 ["drainage_u","U形排水沟（地形模块）","U-shaped drainage channel","terrain",4,2,0.6,"#a69a82"],
 ["landscape_mound","土坡地形","Landscape mound","terrain",4,3,1,"#a49a78"]
 ,
-["equipment_suv","车顶天线设备越野车","Roof antenna equipment SUV","vehicle",4.985,1.98,2.7,"#d6dcd9"],
+["equipment_suv","干扰仪车","Jammer Vehicle","vehicle",4.985,1.98,2.7,"#d6dcd9"],
 ["unattended_backpack","无人看管的背包","Unattended backpack","training",0.36,0.23,0.48,"#728286"],
 ["unattended_case","无人看管的行李箱","Unattended suitcase","training",0.45,0.25,0.65,"#78878a"],
 ["unattended_box","无人看管的纸箱","Unattended cardboard box","training",0.5,0.4,0.36,"#b4a186"],
