@@ -41,6 +41,8 @@ try {
   assert.equal(await page.locator('#overview-hotspots button').count(),0);
   const quick=page.locator('#overview-quick-components button');
   assert.equal(await quick.count(),4);
+  assert(await page.evaluate(()=>{const model=document.querySelector('.overview-exhibit-layout .overview-view').getBoundingClientRect(),chooser=document.querySelector('.quick-explorer').getBoundingClientRect(),detail=document.querySelector('#overview-detail').getBoundingClientRect();return chooser.left>=model.right-1&&detail.top>=chooser.bottom-1}),'Desktop exhibit has canvas beside component selection and detail');
+
   assert.equal(await quick.locator('[aria-pressed=true]').count(),0);
   assert.equal(await page.locator('#overview-quick-components button[aria-pressed=true]').count(),0);
   assert.equal(await page.locator('#overview-views button').first().getAttribute('aria-pressed'),'true');
@@ -477,6 +479,15 @@ try {
   assert.equal(await page.locator('#overview-quick-components button[aria-pressed=true]').count(),0);
   assert(await page.locator('#overview-canvas').isVisible());
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Overview no mobile horizontal overflow');
+  assert(await page.evaluate(()=>{const model=document.querySelector('.overview-exhibit-layout .overview-view').getBoundingClientRect(),chooser=document.querySelector('.quick-explorer').getBoundingClientRect();return chooser.bottom<=model.top+1}),'Mobile selector remains above model');
+  const mobileQuick=page.locator('#overview-quick-components button');
+  await mobileQuick.nth(2).click();
+  assert.equal(await mobileQuick.nth(2).getAttribute('aria-pressed'),'true');
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===1);
+  assert(await page.locator('#overview-detail .quick-product-preview').isVisible());
+  await page.locator('#overview-views button').first().click();
+  await page.waitForFunction(()=>document.querySelectorAll('#overview-hotspots button').length===0);
+  assert.equal(await page.locator('#overview-quick-components button[aria-pressed=true]').count(),0);
   await page.locator('#lab-mode-scene').click();await page.locator('#studio-scenes button').first().waitFor();
   assert(await page.locator('#studio-canvas').isVisible());assert(await page.locator('#lab-canvas').isHidden());
   await page.locator('#lab-mode-library').click();await page.locator('#lab-info h2').waitFor();assert(await page.locator('#lab-canvas').isVisible());assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'No mobile horizontal overflow');
