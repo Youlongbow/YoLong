@@ -90,10 +90,11 @@ try{
   await page.locator('#rd-objects button').first().dblclick();
   assert.equal(await canvas.getAttribute('data-selected'),'1');
   await page.keyboard.press('0');
-  const boundsK=await canvas.boundingBox(),beforePan=await canvas.locator('[data-object]').first().getAttribute('class'),beforePanScene=await canvas.innerHTML();
+  await canvas.scrollIntoViewIfNeeded();await canvas.focus();
+  const boundsK=await canvas.boundingBox(),beforePan=await canvas.locator('[data-object].selected').getAttribute('data-object'),beforePanScene=await canvas.innerHTML();
   await page.keyboard.down('Space');await page.mouse.move(boundsK.x+boundsK.width*.48,boundsK.y+boundsK.height*.45);await page.mouse.down();await page.mouse.move(boundsK.x+boundsK.width*.60,boundsK.y+boundsK.height*.54,{steps:3});await page.mouse.up();await page.keyboard.up('Space');
   assert.notEqual(await canvas.innerHTML(),beforePanScene);
-  assert.equal(await count(),'2');assert.equal(await canvas.locator('[data-object]').first().getAttribute('class'),beforePan);
+  assert.equal(await count(),'2');assert.equal(await canvas.getAttribute('data-selected'),'1');assert.equal(await canvas.locator('[data-object].selected').getAttribute('data-object'),beforePan);
   const yawBefore=await page.locator('#rd-yaw').inputValue();await page.mouse.move(boundsK.x+boundsK.width*.55,boundsK.y+boundsK.height*.50);await page.mouse.down({button:'right'});await page.mouse.move(boundsK.x+boundsK.width*.65,boundsK.y+boundsK.height*.52,{steps:3});await page.mouse.up({button:'right'});
   assert.notEqual(await page.locator('#rd-yaw').inputValue(),yawBefore);
   await cmd('fit').click();await cmd('example').click();
