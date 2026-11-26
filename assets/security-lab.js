@@ -231,6 +231,18 @@ function civilianVehicleMesh(type){
  }
  for(const z of [-.36,.36]){box(-.495,.34,z,.018,.10,.12,head);box(.495,.33,z,.018,.10,.10,tail)}
  box(-.497,.28,0,.014,.15,.56,dark);
+ // Exterior trim: independent mirror housings, door handles, bumper strips and grille.
+ const mirrorX=pickup?-.19:suv?-.17:-.40,mirrorY=pickup||suv?.66:.58;
+ for(const z of [-1,1]){
+  box(mirrorX,mirrorY,z*.46,.035,.025,.075,dark);
+  box(mirrorX-.015,mirrorY+.008,z*.51,.045,.06,.06,null);
+  if(pickup||suv){for(const x of pickup?[-.08,.075]:[-.02,.21])box(x,.48,z*.455,.037,.022,.009,dark)}
+  else{for(const x of [-.33,.34])box(x,.35,z*.475,.028,.025,.008,dark)}
+  box(.465,.23,z*.39,.055,.045,.11,dark);
+ }
+ for(let i=0;i<5;i++)box(-.506,.28+i*.026,0,.008,.009,.49,'#829398');
+ box(-.505,.21,0,.014,.035,.71,dark);
+ box(.505,.21,0,.014,.035,.71,dark);
  return normalizeAsset({vertices,faces,colours});
  }
  if(type==='car'){
@@ -290,7 +302,7 @@ function standingFigureMesh(role='person'){
  return{vertices,faces,colours};
 }
 const personAsset=normalizeAsset(standingFigureMesh());
-function roleFigure(k){const m=standingFigureMesh(k);const v=m.vertices,f=m.faces,c=m.colours;if(['security_guard','soldier','police_officer'].includes(k)){const col=k==='soldier'?'#68735f':'#35454d',start=v.length,N=20;for(const [y,r] of [[.925,.22],[.96,.24],[1.035,.15]])for(let i=0;i<N;i++){const a=i*2*Math.PI/N;v.push([r*Math.cos(a),y,.015+r*Math.sin(a)])}for(let j=0;j<2;j++)for(let i=0;i<N;i++){const a=start+j*N+i,b=start+j*N+(i+1)%N;f.push([a,b,b+N],[a,b+N,a+N]);c.push(col,col)}for(let i=1;i<N-1;i++){f.push([start+2*N,start+2*N+i,start+2*N+i+1]);c.push(col)}}return normalizeAsset(m)}
+function roleFigure(k){const m=standingFigureMesh(k);const v=m.vertices,f=m.faces,c=m.colours;if(['security_guard','soldier','police_officer'].includes(k)){const col=k==='soldier'?'#68735f':k==='police_officer'?'#34465d':'#435a66',start=v.length,N=20;for(const [y,r] of [[.925,.22],[.96,.24],[1.035,.15]])for(let i=0;i<N;i++){const a=i*2*Math.PI/N;v.push([r*Math.cos(a),y,.015+r*Math.sin(a)])}for(let j=0;j<2;j++)for(let i=0;i<N;i++){const a=start+j*N+i,b=start+j*N+(i+1)%N;f.push([a,b,b+N],[a,b+N,a+N]);c.push(col,col)}for(let i=1;i<N-1;i++){f.push([start+2*N,start+2*N+i,start+2*N+i+1]);c.push(col)}if(k!=='soldier'){const base=v.length;v.push([-.23,.94,.05],[.23,.94,.05],[.19,.94,.38],[-.19,.94,.38],[-.23,.955,.05],[.23,.955,.05],[.19,.955,.38],[-.19,.955,.38]);for(const [a,b,d,e] of [[0,1,2,3],[4,7,6,5],[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0]]){f.push([base+a,base+b,base+d],[base+a,base+d,base+e]);c.push(col,col)}}}return normalizeAsset(m)}
 const roleAssets=new Map(['security_guard','soldier','police_officer','unidentified_person','hostile_role','woman_black_robe','civilian_woman'].map(k=>[k,roleFigure(k)]));
 const builtinMesh=k=>furnitureAssets.get(k)||vehicleAssets.get(k)||roleAssets.get(k)||(k==='person'?personAsset:null);
 const MESH_LIMIT=12,FACE_LIMIT=600,VERTEX_LIMIT=1200;
