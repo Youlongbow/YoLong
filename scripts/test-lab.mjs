@@ -54,7 +54,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add]').count(),17);
   await page.locator('[data-asset-detail="road_stop_sign"]').click();
   const assetPreview=page.locator('#rd-asset-preview'),initialAsset=await assetPreview.innerHTML(),beforeAssetInspect=await canvas.innerHTML();
-  for(const side of ['front','right','back','left']){await page.locator('[data-asset-view="'+side+'"]').click();assert.equal(await assetPreview.getAttribute('data-asset-preview-view'),side);assert.equal(await page.locator('[data-asset-view="'+side+'"]').getAttribute('aria-pressed'),'true');assert(await assetPreview.locator('polygon').count()>0);}
+  for(const side of ['front','right','back','left']){await page.locator('[data-asset-view="'+side+'"]').click();assert.equal(await assetPreview.getAttribute('data-asset-preview-view'),side);assert.equal(await page.locator('[data-asset-view="'+side+'"]').getAttribute('aria-pressed'),'true');assert(await assetPreview.locator('polygon').count()>0);if(side==='back'){assert(await assetPreview.locator('polygon[fill="#909b97"]').count()>0,'rear metal backing');}}
   await page.locator('[data-asset-view="rotate"]').click();assert.equal(await assetPreview.getAttribute('data-asset-preview-view'),'iso');assert.notEqual(await assetPreview.innerHTML(),initialAsset);
   await cmd('asset-close').click();assert.equal(await canvas.innerHTML(),beforeAssetInspect);
   for(const type of ['road_speed_hump','road_rubber_bump','road_work_barricade','road_channel_drum','road_stop_sign','road_slow_sign','road_pedestrian_sign','road_crosswalk']){
