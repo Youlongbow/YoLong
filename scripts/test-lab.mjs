@@ -23,7 +23,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add]').count(),156);
   await cmd('new').click();
   const equipmentAsset=page.locator('[data-add="equipment_suv"]');
-  const equipmentLabel=lang==='zh'?'干扰仪车':'Jammer Vehicle';
+  const equipmentLabel=lang==='zh'?'电子车':'Electronic Equipment Vehicle';
   assert.equal(await equipmentAsset.locator('span').textContent(),equipmentLabel,'published asset name');
   await equipmentAsset.click();
   assert.equal(await page.locator('#rd-inspector > strong').textContent(),equipmentLabel,'selected vehicle name');
