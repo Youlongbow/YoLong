@@ -85,7 +85,20 @@ try{
   await cmd('render-open').click();await page.locator('#rd-render-scope').selectOption('selected');assert(await cmd('render-png').isDisabled());assert(await cmd('render-svg').isDisabled());
   await cmd('render-close').click();await page.locator('#rd-objects button').first().click();
   await cmd('render-open').click();assert(await cmd('render-svg').isEnabled());
-  await page.locator('#rd-render-scope').selectOption('visible');await page.locator('#rd-render-aspect').selectOption('original');await cmd('render-close').click();
+  await page.locator('#rd-render-scope').selectOption('visible');await page.locator('#rd-render-aspect').selectOption('original');
+  await page.locator('#rd-render-view').selectOption('iso');await page.locator('#rd-render-light').selectOption('day');await page.locator('#rd-render-style').selectOption('material');await page.locator('#rd-render-bg').selectOption('transparent');
+  const beforeGPU=await canvas.innerHTML();
+  await page.locator('#rd-render-engine').selectOption('gpu');
+  if(process.env.LAB_REQUIRE_GPU==='1'||await page.locator('#rd-render-preview canvas').count()){
+    const gpuPreview=page.locator('#rd-render-preview canvas');
+    assert.equal(await gpuPreview.getAttribute('data-renderer'),'webgl');
+    assert(Number(await gpuPreview.getAttribute('data-triangles'))>0);
+    assert(await cmd('render-svg').isDisabled());assert(await cmd('render-png').isEnabled());
+    assert(await gpuPreview.evaluate(node=>{const pixels=node.getContext('2d').getImageData(0,0,node.width,node.height).data;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>240)return true;return false}),'GPU preview contains opaque geometry');
+    const gpuPromise=page.waitForEvent('download');await cmd('render-png').click();const gpuFile=await gpuPromise;const gpuPng=await readFile(await gpuFile.path());assert.equal(gpuPng.readUInt32BE(16),1600);assert.equal(gpuPng.readUInt32BE(20),1040);
+  }
+  await page.locator('#rd-render-engine').selectOption('vector');assert(await cmd('render-svg').isEnabled());
+  await cmd('render-close').click();assert.equal(await canvas.innerHTML(),beforeGPU);
 
 
   await cmd('new').click();await page.locator('[data-add="burst_demo"]').click();
