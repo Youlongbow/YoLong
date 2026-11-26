@@ -1269,6 +1269,23 @@ function initOverview(lang,library){
   host.append(el('h3',quick?t(quick.n):t(p.n)));
   if(quick){const preview=el('div',undefined,'quick-product-preview');preview.innerHTML=quickProduct(quick);preview.append(el('small',t(quick.product)));host.append(preview)}
   host.append(el('p',quick?t(quick.p):t(p.why),'quick-purpose'));
+  if(selected===5){
+   const catalogue=el('section');catalogue.setAttribute('aria-label',z?'照明运行类型':'Lighting operating modes');
+   catalogue.append(el('h4',z?'四种照明运行类型':'Four lighting operating modes'));
+   const modes=[
+    [P('连续照明','Continuous'),P('正常使用期间持续点亮的固定灯具。','Fixed luminaires operating continuously during normal use.'),P('公共步道','Public walkway'),'continuous'],
+    [P('备用照明','Standby'),P('按需启动的灯具，可由人工或自动控制。','Luminaires switched on when needed, manually or automatically.'),P('按需使用的公共空间','Occasionally used public space'),'standby'],
+    [P('移动照明','Movable'),P('可搬运的辅助灯具。','Portable supplementary lighting equipment.'),P('临时维修作业','Temporary maintenance work'),'movable'],
+    [P('应急照明','Emergency'),P('正常供电中断时使用替代电源。','Uses an alternative power source during normal supply failure.'),P('公共建筑应急通行','Emergency circulation in public buildings'),'emergency']
+   ];
+   modes.forEach(([name,desc,example,key])=>{
+    const item=el('details',undefined,'quick-disclosure');item.dataset.lightingMode=key;
+    item.append(el('summary',t(name)),el('p',t(desc)),el('p',(z?'民用示例：':'Civilian example: ')+t(example)));catalogue.append(item);
+   });
+   catalogue.append(el('p',z?'分类依据：FM 3-19.30，第5章，5-4页，5-10至5-14段。按运行方式分类，并非灯具外形分类。':'Source: FM 3-19.30, chapter 5, p. 5-4, paras. 5-10–5-14. Classification by operating mode, not luminaire shape.'));
+   host.append(catalogue);
+  }
+
   if(p.device){const idx=library.models.findIndex((_,i)=>library.modelKey(i)===p.device);if(idx>=0){const direct=button(host,z?'查看三维设备 ›':'View 3D equipment ›',()=>library.openModel(idx,(z?'互动展厅':'Interactive exhibit')+' / '+t(p.n)));direct.className='quick-model-link'}}
   if(studyForPoint[p.id]!==undefined){const direct=button(host,z?'了解系统如何工作 ›':'How the system works ›',()=>{studyIndex=studyForPoint[p.id];studyStep=0;renderStudy();$('#overview-advanced').open=true;$('#overview-system-study').scrollIntoView({behavior:'smooth',block:'start'})});direct.className='quick-model-link'}
   const advanced=el('details',undefined,'quick-disclosure');advanced.append(el('summary',z?'详细功能与关联设备':'Detailed functions and related equipment'));host.append(advanced);host=advanced;
