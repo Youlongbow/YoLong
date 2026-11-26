@@ -668,6 +668,20 @@ try{
   const downloadPromise=page.waitForEvent('download');await cmd('export').click();const download=await downloadPromise;assert.equal(download.suggestedFilename(),'raven-scene.json');
   await page.locator('#rd-file').setInputFiles({name:'scene.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({objects:[{type:'building',x:0,z:0},{type:'car',x:2,z:0}]}))});
   await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.count==='2');
+  // Whole-selection rotation must preserve assembly geometry and support undo.
+  await cmd('new').click();
+  await page.locator('#rd-file').setInputFiles({name:'rotate.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({objects:[{type:'wall',x:-2,z:0,r:0},{type:'wall',x:2,z:0,r:90}]}))});
+  await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.count==='2');
+  await canvas.focus();await page.keyboard.press('Control+a');
+  assert.equal(await canvas.getAttribute('data-selected'),'2');
+  await cmd('rotate-group-right').click();
+  const readProp=async k=>Number(await page.locator('[data-prop="'+k+'"]').inputValue());
+  assert.equal(await readProp('x'),0);assert.equal(await readProp('z'),2);assert.equal(await readProp('r'),180);
+  await cmd('rotate-group-left').click();
+  assert.equal(await readProp('x'),2);assert.equal(await readProp('z'),0);assert.equal(await readProp('r'),90);
+  await cmd('undo').click();
+  await page.locator('#rd-objects button').last().click();
+  assert.equal(await readProp('x'),0);assert.equal(await readProp('z'),2);
   await cmd('new').click();
   await page.locator('[data-add="building"]').click();
   await page.locator('[data-add="platform"]').click();
