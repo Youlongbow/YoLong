@@ -206,7 +206,10 @@ const catalog=[
 ["road_lane_line","道路标线","Road line marking","road_safety",2,0.12,0.015,"#e5e4d9"],
 ["road_concrete_divider","混凝土道路隔离墩","Concrete traffic divider","road_safety",2.1,0.55,0.72,"#a9a9a0"],
 ["road_plastic_divider","塑料交通隔离墩","Plastic traffic divider","road_safety",1.4,0.48,0.7,"#ce6946"],
-["road_crowd_rail","活动人群隔离栏","Portable crowd rail","road_safety",2,0.48,1.05,"#a2b0af"]
+["road_crowd_rail","活动人群隔离栏","Portable crowd rail","road_safety",2,0.48,1.05,"#a2b0af"],
+["landscape_gabion","景观石笼墙","Landscape stone gabion","architecture",1.5,0.5,0.8,"#a7a394"],
+["architectural_precast_panel","预制混凝土景观墙板","Precast landscape wall panel","architecture",2,0.22,1.2,"#b6b7ac"],
+["architectural_slat_panel","建筑百叶隔断","Architectural slat screen","architecture",2,0.18,1.8,"#8f9c98"]
 ].map(([key,zh,en,category,w,d,h,color])=>({key,zh,en,category,w,d,h,color}));
 // Default sizes for common supplementary objects, in illustrative metres at scene scale 1.
 const metricDefaults={car:[4.5,1.8,1.48],truck:[7.5,2.5,3.4],bus:[10.5,2.5,3.2],person:[.56,.36,1.75],office_desk:[1.6,.75,.75],office_chair:[.65,.65,1.05],sofa:[2.2,.95,.88],round_table:[1.5,1.5,.75],bookshelf:[.9,.35,1.8],filing_cabinet:[.48,.6,1.28],single_bed:[.98,2.05,.95],planter:[.62,.62,1.2]};
@@ -286,6 +289,8 @@ Object.assign(assetProfiles,{"road_yield_sign":["让行标志外观示意","Yiel
 Object.assign(assetProfiles,{"road_pedestrian_bollard":["人行道隔离柱外观示意","Pedestrian streetscape bollard visual model","普通街道与公共空间展示。","General streetscape and public-space visualization."],"road_tactile_tile":["盲道提示砖外观示意","Tactile paving tile visual model","普通街道与公共空间展示。","General streetscape and public-space visualization."],"road_parking_sign":["停车区指示牌外观示意","Parking information sign visual model","普通街道与公共空间展示。","General streetscape and public-space visualization."],"road_lane_line":["道路标线外观示意","Road line marking visual model","普通街道与公共空间展示。","General streetscape and public-space visualization."]});
 Object.assign(assetProfiles,{"road_concrete_divider":["混凝土道路隔离墩外观示意","Concrete traffic divider visual model","普通道路或公共空间独立模型。","Standalone public streetscape prop."],"road_plastic_divider":["塑料交通隔离墩外观示意","Plastic traffic divider visual model","普通道路或公共空间独立模型。","Standalone public streetscape prop."],"road_crowd_rail":["活动人群隔离栏外观示意","Portable crowd rail visual model","普通道路或公共空间独立模型。","Standalone public streetscape prop."]});
 for(const d of catalog)if(d.category==='road_safety')illustrativeDimensions.add(d.key);
+Object.assign(assetProfiles,{"landscape_gabion":["石块填充、外部网格与边框","Stone infill, outer mesh and frame","园林景观展示。","Landscape architecture illustration."],"architectural_precast_panel":["预制墙板、表面接缝及收边","Precast panel, surface joints and trim","普通建筑景观表达。","General architectural illustration."],"architectural_slat_panel":["竖向百叶及框架","Vertical slats and frame","公共空间装饰隔断。","Decorative public-space screen."]});
+for(const k of ["landscape_gabion","architectural_precast_panel","architectural_slat_panel"])illustrativeDimensions.add(k);
 const map=new Map(catalog.map(x=>[x.key,x]));
 map.set('custom_mesh',{key:'custom_mesh',zh:'导入网格',en:'Imported mesh',category:'architecture',w:2,d:2,h:2,color:'#a7b5b3'});
 // Original, indexed low-poly furniture assets in normalized local coordinates.
@@ -654,6 +659,9 @@ export function initLab(lang){
  return v}
  case 'concertina':{let v='';for(let i=0;i<13;i++)v+=ring(-w*.45+i*w*.075,h*.5,0,l*.48,h*.47,'yz');return v}
  case 'utility_grille':{let v=B(0,0,0,w,l,h,'#52656a');for(let i=0;i<7;i++)v+=B(0,h*(.08+i*.13),l*.55,w*.88,l*.18,h*.035);return v}
+ case 'landscape_gabion':{let v=B(0,0,0,w*.96,l*.96,h*.95,'#85877c');for(let row=0;row<4;row++)for(let j=0;j<9;j++){const x=(j-4)*w*.105,y=row*h*.235,z=l*.45,col=shade(c,.76+((row*7+j*3)%9)*.044);v+=B(x+(row%2?.012*w:0),y,z,w*.095,l*.075,h*.205,col);v+=B(x,y,-z,w*.095,l*.075,h*.205,shade(col,.93))}for(let i=0;i<=10;i++)for(const z of [-.505,.505])v+=line([w*(i/10-.5),0,z*l],[w*(i/10-.5),h,z*l],'#687673',.85);for(let i=0;i<=5;i++)for(const z of [-.505,.505])v+=line([-w/2,h*i/5,z*l],[w/2,h*i/5,z*l],'#687673',.85);return v+B(0,h*.96,0,w,l,h*.04,'#9c9f91')}
+ case 'architectural_precast_panel':{let v=B(0,0,0,w,l,h,c);for(const x of [-.46,.46])v+=B(x*w,0,0,w*.08,l*1.06,h,'#a0a59f');for(const z of [-.505,.505])for(let i=1;i<4;i++)v+=line([-w*.42,h*i/4,z*l],[w*.42,h*i/4,z*l],'#929a94',.9);return v+B(0,h*.96,0,w*1.01,l*1.08,h*.04,'#c8cbc1')}
+ case 'architectural_slat_panel':{let v='';for(const x of [-.47,.47])v+=B(x*w,0,0,w*.035,l,h,c);for(const y of [.03,.95])v+=B(0,h*y,0,w,l*.8,h*.04,'#758582');for(let i=0;i<13;i++)v+=B((i/12-.5)*w*.86,h*.07,0,w*.025,l*.68,h*.88,c);return v}
  case 'masonry_wall':{let v=B(0,0,0,w,l,h);for(let i=1;i<6;i++){v+=line([-w/2,h*i/6,l*.51],[w/2,h*i/6,l*.51],'#81796c');for(let j=0;j<6;j++){const x=w*(-.47+(j+(i%2)*.5)*.15);if(x<w*.49)v+=line([x,h*i/6,l*.51],[x,h*(i+1)/6,l*.51],'#81796c')}}return v+B(0,h*.96,0,w*1.015,l*1.12,h*.04,'#c4b8a5')}
  case 'road_speed_hump':case 'road_rubber_bump':{let v='';const rubber=o.type==='road_rubber_bump',n=rubber?10:16;for(let i=0;i<n;i++){const z0=-l/2+i*l/n,z1=z0+l/n,y0=h*Math.sin(Math.PI*i/n),y1=h*Math.sin(Math.PI*(i+1)/n);for(let k=0;k<(rubber?8:1);k++){const count=rubber?8:1,x0=-w/2+k*w/count,x1=x0+w/count,col=rubber&&k%2===0?'#d4b44a':c;v+=poly([at(x0,y0,z0),at(x1,y0,z0),at(x1,y1,z1),at(x0,y1,z1)],col);if(k===0||k===count-1){const x=k===0?x0:x1;v+=poly([at(x,0,z0),at(x,0,z1),at(x,y1,z1),at(x,y0,z0)],'#535b5c')}}}return v}
  case 'road_work_barricade':{let v='';for(const x of [-.43,.43]){for(const z of [-.35,.35]){v+=B(x*w,0,z*l,w*.08,l*.20,h*.045,'#5c6562');v+=B(x*w,h*.045,z*l*.60,w*.045,l*.13,h*.82,'#b0b8b2')}}for(const y of [.47,.74]){v+=B(0,h*y,0,w,l*.12,h*.19,'#d9dcd3');for(let i=0;i<7;i++){const x=-w*.5+i*w/7;v+=poly([at(x,h*y,l*.065),at(x+w*.07,h*y,l*.065),at(x+w*.14,h*(y+.19),l*.065),at(x+w*.07,h*(y+.19),l*.065)],c)}}return v}
