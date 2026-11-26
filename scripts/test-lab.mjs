@@ -23,7 +23,10 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add]').count(),159);
   await cmd('new').click();await page.locator('[data-add="burst_demo"]').click();
   assert.equal(await count(),'1');
-  assert(await canvas.locator('[data-object] polygon').count()>10);
+  assert(await canvas.locator('[data-object] polygon').count()>300,'volumetric flame and smoke surfaces');
+  const burstBefore=await canvas.locator('[data-object]').innerHTML();
+  await page.locator('[data-view="top"]').click();assert.notEqual(await canvas.locator('[data-object]').innerHTML(),burstBefore);
+  await page.locator('[data-view="iso"]').click();
   await cmd('burst-play').click();assert(await page.locator('#rd-burst-dialog').isVisible());
   assert(await page.locator('#rd-burst-stage').evaluate(n=>n.classList.contains('playing')));
   assert(await page.locator('#rd-burst-stage .burst-cloud').count()===1);
@@ -35,6 +38,7 @@ try{
   for(const type of ['open_viewing_tower','enclosed_viewing_tower']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1');assert(await canvas.locator('[data-object] polygon').count()>12);
+    assert(await canvas.locator('[data-object] .rd-tower-ladder polygon').count()>30,'ladder geometry');
     await page.locator('[data-asset-detail="'+type+'"]').click();
     assert(await page.locator('#rd-asset-preview polygon').count()>12);
     await cmd('asset-close').click();
@@ -408,7 +412,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add]').count(),6);
   await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-search').fill('6-48');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
   assert.equal(await page.locator('#rd-palette [data-add] svg').count(),159);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
