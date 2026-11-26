@@ -49,6 +49,15 @@ try {
   assert(await page.locator('#overview-views button').nth(1).isDisabled());
   const initialImage=await page.evaluate(()=>{const gl=document.querySelector('#overview-gl');return(getComputedStyle(gl).visibility==='visible'?gl:document.querySelector('#overview-canvas')).toDataURL()});
   assert(await page.locator('#overview-advanced').evaluate(n=>!n.open));
+  await quick.first().focus();
+  await page.keyboard.press('Enter');
+  assert.equal(await quick.first().getAttribute('aria-pressed'),'true');
+  assert(await quick.first().evaluate(n=>n===document.activeElement),'Keyboard focus survives selection');
+  await page.keyboard.press('Tab');
+  assert(await quick.nth(1).evaluate(n=>n===document.activeElement),'Tab moves to next component');
+  await page.keyboard.press('Space');
+  assert.equal(await quick.nth(1).getAttribute('aria-pressed'),'true');
+  assert(await quick.nth(1).evaluate(n=>n===document.activeElement),'Keyboard focus survives second selection');
   for(let k=0;k<4;k++){
    await quick.nth(k).click();
    assert.equal(await quick.nth(k).getAttribute('aria-pressed'),'true');
