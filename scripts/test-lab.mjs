@@ -59,10 +59,10 @@ try{
   assert.notEqual(await canvas.locator('[data-object]').innerHTML(),staticBurst,'animated geometry');
   await playback.locator('[data-cmd="burst-pause"]').click();
   assert.equal(await canvas.getAttribute('data-burst-paused'),'true');
-  const pausedGeometry=await canvas.locator('[data-object]').innerHTML(),pausedProgress=await page.locator('#rd-burst-progress').inputValue();
+  const pausedGeometry=await canvas.locator('[data-object]').innerHTML(),pausedProgress=await page.locator('#rd-burst-progress').evaluate(el=>el.value);
   await page.waitForTimeout(250);
   assert.equal(await canvas.locator('[data-object]').innerHTML(),pausedGeometry);
-  assert.equal(await page.locator('#rd-burst-progress').inputValue(),pausedProgress);
+  assert.equal(await page.locator('#rd-burst-progress').evaluate(el=>el.value),pausedProgress);
   await playback.locator('[data-cmd="burst-pause"]').click();
   assert.equal(await canvas.getAttribute('data-burst-paused'),'false');
   await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.burstPlaying==='false',{},{timeout:10000});
