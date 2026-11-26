@@ -21,7 +21,10 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),122);
-  assert.equal(await page.locator('#rd-shortcuts kbd').count(),31);
+  assert.equal(await page.locator('#rd-shortcuts kbd').count(),44);
+  assert(!(await page.locator('#rd-shortcuts').textContent()).includes('Cmd'));
+  assert((await page.locator('#rd-shortcuts kbd').allTextContents()).includes('Ctrl + Z'));
+  assert((await page.locator('#rd-shortcuts kbd').allTextContents()).includes(lang==='zh'?'按住鼠标右键拖动':'Right-button drag'));
   await cmd('new').click();
   await page.locator('#rd-floor').selectOption('1');
   await page.locator('[data-add="floor_tile"]').click();
