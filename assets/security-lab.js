@@ -1384,6 +1384,14 @@ function initOverview(lang,library){
    B(x,.035,z,w,h,d,color,null,3,id);
    B(x,h+.035,z,w+.12,roofType==='roof'?.34:.10,d+.12,'#697d81',roofType==='roof'?'roof':null,3,id);
    B(x,.04,z,w+.04,.08,d+.04,'#a1aaa4',null,3,id);
+   // Architectural finish: restrained cladding, recessed-looking frames and roof drainage details.
+   const trim=roofType==='roof'?'#a7b1ad':'#b5b4a7';
+   for(const side of [-1,1]){
+    B(x+side*(w/2-.075),.115,z+d/2+.029,.12,h-.16,.038,trim,null,3,id);
+    B(x+side*(w/2-.075),.115,z-d/2-.029,.12,h-.16,.038,trim,null,3,id);
+   }
+   B(x,h-.075,z+d/2+.028,w,.085,.045,trim,null,3,id);
+   B(x,h-.075,z-d/2-.028,w,.085,.045,trim,null,3,id);
    // Facade joints, roof edges and sills clarify construction and building scale.
    if(roofType!=='roof'){
     for(const zz of [z-d/2,z+d/2])B(x,h+.135,zz,w+.09,.085,.065,'#a9b5b2',null,3,id);
@@ -1404,7 +1412,13 @@ function initOverview(lang,library){
    B(x+.22,.08,z+d/2+.112,.43,.65,.02,glass,null,3,id);
    B(x+.22,.08,z+d/2+.126,.025,.65,.016,'#9caeae',null,3,id);
    B(x+.22,.04,z+d/2+.30,.92,.065,.48,'#bcbdb2',null,3,id);
-   if(roofType!=='roof'){for(const dx of [-.43,.43]){B(x+dx,h+.135,z-.25,.46,.18,.45,'#a3aeac',null,3,id);B(x+dx,h+.315,z-.25,.36,.018,.36,'#727f83',null,3,id)}}
+   if(roofType!=='roof'){
+    for(const dx of [-.43,.43]){
+     B(x+dx,h+.135,z-.25,.46,.18,.45,'#a3aeac',null,3,id);
+     B(x+dx,h+.315,z-.25,.36,.018,.36,'#727f83',null,3,id);
+     for(let k=0;k<4;k++)B(x+dx-.135+k*.09,h+.335,z-.25,.026,.012,.29,'#48585c',null,3,id);
+    }
+   }
   };
   building(-3.5,-2.45,3.45,2.35,1.96,'#cbc8b9',8);
   building(3.45,-2.35,3.5,2.2,1.35,'#bfc5c2',10,'roof');
