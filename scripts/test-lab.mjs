@@ -21,6 +21,22 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),139);
+  // Architectural snapping: a nearly closed rectangle, then auto-fit roof.
+  await cmd('new').click();await cmd('fit').click();await page.locator('[data-view="top"]').click();
+  const walls={version:5,siteSize:40,objects:[{type:'wall',x:0,z:-1.5,w:3,d:.16,h:2.8,r:0,y:0},{type:'wall',x:1.5,z:0,w:3,d:.16,h:2.8,r:90,y:0},{type:'wall',x:0,z:1.5,w:3,d:.16,h:2.8,r:0,y:0}]};
+  await page.locator('#rd-file').setInputFiles({name:'walls.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(walls))});
+  await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.count==='3');
+  await canvas.evaluate(node=>{const p=node.createSVGPoint();p.x=400-1.5*32;p.y=260+.2*32;const q=p.matrixTransform(node.getScreenCTM()),d=new DataTransfer();d.setData('application/x-raven-model','wall');node.dispatchEvent(new DragEvent('drop',{bubbles:true,clientX:q.x,clientY:q.y,dataTransfer:d}))});
+  assert.equal(await count(),'4');assert.equal(Number(await page.locator('[data-prop="x"]').inputValue()),-1.5);
+  assert.equal(Number(await page.locator('[data-prop="z"]').inputValue()),0);
+  assert.equal(Number(await page.locator('[data-prop="r"]').inputValue())%180,90);
+  await page.locator('[data-add="flat_roof"]').click();
+  assert.equal(await count(),'5');
+  for(const [k,v] of [['x',0],['z',0],['w',3.16],['d',3.16],['y',2.8]])assert.equal(Number(await page.locator('[data-prop="'+k+'"]').inputValue()),v,'roof '+k);
+  assert((await canvas.getAttribute('data-snap-notice')).length>0);
+  await cmd('undo').click();assert.equal(await count(),'4');
+  await cmd('new').click();await page.locator('[data-view="iso"]').click();await cmd('fit').click();await cmd('example').click();
+
   await cmd('new').click();await page.locator('[data-add="building"]').click();
   assert(await page.locator('#rd-building-plus').isVisible());
   await cmd('building-add-floor').click();
