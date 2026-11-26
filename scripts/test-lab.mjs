@@ -20,7 +20,7 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),180);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),185);
   for(const type of ['flatbed_lorry','utility_trailer','fire_service_truck']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1');
@@ -31,6 +31,16 @@ try{
   }
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
+  await page.locator('#rd-category').selectOption('ecp_visual');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
+  for(const type of ['ecp_field_office','ecp_service_canopy','ecp_portable_office','ecp_staff_kiosk','ecp_utility_unit']){
+    await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
+    assert.equal(await count(),'1',type);
+    assert(await canvas.locator('[data-object] polygon').count()>30,type+' detailed geometry');
+    await page.locator('[data-asset-detail="'+type+'"]').click();
+    assert(await page.locator('#rd-asset-preview polygon').count()>30,type+' preview');
+    await cmd('asset-close').click();
+  }
   await page.locator('#rd-category').selectOption('public_entry');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),11);
   for(const type of ['public_entry_canopy','public_glass_entry','visitor_kiosk','waiting_bench','accessibility_ramp','wayfinding_sign','luggage_trolley','reception_counter_low','queue_stanchion','visitor_information_board','entry_directory_screen']){
@@ -498,7 +508,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),180);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),185);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
@@ -557,9 +567,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),180);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),185);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,161);
+  assert.equal(newTypes.length,166);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
