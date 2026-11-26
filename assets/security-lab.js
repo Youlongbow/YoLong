@@ -225,7 +225,12 @@ const catalog=[
 ["wheel_loader","轮式装载机","Wheel loader","vehicle",7.3,2.7,3.4,"#c8a34e"],
 ["tracked_excavator","履带式挖掘机","Tracked excavator","vehicle",8.6,3,3.8,"#c5a14f"],
 ["crawler_bulldozer","履带式推土机","Crawler bulldozer","vehicle",5.8,3.4,3.2,"#c1a04e"],
-["road_roller","单钢轮压路机","Single drum road roller","vehicle",5.5,2.2,3,"#c2a64e"]
+["road_roller","单钢轮压路机","Single drum road roller","vehicle",5.5,2.2,3,"#c2a64e"],
+["motor_grader","平地机（刮路机）","Motor grader","vehicle",9.1,2.7,3.5,"#c7a451"],
+["mobile_crane","汽车吊","Mobile crane","vehicle",11.5,2.55,3.8,"#c7a14c"],
+["fuel_tanker","油罐车","Fuel tanker truck","vehicle",9.5,2.5,3.5,"#a9b8b6"],
+["water_tanker","水罐车","Water tanker truck","vehicle",9.2,2.5,3.5,"#88a5b4"],
+["heavy_haul_truck","大型运输卡车","Heavy haul truck","vehicle",13.5,2.55,3.8,"#a1b1b4"]
 ].map(([key,zh,en,category,w,d,h,color])=>({key,zh,en,category,w,d,h,color}));
 // Default sizes for common supplementary objects, in illustrative metres at scene scale 1.
 const metricDefaults={car:[4.5,1.8,1.48],truck:[7.5,2.5,3.4],bus:[10.5,2.5,3.2],person:[.56,.36,1.75],office_desk:[1.6,.75,.75],office_chair:[.65,.65,1.05],sofa:[2.2,.95,.88],round_table:[1.5,1.5,.75],bookshelf:[.9,.35,1.8],filing_cabinet:[.48,.6,1.28],single_bed:[.98,2.05,.95],planter:[.62,.62,1.2]};
@@ -314,6 +319,7 @@ Object.assign(assetProfiles,{"field_utility_4x4":["野外勤务越野车（无�
 for(const k of ["field_utility_4x4","field_crew_transport","fictional_armoured_transport"])illustrativeDimensions.add(k);
 assetProfiles.humvee_display=['宽体越野车、车窗、轮胎及静态车顶机枪轮廓','Wide-body off-road vehicle with static roof gun silhouette','原创外观展示网格，车顶道具不可操作。','Original exterior display mesh with a non-operable roof prop.'];illustrativeDimensions.add('humvee_display');
 Object.assign(assetProfiles,{"wheel_loader":["轮式装载机静态原创外观网格","Wheel loader original static mesh","施工场景可视化，尺寸为示意。","Construction visualization; illustrative dimensions."],"tracked_excavator":["履带式挖掘机静态原创外观网格","Tracked excavator original static mesh","施工场景可视化，尺寸为示意。","Construction visualization; illustrative dimensions."],"crawler_bulldozer":["履带式推土机静态原创外观网格","Crawler bulldozer original static mesh","施工场景可视化，尺寸为示意。","Construction visualization; illustrative dimensions."],"road_roller":["单钢轮压路机静态原创外观网格","Single drum road roller original static mesh","施工场景可视化，尺寸为示意。","Construction visualization; illustrative dimensions."]});for(const k of ["wheel_loader","tracked_excavator","crawler_bulldozer","road_roller"])illustrativeDimensions.add(k);
+Object.assign(assetProfiles,{"motor_grader":["平地机（刮路机）原创静态外观网格","Motor grader original static exterior mesh","通用施工和后勤展示，示意尺寸。","General construction and logistics display; illustrative dimensions."],"mobile_crane":["汽车吊原创静态外观网格","Mobile crane original static exterior mesh","通用施工和后勤展示，示意尺寸。","General construction and logistics display; illustrative dimensions."],"fuel_tanker":["油罐车原创静态外观网格","Fuel tanker truck original static exterior mesh","通用施工和后勤展示，示意尺寸。","General construction and logistics display; illustrative dimensions."],"water_tanker":["水罐车原创静态外观网格","Water tanker truck original static exterior mesh","通用施工和后勤展示，示意尺寸。","General construction and logistics display; illustrative dimensions."],"heavy_haul_truck":["大型运输卡车原创静态外观网格","Heavy haul truck original static exterior mesh","通用施工和后勤展示，示意尺寸。","General construction and logistics display; illustrative dimensions."]});for(const k of ["motor_grader","mobile_crane","fuel_tanker","water_tanker","heavy_haul_truck"])illustrativeDimensions.add(k);
 const map=new Map(catalog.map(x=>[x.key,x]));
 map.set('custom_mesh',{key:'custom_mesh',zh:'导入网格',en:'Imported mesh',category:'architecture',w:2,d:2,h:2,color:'#a7b5b3'});
 // Original, indexed low-poly furniture assets in normalized local coordinates.
@@ -385,6 +391,38 @@ function civilianVehicleMesh(type){
  cylinder(-.31,.23,0,.155,.23,.89,metal);cylinder(-.31,.23,0,.11,.16,.92,steel);
  box(0,.29,0,.65,.15,.65,yellow);for(const z of [-.44,.44])beam(-.31,.23,-.07,.47,z,.075,.075,yellow);
  cab(.13,.44,0,.25,.52,.59);box(.35,.45,0,.24,.17,.68,yellow);
+ }
+ return normalizeAsset({vertices,faces,colours});
+ }
+ if(["motor_grader","mobile_crane","fuel_tanker","water_tanker","heavy_haul_truck"].includes(type)){
+ const steel='#627175',metal='#a2afae',paint=null;
+ const beam=(ax,ay,bx,by,z,t,d,col)=>{const dx=bx-ax,dy=by-ay,len=Math.hypot(dx,dy)||1,nx=-dy/len*t/2,ny=dx/len*t/2;const p=[[ax+nx,ay+ny],[bx+nx,by+ny],[bx-nx,by-ny],[ax-nx,ay-ny]];loft([z-d/2,z+d/2].map(zz=>p.map(([x,y])=>[x,y,zz])),col)};
+ const cab=(x,y,z,w,h,d)=>{body([[x-w*.5,x+w*.5,d*.5,y,.025],[x-w*.5,x+w*.5,d*.5,y+h*.94,.025],[x-w*.46,x+w*.46,d*.46,y+h,.025]],paint);for(const side of [-1,1]){box(x-w*.08,y+h*.49,z+side*d*.505,w*.62,h*.36,.015,glass);box(x+w*.20,y+h*.40,z+side*d*.515,.032,.025,.008,dark);box(x-w*.38,y+h*.62,z+side*d*.57,.045,.065,.07,dark)}box(x-w*.505,y+h*.49,z,.015,h*.36,d*.84,glass);box(x-w*.515,y+h*.43,z,.015,.015,d*.85,metal)};
+ const wheels=(xs,rx=.065,ry=.18)=>{for(const x of xs)for(const z of [-.40,.40])wheel(x,z,rx,ry)};
+ const truckFront=()=>{box(0,.15,0,.96,.12,.68,steel);cab(-.355,.22,0,.27,.70,.84);box(-.49,.28,0,.025,.17,.57,dark);for(let i=0;i<5;i++)box(-.507,.29+i*.028,0,.01,.008,.51,metal);for(const z of [-.35,.35]){box(-.50,.25,z,.021,.075,.13,head);box(.49,.20,z,.02,.065,.10,tail)}box(-.50,.19,0,.035,.055,.86,dark)};
+ if(type==='motor_grader'){
+ wheels([-.35,.24,.39],.075,.20);
+ box(.03,.25,0,.86,.11,.51,steel);box(.32,.36,0,.30,.25,.70,paint);cab(.12,.35,0,.22,.62,.61);
+ beam(-.37,.29,.09,.56,0,.11,.15,paint);beam(-.15,.22,.04,.36,.19,.035,.065,metal);
+ const p=[[-.17,.10],[-.10,.10],[-.07,.25],[-.13,.27]];loft([-.48,.48].map(z=>p.map(([x,y])=>[x+z*.12,y,z])),metal);
+ }else if(type==='mobile_crane'){
+ wheels([-.39,-.20,.22,.39],.052,.16);truckFront();
+ box(.10,.27,0,.70,.15,.83,paint);box(.16,.42,0,.29,.10,.59,steel);box(.19,.52,0,.35,.18,.57,paint);
+ box(.03,.62,.23,.18,.30,.29,glass);box(.03,.90,.23,.20,.04,.32,paint);
+ beam(.29,.67,-.46,.88,-.10,.10,.24,paint);beam(-.23,.82,-.48,.90,-.10,.065,.15,metal);
+ box(-.48,.83,-.10,.055,.07,.14,steel);box(-.48,.75,-.10,.009,.08,.009,dark);box(-.48,.70,-.10,.04,.05,.06,steel);
+ }else if(type==='fuel_tanker'||type==='water_tanker'){
+ wheels([-.35,.25,.40],.067,.18);truckFront();
+ box(.11,.26,0,.73,.075,.70,steel);
+ const ring=(x,ry,rz)=>Array.from({length:32},(_,i)=>{const a=i*Math.PI/16;return[x,.59+ry*Math.cos(a),rz*Math.sin(a)]});
+ loft([ring(-.20,.14,.24),ring(-.17,.26,.39),ring(.40,.26,.39),ring(.46,.15,.25)],paint);
+ const bandCol=type==='water_tanker'?'#d4e0e0':'#e0dfd3';for(const x of [-.10,.29])loft([ring(x-.014,.263,.395),ring(x+.014,.263,.395)],bandCol);
+ for(const z of [-.39,.39])box(.13,.30,z,.53,.075,.04,steel);box(.12,.85,0,.38,.022,.16,metal);
+ }else{
+ wheels([-.40,-.17,.06,.32,.43],.051,.16);truckFront();
+ box(.14,.26,0,.68,.10,.86,metal);box(.15,.36,0,.65,.045,.83,steel);
+ for(const z of [-.42,.42]){box(.14,.40,z,.69,.075,.028,paint);for(let i=0;i<7;i++)box(-.15+i*.096,.41,z,.018,.11,.028,metal)}
+ box(-.18,.36,0,.04,.29,.86,paint);box(.46,.36,0,.035,.13,.86,paint);
  }
  return normalizeAsset({vertices,faces,colours});
  }
@@ -517,7 +555,7 @@ function civilianVehicleMesh(type){
  return{vertices,faces,colours};
 }
 function normalizeAsset(mesh){const min=[0,1,2].map(i=>Math.min(...mesh.vertices.map(v=>v[i]))),max=[0,1,2].map(i=>Math.max(...mesh.vertices.map(v=>v[i])));return {...mesh,vertices:mesh.vertices.map(v=>v.map((x,i)=>(x-min[i])/(max[i]-min[i]||1)-(i===1?0:.5)))}}
-const vehicleAssets=new Map(['car','truck','bus','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','civilian_ambulance','field_utility_4x4','field_crew_transport','fictional_armoured_transport','humvee_display','wheel_loader','tracked_excavator','crawler_bulldozer','road_roller'].map(k=>[k,civilianVehicleMesh(k)]));
+const vehicleAssets=new Map(['car','truck','bus','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','civilian_ambulance','field_utility_4x4','field_crew_transport','fictional_armoured_transport','humvee_display','wheel_loader','tracked_excavator','crawler_bulldozer','road_roller','motor_grader','mobile_crane','fuel_tanker','water_tanker','heavy_haul_truck'].map(k=>[k,civilianVehicleMesh(k)]));
 // Original civilian standing figure. Normalized local coordinates, with tapered limbs and separate apparel colours.
 function standingFigureMesh(role='person'){
  const vertices=[],faces=[],colours=[],n=16;
@@ -674,7 +712,7 @@ export function initLab(lang){
  const ring=(x,y,z,rx,ry,plane='xz',col=c)=>{const points=Array.from({length:18},(_,i)=>{const a=i*Math.PI/9;return at(x+rx*Math.cos(a)*(plane==='yz'?0:1),y+ry*Math.sin(a)*(plane==='xz'?0:1),z+(plane==='xz'?ry*Math.sin(a):plane==='yz'?rx*Math.cos(a):0))});return '<polygon points="'+points.map(p=>p.join(',')).join(' ')+'" fill="none" style="stroke:'+col+';stroke-width:1.35" stroke-width="1.35"/>'};
  const disc=(x,y,z,rx,ry,col)=>poly(Array.from({length:16},(_,i)=>at(x+rx*Math.cos(i*Math.PI/8),y+ry*Math.sin(i*Math.PI/8),z)),col);
  switch(o.type){
- case 'wheel_loader':case 'tracked_excavator':case 'crawler_bulldozer':case 'road_roller':case 'humvee_display':case 'field_utility_4x4':case 'field_crew_transport':case 'fictional_armoured_transport':case 'civilian_ambulance':case 'hilux_dc':case 'hiace_commuter':case 'land_cruiser_300':case 'coach_bus':case 'security_guard':case 'soldier':case 'police_officer':case 'unidentified_person':case 'hostile_role':case 'woman_black_robe':case 'civilian_woman':case 'civilian_male':case 'civilian_walking':case 'civilian_seated':case 'civilian_long_coat':case 'person':case 'car':case 'truck':case 'bus':case 'custom_mesh':case 'office_desk':case 'office_chair':case 'sofa':case 'round_table':case 'bookshelf':case 'filing_cabinet':case 'single_bed':case 'planter':{const mesh=o.mesh||builtinMesh(o.type),vertices=mesh.vertices.map(p=>at(p[0]*w,p[1]*h,p[2]*l));return mesh.faces.map((f,index)=>{const p=f.map(i=>vertices[i]),v=f.map(i=>mesh.vertices[i]),u=v[1].map((n,i)=>(n-v[0][i])*[w,h,l][i]),q=v[2].map((n,i)=>(n-v[0][i])*[w,h,l][i]),normal=[u[1]*q[2]-u[2]*q[1],u[2]*q[0]-u[0]*q[2],u[0]*q[1]-u[1]*q[0]],len=Math.hypot(...normal)||1;return{p,depth:p.reduce((s,n)=>s+n.depth,0)/3,col:shade(mesh.colours?.[index]||c,.65+.35*Math.abs((normal[0]*.35+normal[1]*.85+normal[2]*.39)/len))}}).sort((a,b)=>a.depth-b.depth).map(f=>poly(f.p,f.col)).join('')}
+ case 'motor_grader':case 'mobile_crane':case 'fuel_tanker':case 'water_tanker':case 'heavy_haul_truck':case 'wheel_loader':case 'tracked_excavator':case 'crawler_bulldozer':case 'road_roller':case 'humvee_display':case 'field_utility_4x4':case 'field_crew_transport':case 'fictional_armoured_transport':case 'civilian_ambulance':case 'hilux_dc':case 'hiace_commuter':case 'land_cruiser_300':case 'coach_bus':case 'security_guard':case 'soldier':case 'police_officer':case 'unidentified_person':case 'hostile_role':case 'woman_black_robe':case 'civilian_woman':case 'civilian_male':case 'civilian_walking':case 'civilian_seated':case 'civilian_long_coat':case 'person':case 'car':case 'truck':case 'bus':case 'custom_mesh':case 'office_desk':case 'office_chair':case 'sofa':case 'round_table':case 'bookshelf':case 'filing_cabinet':case 'single_bed':case 'planter':{const mesh=o.mesh||builtinMesh(o.type),vertices=mesh.vertices.map(p=>at(p[0]*w,p[1]*h,p[2]*l));return mesh.faces.map((f,index)=>{const p=f.map(i=>vertices[i]),v=f.map(i=>mesh.vertices[i]),u=v[1].map((n,i)=>(n-v[0][i])*[w,h,l][i]),q=v[2].map((n,i)=>(n-v[0][i])*[w,h,l][i]),normal=[u[1]*q[2]-u[2]*q[1],u[2]*q[0]-u[0]*q[2],u[0]*q[1]-u[1]*q[0]],len=Math.hypot(...normal)||1;return{p,depth:p.reduce((s,n)=>s+n.depth,0)/3,col:shade(mesh.colours?.[index]||c,.65+.35*Math.abs((normal[0]*.35+normal[1]*.85+normal[2]*.39)/len))}}).sort((a,b)=>a.depth-b.depth).map(f=>poly(f.p,f.col)).join('')}
  case 'equipment_suv':{let v=model({...o,type:'land_cruiser_300',h:h*.72,tint:'#d6dcd9'});v+=B(0,h*.714,0,w*.51,l*.72,h*.025,'#aeb9bb')+B(0,h*.739,0,w*.35,l*.51,h*.09,'#657980');v+=B(w*.19,h*.739,0,w*.034,l*.07,h*.035,'#596d72')+B(w*.19,h*.774,0,w*.014,l*.028,h*.218,'#879ba0');v+=line([w*.19,h*.774,0],[w*.19,h*.992,0],'#b9c7c9',2.8);v+=B(-w*.19,h*.739,0,w*.034,l*.07,h*.035,'#596d72')+B(-w*.19,h*.774,0,w*.014,l*.028,h*.218,'#879ba0');v+=line([-w*.19,h*.774,0],[-w*.19,h*.992,0],'#b9c7c9',2.8);return v}
  case 'unattended_backpack':{let v=B(0,0,0,w*.9,l*.88,h*.85,c)+B(0,h*.83,0,w*.8,l*.79,h*.13,shade(c,.9))+B(0,h*.10,l*.46,w*.66,l*.12,h*.39,shade(c,.83));for(const side of [-1,1])v+=line([side*w*.3,h*.2,-l*.5],[side*w*.3,h*.76,-l*.5],'#bac6c3',2);return v+B(0,h*.96,0,w*.30,l*.2,h*.04,'#b0baba')}
  case 'unattended_case':return B(0,0,0,w,l,h*.9,c)+B(0,h*.42,l*.51,w*.86,l*.025,h*.025,'#b7c2c1')+B(0,h*.91,0,w*.28,l*.22,h*.05,'#414e55');
