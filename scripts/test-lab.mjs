@@ -20,7 +20,22 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),136);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),139);
+  await cmd('new').click();await page.locator('[data-add="building"]').click();
+  assert(await page.locator('#rd-building-plus').isVisible());
+  await cmd('building-add-floor').click();
+  assert.equal(await canvas.getAttribute('data-floor'),'2');assert.equal(await count(),'1');
+  assert.equal(Number(await page.locator('[data-prop="y"]').inputValue()),3);
+  await cmd('building-add-floor').click();
+  assert.equal(await canvas.getAttribute('data-floor'),'3');
+  assert.equal(Number(await page.locator('[data-prop="y"]').inputValue()),6);
+  await page.locator('[data-floor-tab="0"]').click();assert.equal(await count(),'3');
+  await page.locator('[data-floor-tab="2"]').click();assert.equal(await count(),'1');
+  await page.locator('[data-add="office_desk"]').click();assert.equal(await count(),'2');
+  assert.equal(Number(await page.locator('[data-prop="y"]').inputValue()),3);
+  await page.locator('[data-floor-tab="1"]').click();assert.equal(await count(),'1');
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   assert(!(await page.locator('.rd-blast').textContent()).includes(lang==='zh'?'不计算爆炸压力':'no blast pressure'));
   for(const [category,size] of [['rooms',3],['interior_equipment',5],['public_building',2],['aviation',4]]){
     await page.locator('#rd-category').selectOption(category);
@@ -229,10 +244,10 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-chapter').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),136);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),139);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),9);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),11);
   for(const kind of ['car','truck','bus']){
     await cmd('new').click();await page.locator('[data-add="'+kind+'"]').click();
     assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>500);
@@ -288,9 +303,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),136);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),139);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,117);
+  assert.equal(newTypes.length,120);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
@@ -304,7 +319,7 @@ try{
      assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>100);
      await cmd('gpu').click();
    }
-   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition','office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','security_guard','soldier','police_officer','unidentified_person','hostile_role','woman_black_robe','civilian_woman','hesco_visual','concrete_partition','portable_cabin','aircraft_hangar','water_tank','medical_stretcher','first_aid_tent','portable_toilet','wood_pallet','civilian_ambulance','forklift','operations_room','meeting_room','patient_room','display_wall','desktop_computer','workstation_desk','server_rack','patient_bed','public_police_station','hospital_building','airport_terminal','airport_tower','civilian_helicopter','helipad_visual'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
+   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition','office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','security_guard','soldier','police_officer','unidentified_person','hostile_role','woman_black_robe','civilian_woman','hesco_visual','concrete_partition','portable_cabin','aircraft_hangar','water_tank','medical_stretcher','first_aid_tent','portable_toilet','wood_pallet','civilian_ambulance','forklift','operations_room','meeting_room','patient_room','display_wall','desktop_computer','workstation_desk','server_rack','patient_bed','public_police_station','hospital_building','airport_terminal','airport_tower','civilian_helicopter','helipad_visual','building_storey','communications_van','utility_pickup'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
    await page.locator('[data-view="top"]').click();
    assert.equal(await count(),'1');
    assert(await object.locator('polygon,line').count()>0,type+' top geometry');
