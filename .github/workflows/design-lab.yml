@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 jobs:
   local-browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     timeout-minutes: 25
@@ -33,9 +33,8 @@ jobs:
       - run: node scripts/build.mjs
       - run: npm install --no-save playwright@1.56.1
       - run: npx playwright install --with-deps chromium
-      - name: Exercise all industrial models with actual WebGL pixel assertions
+      - name: Exercise bilingual SVG editor in Chromium
         env:
-          LAB_REQUIRE_WEBGL: '1'
           LAB_CAPTURE_DIR: lab-visual-review
         run: node scripts/test-lab.mjs
       - name: Preserve visual review captures
@@ -47,7 +46,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
   live-route:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
