@@ -497,7 +497,7 @@ export function initLab(lang){
 
  function writeShelf(items){try{localStorage.setItem(shelfKey,JSON.stringify(items));shelf=items;return true}catch{$('#rd-status').textContent=t('本地资产库空间不足','Local asset library storage unavailable');return false}}
  function shelfRender(){const host=$('#rd-shelf');host.replaceChildren();if(!shelf.length){const p=document.createElement('p');p.className='rd-empty';p.textContent=t('尚无自定义资产','No custom assets yet');host.append(p);return}for(const [i,o] of shelf.entries()){const row=document.createElement('div');row.className='rd-shelf-row';const add=document.createElement('button');add.dataset.shelfAdd=String(i);add.textContent=o.label||t('导入网格','Imported mesh');add.title=t('加入场景','Add to scene');const del=document.createElement('button');del.dataset.shelfRemove=String(i);del.textContent='×';del.setAttribute('aria-label',t('移除资产','Remove asset'));row.append(add,del);host.append(row)}}
- const clone=()=>JSON.stringify({objects,floors,activeFloor,workY,band,isolate}),snapshot=()=>{undo.push(clone());if(undo.length>50)undo.shift();redo=[]},restore=s=>{const data=JSON.parse(s);objects=Array.isArray(data)?data:data.objects;next=Math.max(0,...objects.map(o=>o.id))+1;selected=null;selection.clear();ensureSiteSize(siteSize);if(!Array.isArray(data)){floors=data.floors;activeFloor=data.activeFloor;workY=data.workY;band=data.band;isolate=data.isolate;syncFloorControls()}};
+ const clone=()=>JSON.stringify({objects,floors,activeFloor,workY,band,isolate,roofsVisible}),snapshot=()=>{undo.push(clone());if(undo.length>50)undo.shift();redo=[]},restore=s=>{const data=JSON.parse(s);objects=Array.isArray(data)?data:data.objects;next=Math.max(0,...objects.map(o=>o.id))+1;selected=null;selection.clear();ensureSiteSize(siteSize);if(!Array.isArray(data)){floors=data.floors;activeFloor=data.activeFloor;workY=data.workY;band=data.band;isolate=data.isolate;roofsVisible=data.roofsVisible!==false;root.querySelector('[data-cmd="toggle-roofs"]').setAttribute('aria-pressed',String(roofsVisible));syncFloorControls()}};
  const active=()=>objects.find(o=>o.id===selected);
  const finishes={concrete:'#a5a6a0',steel:'#8b9da3',timber:'#ab8a65',brick:'#ac7965',paint:'#d0d1c8'};const finishColor=o=>o.tint||finishes[o.finish]||map.get(o.type).color;
  const shade=(hex,k)=>'#'+[1,3,5].map(i=>Math.min(255,Math.round(parseInt(hex.slice(i,i+2),16)*k)).toString(16).padStart(2,'0')).join('');
@@ -736,9 +736,11 @@ export function initLab(lang){
  // Public architecture display: open-sided reception pavilion with independent furniture.
  floors=[{id:1,name:'',y:0,height:3}];activeFloor=0;workY=0;band=3;isolate=false;measure=[];pastePoint=null;selection.clear();selected=null;syncFloorControls();objects=[];next=1;
  const add=(type,x,z,props={})=>{const item={...makeObject(type,next++,x,z),...props};objects.push(item);return item};
- add('floor_tile',0,0,{w:8,d:6,h:.12,tint:'#c5c9c1'});
- add('wall',0,-2.92,{w:8,d:.16,h:2.8,y:.12,tint:'#b9bfb6'});
- add('wall',-3.92,0,{w:6,d:.16,h:2.8,y:.12,r:90,tint:'#aebbb6'});
+ add('floor_tile',0,0,{w:8,d:6,h:.12,tint:'#c5c9c1',finish:'concrete'});
+ add('wall',0,-2.92,{w:8,d:.16,h:2.8,y:.12,tint:'#b9bfb6',finish:'paint'});
+ add('window_wall',-3.92,0,{w:6,d:.16,h:2.8,y:.12,r:90,tint:'#aebbb6',finish:'paint'});
+ add('window',-3.92,0,{w:2.4,d:.12,h:1.176,y:1.072,r:90});
+ add('wall',0,2.92,{w:8,d:.16,h:.16,y:.12,tint:'#a9b2ab',finish:'concrete'});
  add('reception_counter_low',-1.6,-1.3,{y:.12});
  add('visitor_information_board',1.45,-2.1,{y:.12});
  add('waiting_bench',1.4,0.8,{y:.12});
@@ -750,6 +752,8 @@ export function initLab(lang){
  add('office_chair',-1.6,-2.1,{y:.12,r:180});
  add('desktop_computer',-1.6,-1.32,{y:1.17});
  add('flat_roof',0,0,{w:8.2,d:6.2,h:.18,y:2.92,tint:'#a8b1aa',finish:'concrete'});
+ for(const x of [-3.83,3.83])add('column',x,2.77,{w:.24,d:.24,h:2.8,y:.12,tint:'#87948e',finish:'steel'});
+ add('column',3.83,-2.77,{w:.24,d:.24,h:2.8,y:.12,tint:'#87948e',finish:'steel'});
  roofsVisible=true;root.querySelector('[data-cmd="toggle-roofs"]').setAttribute('aria-pressed','true');
  view='iso';angle=0;tilt=38;ensureSiteSize(siteSize);fitObjects(objects);
  root.querySelectorAll('button[data-view]').forEach(n=>n.setAttribute('aria-pressed',String(n.dataset.view==='iso')));
