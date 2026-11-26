@@ -587,7 +587,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add]').count(),229);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),28);
   for(const kind of ['car','truck','bus']){
     await cmd('new').click();await page.locator('[data-add="'+kind+'"]').click();
     assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>500);
