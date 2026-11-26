@@ -390,7 +390,7 @@ function civilianVehicleMesh(type){
  }
  if(type==='humvee_display'){
  // Stylized exterior-only vehicle display: fictional proportions and solid decorative roof prop.
- for(const x of [-.31,.31])for(const z of [-.40,.40])wheel(x,z,.103,.19);
+ for(const x of [-.31,.31])for(const z of [-.40,.40]){wheel(x,z,.103,.19);for(let i=0;i<20;i++){const a=i*Math.PI/10;const xx=x+.102*Math.cos(a),yy=.19+.187*Math.sin(a);const points=[-.052,.052].map(zz=>[[-.009,-.008],[.009,-.008],[.009,.008],[-.009,.008]].map(([u,v])=>[xx+u*Math.cos(a)-v*Math.sin(a),yy+u*Math.sin(a)+v*Math.cos(a),z+zz]));loft(points,'#354044')}}
  body([[-.47,.47,.34,.17,.045],[-.49,.49,.42,.25,.045],[-.48,.48,.43,.43,.05]],null);
  body([[-.49,-.17,.43,.42,.045],[-.47,-.16,.40,.49,.045]],null);
  body([[-.19,.41,.39,.43,.035],[-.12,.34,.36,.72,.035]],null);
@@ -398,13 +398,13 @@ function civilianVehicleMesh(type){
  // Flat, separately coloured exterior window panels and broad fenders.
  for(const z of [-1,1]){
   for(const x of [-.045,.17]){
-   box(x,.54,z*.384,.155,.12,.018,glass);
+   box(x,.527,z*.382,.174,.145,.022,'#747b6e');box(x,.544,z*.397,.151,.114,.018,glass);box(x,.55,z*.407,.139,.014,.006,'#667d81');
    box(x+.055,.47,z*.397,.035,.018,.012,dark);
-   box(x-.09,.45,z*.397,.009,.225,.012,'#727564');
+   box(x-.09,.45,z*.397,.009,.225,.012,'#727564');box(x,.432,z*.397,.163,.009,.012,'#727564');box(x-.073,.47,z*.405,.018,.029,.014,'#777c6c');
   }
   box(-.31,.33,z*.43,.25,.08,.11,null);
   box(.31,.33,z*.43,.24,.08,.11,null);
-  box(-.15,.57,z*.45,.041,.045,.08,dark);
+  box(-.15,.57,z*.45,.041,.045,.08,dark);box(-.16,.579,z*.492,.027,.025,.008,'#81999b');box(.03,.257,z*.45,.36,.028,.065,'#515e5e');
   box(-.48,.35,z*.32,.02,.075,.12,head);
   box(.48,.34,z*.32,.02,.07,.10,tail);
  }
@@ -412,13 +412,13 @@ function civilianVehicleMesh(type){
  for(const sign of [-1,1]){
  const a=vertices.length;vertices.push(wind(.49,sign*.025),wind(.49,sign*.31),wind(.69,sign*.29),wind(.69,sign*.025));tri(a,a+1,a+2,glass);tri(a,a+2,a+3,glass);
  }
- box(-.50,.29,0,.035,.055,.86,dark);box(.50,.28,0,.035,.055,.82,dark);
+ box(-.50,.29,0,.035,.055,.86,dark);box(.50,.28,0,.035,.055,.82,dark);for(let i=0;i<7;i++)box(-.31+i*.017,.495,0,.009,.009,.25,'#777c6a');
  for(let i=0;i<6;i++)box(-.497,.37,(i-2.5)*.078,.01,.085,.024,dark);
  // A simple solid, non-mechanical silhouette, merged with the vehicle's exterior mesh.
  const roofRing=(y,rx,rz)=>Array.from({length:24},(_,i)=>{const a=i*Math.PI/12;return[.06+rx*Math.cos(a),y,rz*Math.sin(a)]});
  loft([roofRing(.75,.11,.19),roofRing(.79,.11,.19)],'#777b65');
  box(.06,.79,0,.10,.08,.12,'#777b65');
- box(.01,.86,0,.16,.075,.105,dark);
+ box(.01,.86,0,.16,.075,.105,dark);box(.012,.935,0,.13,.014,.079,'#52605f');
  loft([Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return[-.07,.897+.012*Math.cos(a),.015*Math.sin(a)]}),Array.from({length:12},(_,i)=>{const a=i*Math.PI/6;return[-.29,.897+.012*Math.cos(a),.015*Math.sin(a)]})],dark);
  return normalizeAsset({vertices,faces,colours});
  }
