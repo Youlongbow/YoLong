@@ -682,6 +682,14 @@ try{
   await cmd('undo').click();
   await page.locator('#rd-objects button').last().click();
   assert.equal(await readProp('x'),0);assert.equal(await readProp('z'),2);
+  await canvas.focus();await page.keyboard.press('Control+a');
+  await page.locator('[data-prop="x"]').fill('3');await page.locator('[data-prop="x"]').press('Tab');
+  assert.equal(await readProp('x'),3);assert.equal(await readProp('z'),2);
+  await page.locator('#rd-objects button').first().click();
+  assert.equal(await readProp('x'),3);assert.equal(await readProp('z'),-2);
+  await cmd('undo').click();
+  await page.locator('#rd-objects button').first().click();
+  assert.equal(await readProp('x'),0);assert.equal(await readProp('z'),-2);
   await cmd('new').click();
   await page.locator('[data-add="building"]').click();
   await page.locator('[data-add="platform"]').click();
