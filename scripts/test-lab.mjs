@@ -20,7 +20,7 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),176);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),180);
   for(const type of ['flatbed_lorry','utility_trailer','fire_service_truck']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1');
@@ -32,8 +32,8 @@ try{
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   await page.locator('#rd-category').selectOption('public_entry');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),7);
-  for(const type of ['public_entry_canopy','public_glass_entry','visitor_kiosk','waiting_bench','accessibility_ramp','wayfinding_sign','luggage_trolley']){
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),11);
+  for(const type of ['public_entry_canopy','public_glass_entry','visitor_kiosk','waiting_bench','accessibility_ramp','wayfinding_sign','luggage_trolley','reception_counter_low','queue_stanchion','visitor_information_board','entry_directory_screen']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1',type);
     assert(await canvas.locator('[data-object] polygon').count()>1,type+' geometry');
@@ -43,6 +43,21 @@ try{
   }
   await page.locator('#rd-category').selectOption('');
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+  const sceneBeforeRender=await canvas.innerHTML();
+  await cmd('render-open').click();
+  await page.locator('#rd-render-dialog').waitFor({state:'visible'});
+  await page.locator('#rd-render-view').selectOption('top');
+  await page.locator('#rd-render-bg').selectOption('transparent');
+  await page.locator('#rd-render-size').selectOption('1600');
+  await page.waitForFunction(()=>{const p=document.querySelector('#rd-render-preview img');return p?.complete&&p.naturalWidth===1600});
+  const svgPromise=page.waitForEvent('download');await cmd('render-svg').click();const svgFile=await svgPromise;
+  assert.equal(svgFile.suggestedFilename(),'raven-scene.svg');const svgText=await readFile(await svgFile.path(),'utf8');
+  assert(svgText.includes('width="1600" height="1040"'));assert(svgText.includes('<polygon'));assert(!svgText.includes('data-object='));
+  const pngPromise=page.waitForEvent('download');await cmd('render-png').click();const pngFile=await pngPromise;
+  assert.equal(pngFile.suggestedFilename(),'raven-scene.png');const png=await readFile(await pngFile.path());
+  assert.equal(png.readUInt32BE(16),1600);assert.equal(png.readUInt32BE(20),1040);
+  await cmd('render-close').click();assert.equal(await canvas.innerHTML(),sceneBeforeRender);
+
 
   await cmd('new').click();await page.locator('[data-add="burst_demo"]').click();
   assert.equal(await count(),'1');
@@ -408,7 +423,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),176);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),180);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
@@ -467,7 +482,7 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),176);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),180);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
   assert.equal(newTypes.length,157);
   for(const type of newTypes){
