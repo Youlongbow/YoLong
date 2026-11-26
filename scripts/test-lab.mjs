@@ -21,6 +21,16 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),92);
+  await page.locator('#rd-category').selectOption('vehicle');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),3);
+  for(const kind of ['car','truck','bus']){
+    await cmd('new').click();await page.locator('[data-add="'+kind+'"]').click();
+    assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>500);
+    await cmd('gpu').click();assert.equal(await cmd('gpu').getAttribute('aria-pressed'),'true');
+    assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>500);
+    await cmd('gpu').click();
+  }
+  await cmd('example').click();await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-category').selectOption('furniture');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
   await page.locator('#rd-category').selectOption('cargo');
