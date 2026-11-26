@@ -154,6 +154,22 @@ try{
     for(const type of ['building','fence','door','light','car','person'])await page.locator('[data-add="'+type+'"]').click();
     await cmd('gpu').click();assert.equal(await cmd('gpu').getAttribute('aria-pressed'),'false');
   }else if(process.env.LAB_REQUIRE_GPU==='1')throw Error('WebGL unavailable on required GPU test');
+  await cmd('new').click();
+  const obj='v 0 0 0\nv 2 0 0\nv 2 0 1\nv 0 0 1\nv 0 1 0\nv 2 1 0\nv 2 1 1\nv 0 1 1\nf 1 2 3 4\nf 5 8 7 6\nf 1 5 6 2\nf 2 6 7 3\nf 3 7 8 4\nf 4 8 5 1';
+  await page.locator('#rd-obj').setInputFiles({name:'cabinet.obj',mimeType:'text/plain',buffer:Buffer.from(obj)});
+  await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.count==='1');
+  assert.equal(await canvas.locator('[data-object] polygon').count(),12);
+  assert.equal(await page.locator('[data-prop="w"]').inputValue(),'3');
+  await cmd('save').click();await cmd('new').click();await cmd('load').click();
+  assert.equal(await count(),'1');
+  await page.locator('#rd-objects button').first().click();
+  assert((await page.locator('#rd-inspector').textContent()).includes('OBJ'));
+  await cmd('gpu').click();if(await cmd('gpu').getAttribute('aria-pressed')==='true'){assert.equal(await page.locator('#rd-gpu').getAttribute('data-triangles'),'12');await cmd('gpu').click()}
+  await page.locator('#rd-obj').setInputFiles({name:'bad.obj',mimeType:'text/plain',buffer:Buffer.from('v 0 0 0\nf 1 2 3')});
+  await page.waitForFunction(()=>document.querySelector('#rd-status').textContent.includes('OBJ'));
+  assert.equal(await count(),'1');
+  await cmd('new').click();
+  for(const type of ['building','fence','door','light','car','person'])await page.locator('[data-add="'+type+'"]').click();
   const beforeOrbit=await canvas.innerHTML();
   await page.locator('#rd-yaw').fill('35');await page.locator('#rd-tilt').fill('62');
   assert.notEqual(await canvas.innerHTML(),beforeOrbit);
