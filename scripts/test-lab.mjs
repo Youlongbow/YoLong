@@ -92,7 +92,24 @@ try{
   assert(await canvas.locator('[data-object] polygon').count()>60,'civilian rotorcraft geometry');
   await cmd('fit').click();await cmd('example').click();
 
-  assert.equal(await page.locator('#rd-shortcuts kbd').count(),46);
+  assert.equal(await page.locator('#rd-shortcuts kbd').count(),49);
+  await cmd('new').click();await page.locator('[data-floor-tab="1"]').click();
+  await page.locator('[data-add="office_desk"]').click();
+  await page.locator('[data-prop="x"]').fill('2');await page.locator('[data-prop="x"]').press('Tab');
+  await page.locator('[data-add="office_chair"]').click();
+  await page.locator('[data-prop="x"]').fill('3');await page.locator('[data-prop="x"]').press('Tab');
+  await canvas.focus();await page.keyboard.press('Control+a');await page.keyboard.press('Control+g');
+  await page.keyboard.press('Control+c');
+  await cmd('floor-add').click();assert.equal(await count(),'0');
+  await canvas.focus();await page.keyboard.press('Control+Shift+v');assert.equal(await count(),'2');
+  assert.equal(await canvas.getAttribute('data-selected'),'2');
+  assert.equal(Number(await page.locator('[data-prop="y"]').inputValue()),3);
+  assert.equal(Number(await page.locator('[data-prop="x"]').inputValue()),3);
+  await page.keyboard.press('Control+z');assert.equal(await count(),'0');
+  await page.keyboard.press('Control+y');assert.equal(await count(),'2');
+  await page.locator('[data-floor-tab="0"]').click();assert.equal(await count(),'4');
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   assert(!(await page.locator('#rd-shortcuts').textContent()).includes('Cmd'));
   assert((await page.locator('#rd-shortcuts kbd').allTextContents()).includes('Ctrl + Z'));
   assert((await page.locator('#rd-shortcuts kbd').allTextContents()).includes(lang==='zh'?'按住鼠标右键拖动':'Right-button drag'));
