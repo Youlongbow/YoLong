@@ -189,3 +189,8 @@
 - 0f4729824a3ebd5fbea846af2e27b2747cc80707 模型详情窗口本地浏览器验收成功（139977305270），正式站校验失败（139977304920）。
 - b1278d9b9500b71ab3081d8921461dc13cbeb718 更新 live-route 验收：四条中英双语主站及预览站路径并行核验，记录实际 app 路径、预期与实际 renderer 哈希、资源字节哈希、CF 缓存状态、Age、ETag；唯一缓存探针、最长48次重试；诊断当前 main renderer 是否已经替代被验收版本。保留严格通过条件：四条路径必须同时加载被验收版本且字节哈希匹配。旧版本被替代时明确失败为 superseded，不冒充通过。
 - 本轮未改 renderer，保持100模型及资产详情版本不变。新诊断工作流45840291460已触发；线上实际哈希尚待该次执行输出。本地执行环境DNS无法直接解析站点，因此没有独立实时HTTP核验结果。
+
+## 2026-11-26：已确认线上旧版资源
+- 45840291460 local-browser通过；live-route失败：四条路径均加载app.cafc7436cdf7.js及renderer 060dc1203dd5，字节哈希相符，预期及main为ae6617a31344，页面缓存HIT。并非新renderer覆盖旧验收；部署或页面缓存滞后，尚未区分。
+- 38005584d05f5299932871d36eefd543c18d4692：构建新增公开release manifest，lab HTML Cache-Control no-store；仅在新部署成功后生效。
+- 2444b7cfe69a55ed74cfcf111eec2fb11bfd1cfd：核验直接探测release manifest、预期哈希文件、稳定app.js导入，保留四路径严格验收。未改模型代码、域名和Cloudflare配置；无Cloudflare直接管理权限，发布修复尚未确认。
