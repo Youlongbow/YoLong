@@ -513,7 +513,7 @@ try{
   await page.locator('#rd-search').fill('');
   assert.equal(await page.locator('#rd-palette [data-add] svg').count(),180);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,157);
+  assert.equal(newTypes.length,161);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
