@@ -21,6 +21,13 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),100);
+  await page.locator('#rd-search').fill('Circular top, pedestal and base');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),1);
+  assert.equal(await page.locator('#rd-palette [data-add="round_table"]').count(),1);
+  await page.locator('[data-asset-detail="round_table"]').click();
+  assert((await page.locator('#rd-asset-description').textContent()).includes(lang==='zh'?'圆桌面、立柱及底座':'Circular top, pedestal and base'));
+  await cmd('asset-close').click();
+  await page.locator('#rd-search').fill('');
   await page.locator('[data-asset-detail="steel_door"]').click();
   const dialog=page.locator('#rd-asset-dialog');
   assert(await dialog.isVisible());
