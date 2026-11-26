@@ -69,7 +69,23 @@ try{
   const styledSvg=await readFile(await styledFile.path(),'utf8');
   assert(styledSvg.includes('data-render-light="night"'));assert(styledSvg.includes('data-render-style="clay"'));assert.notEqual(styledSvg,svgText);
   await cmd('render-reset').click();assert.equal(await page.locator('#rd-render-zoom').inputValue(),'100');
+  await page.locator('#rd-render-view').selectOption('front');
+  assert(await page.locator('#rd-render-yaw').isDisabled());assert(await page.locator('#rd-render-tilt').isDisabled());
+  await page.locator('#rd-render-aspect').selectOption('portrait');
+  await page.waitForFunction(()=>{const p=document.querySelector('#rd-render-preview img');return p?.complete&&p.naturalWidth===1600&&p.naturalHeight===2000});
+  const elevationPromise=page.waitForEvent('download');await cmd('render-svg').click();const elevationFile=await elevationPromise;
+  const elevationSvg=await readFile(await elevationFile.path(),'utf8');assert(elevationSvg.includes('data-render-view="front"'));assert(elevationSvg.includes('width="1600" height="2000"'));
+  await page.locator('#rd-render-view').selectOption('right');assert.equal(await page.locator('#rd-render-yaw-value').textContent(),'90°');
+  const rightPromise=page.waitForEvent('download');await cmd('render-svg').click();const rightFile=await rightPromise;assert.notEqual(await readFile(await rightFile.path(),'utf8'),elevationSvg);
+  await page.locator('#rd-render-aspect').selectOption('wide');
+  const widePromise=page.waitForEvent('download');await cmd('render-png').click();const wideFile=await widePromise;const widePng=await readFile(await wideFile.path());
+  assert.equal(widePng.readUInt32BE(16),1600);assert.equal(widePng.readUInt32BE(20),900);
   await cmd('render-close').click();assert.equal(await canvas.innerHTML(),sceneBeforeRender);
+  await canvas.focus();await page.keyboard.press('Escape');
+  await cmd('render-open').click();await page.locator('#rd-render-scope').selectOption('selected');assert(await cmd('render-png').isDisabled());assert(await cmd('render-svg').isDisabled());
+  await cmd('render-close').click();await page.locator('#rd-objects button').first().click();
+  await cmd('render-open').click();assert(await cmd('render-svg').isEnabled());
+  await page.locator('#rd-render-scope').selectOption('visible');await page.locator('#rd-render-aspect').selectOption('original');await cmd('render-close').click();
 
 
   await cmd('new').click();await page.locator('[data-add="burst_demo"]').click();
