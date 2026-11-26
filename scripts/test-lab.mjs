@@ -106,6 +106,22 @@ try{
     const gpuPromise=page.waitForEvent('download');await cmd('render-png').click();const gpuFile=await gpuPromise;const gpuPng=await readFile(await gpuFile.path());assert.equal(gpuPng.readUInt32BE(16),1600);assert.equal(gpuPng.readUInt32BE(20),1040);
   }
   await page.locator('#rd-render-engine').selectOption('vector');assert(await cmd('render-svg').isEnabled());assert(await page.locator('#rd-render-exposure').isDisabled());
+  await page.locator('#rd-render-layout').selectOption('four');
+  assert(await page.locator('#rd-render-engine').isDisabled());
+  assert(await page.locator('#rd-render-view').isDisabled());
+  await page.locator('#rd-render-title').fill('Office & reception <A>');await page.locator('#rd-render-title').dispatchEvent('change');
+  await page.waitForFunction(()=>{const p=document.querySelector('#rd-render-preview img');return p?.complete&&p.naturalWidth===1600});
+  const fourPromise=page.waitForEvent('download');await cmd('render-svg').click();const fourFile=await fourPromise;const fourSvg=await readFile(await fourFile.path(),'utf8');
+  assert(fourSvg.includes('data-render-layout="four"'));assert.equal((fourSvg.match(/data-sheet-panel=/g)||[]).length,4);
+  assert(fourSvg.includes('Office &amp; reception &lt;A&gt;'));
+  const fourIds=[...fourSvg.matchAll(/ id="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(fourIds).size,fourIds.length);
+  await page.locator('#rd-render-layout').selectOption('six');await page.locator('#rd-render-aspect').selectOption('wide');
+  const sixPromise=page.waitForEvent('download');await cmd('render-svg').click();const sixFile=await sixPromise;const sixSvg=await readFile(await sixFile.path(),'utf8');assert.equal((sixSvg.match(/data-sheet-panel=/g)||[]).length,6);
+  for(const k of ['iso','top','front','right','back','left'])assert(sixSvg.includes('data-sheet-view="'+k+'"'));
+  const sheetPngPromise=page.waitForEvent('download');await cmd('render-png').click();const sheetPngFile=await sheetPngPromise;const sheetPng=await readFile(await sheetPngFile.path());assert.equal(sheetPng.readUInt32BE(16),1600);assert.equal(sheetPng.readUInt32BE(20),900);
+  await page.locator('#rd-render-labels').uncheck();const labelPromise=page.waitForEvent('download');await cmd('render-svg').click();const noLabelFile=await labelPromise;const noLabel=await readFile(await noLabelFile.path(),'utf8');assert.notEqual(noLabel,sixSvg);
+  await page.locator('#rd-render-layout').selectOption('single');assert(await page.locator('#rd-render-engine').isEnabled());
+  await page.locator('#rd-render-aspect').selectOption('original');
   await cmd('render-close').click();assert.equal(await canvas.innerHTML(),beforeGPU);
 
 
