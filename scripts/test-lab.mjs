@@ -20,7 +20,7 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),172);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),176);
   for(const type of ['flatbed_lorry','utility_trailer','fire_service_truck']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1');
@@ -390,7 +390,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),172);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),176);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
@@ -407,8 +407,8 @@ try{
     assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>500);
   }
   await page.locator('#rd-category').selectOption('people');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
-  for(const [kind,h] of [['security_guard',1.75],['soldier',1.78],['police_officer',1.75],['unidentified_person',1.75],['hostile_role',1.75],['woman_black_robe',1.65],['civilian_woman',1.65]]){
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),12);
+  for(const [kind,h] of [['security_guard',1.75],['soldier',1.78],['police_officer',1.75],['unidentified_person',1.75],['hostile_role',1.75],['woman_black_robe',1.65],['civilian_woman',1.65],['civilian_male',1.75],['civilian_walking',1.73],['civilian_seated',1.32],['civilian_long_coat',1.73]]){
     await cmd('new').click();await page.locator('[data-add="'+kind+'"]').click();
     assert.equal(Number(await page.locator('[data-prop="h"]').inputValue()),h);
     assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>100);
@@ -449,9 +449,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),172);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),176);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,153);
+  assert.equal(newTypes.length,157);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
