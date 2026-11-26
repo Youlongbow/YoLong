@@ -3,9 +3,35 @@
   "lang": "en",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
-  "snapshotDate": "2026-11-24",
-  "total": 139,
+  "snapshotDate": "2026-11-26",
+  "total": 141,
   "events": [
+    {
+      "slug": "2026-11-25-laos-vientiane-telecom-fraud-arrests",
+      "date": "2026-11-25",
+      "region": "Laos / Vientiane",
+      "category": "regulatory",
+      "title": "Laos: Vientiane police conduct coordinated telecom fraud raids",
+      "summary": "Laotian Times reported 49 foreign nationals arrested in four raids on 17 and 20 November, including 21 Chinese nationals in one operation on 20 November.",
+      "body": "Laotian Times reported on 25 November that police arrested 49 foreign nationals in four operations targeting suspected telecom fraud and illegal gambling on 17 and 20 November. One operation on 20 November involved 21 Chinese nationals and one South Korean. Arrests are part of an investigation.\nAssessment: Enforcement extends to business premises in the capital. Companies should review third-party recruitment, premises leases and foreign employee documentation. Track police case updates, repatriation arrangements and additional enforcement locations.",
+      "eventDate": "2026-11-20",
+      "sourceUrls": [
+        "https://laotiantimes.com/2026/11/25/vientiane-police-arrest-49-telecom-fraud-suspects-in-november-raids/"
+      ]
+    },
+    {
+      "slug": "2026-11-25-saudi-ras-tanura-refinery-attack",
+      "date": "2026-11-25",
+      "region": "Saudi Arabia / Eastern Province",
+      "category": "energy",
+      "title": "Saudi Arabia: Ras Tanura refinery attack raises energy export risk",
+      "summary": "Reuters reported on 25 November that the Houthis claimed an attack on Ras Tanura refinery; an informed source confirmed an attack and satellite imagery showed smoke.",
+      "body": "Reuters reported a Houthi claim of an attack on Ras Tanura refinery, corroborated as an attack by an informed source, with smoke visible in satellite imagery. The facility has approximately 550,000 barrels per day of refining capacity; actual production losses await operator disclosure.\nAssessment: Continued pressure on energy infrastructure may increase the economic cost of Saudi involvement in regional conflict. Businesses should distinguish refined-product availability from crude export exposure, checking supplier commitments, loading schedules and alternative procurement costs. Indicators include Aramco capacity updates, actual loadings and insurance premiums.",
+      "eventDate": "2026-11-25",
+      "sourceUrls": [
+        "https://www.reuters.com/world/middle-east/yemens-houthis-say-they-attacked-saudi-oil-refinery-riyadh-financial-district-2026-11-25/"
+      ]
+    },
     {
       "slug": "2026-11-23-drc-ituri-ebola-responders-fighting-hospital",
       "date": "2026-11-23",

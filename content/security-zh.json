@@ -3,9 +3,35 @@
   "lang": "zh",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
-  "snapshotDate": "2026-11-24",
-  "total": 139,
+  "snapshotDate": "2026-11-26",
+  "total": 141,
   "events": [
+    {
+      "slug": "2026-11-25-laos-vientiane-telecom-fraud-arrests",
+      "date": "2026-11-25",
+      "region": "老挝／万象",
+      "category": "regulatory",
+      "title": "老挝万象：警方集中查处电诈及非法赌博活动",
+      "summary": "Laotian Times报道，万象警方11月17日及20日四次执法共拘捕49名外国人，其中20日一次行动涉及21名中国籍人员。",
+      "body": "Laotian Times于11月25日报道，万象警方在11月17日及20日针对涉嫌电诈及非法赌博活动开展四次执法，共拘捕49名外国人。其中20日一次行动涉及21名中国籍人员及一名韩国籍人员。拘捕属于调查阶段。\n分析：执法已涉及首都经营场所，企业应将第三方招聘、办公场所租赁及外籍员工证件合规纳入审查。后续关注警方公布的案件处理、遣返安排及新增执法区域。",
+      "eventDate": "2026-11-20",
+      "sourceUrls": [
+        "https://laotiantimes.com/2026/11/25/vientiane-police-arrest-49-telecom-fraud-suspects-in-november-raids/"
+      ]
+    },
+    {
+      "slug": "2026-11-25-saudi-ras-tanura-refinery-attack",
+      "date": "2026-11-25",
+      "region": "沙特阿拉伯／东部省",
+      "category": "energy",
+      "title": "沙特：拉斯坦努拉炼油厂遭袭，能源出口风险上升",
+      "summary": "路透社11月25日报道，胡塞武装宣称袭击拉斯坦努拉炼油厂，知情人士确认发生袭击，卫星影像显示烟雾。",
+      "body": "路透社报道，胡塞武装宣称袭击沙特拉斯坦努拉炼油厂，知情人士确认发生袭击，卫星影像显示烟雾。该厂日炼油能力约55万桶，实际生产损失仍待运营方公布。\n分析：能源设施持续承压可能提高沙特参与地区冲突的经济成本。企业应区分炼油产品供应与原油出口风险，分别核对供应商交货承诺、港口装运安排及替代采购成本。后续指标包括阿美产能公告、实际装船量和保险费率。",
+      "eventDate": "2026-11-25",
+      "sourceUrls": [
+        "https://www.reuters.com/world/middle-east/yemens-houthis-say-they-attacked-saudi-oil-refinery-riyadh-financial-district-2026-11-25/"
+      ]
+    },
     {
       "slug": "2026-11-23-drc-ituri-ebola-responders-fighting-hospital",
       "date": "2026-11-23",
