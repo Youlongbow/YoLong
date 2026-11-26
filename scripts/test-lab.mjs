@@ -8,7 +8,7 @@ const type={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=u
 const server=createServer(async(req,res)=>{try{let p=new URL(req.url,'http://localhost').pathname;if(p.endsWith('/'))p+='index.html';let path=resolve(root,'.'+decodeURIComponent(p));if(!path.startsWith(root+'/')){res.writeHead(403);res.end();return}const data=await readFile(path);res.writeHead(200,{'Content-Type':type[extname(path)]||'application/octet-stream'});res.end(data)}catch{res.writeHead(404);res.end('Not found')}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const base=process.env.LAB_LIVE_ORIGIN||'http://127.0.0.1:'+server.address().port;
-const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const captures=process.env.LAB_CAPTURE_DIR;if(captures)await mkdir(captures,{recursive:true});
 const errors=[];
 try{
@@ -131,6 +131,15 @@ try{
   await page.locator('#rd-objects button').last().click();await cmd('delete').click();assert.equal(await count(),'6');
   await page.locator('[data-layer="people"]').uncheck();assert.equal(await count(),'5');
   await page.locator('[data-layer="people"]').check();assert.equal(await count(),'6');
+  await cmd('gpu').click();
+  if(await cmd('gpu').getAttribute('aria-pressed')==='true'){
+    const gpu=page.locator('#rd-gpu');
+    assert.equal(await gpu.getAttribute('data-renderer'),'webgl');
+    assert(Number(await gpu.getAttribute('data-triangles'))>0);
+    const pixels=await gpu.evaluate(c=>{const gl=c.getContext('webgl');const p=new Uint8Array(c.width*c.height*4);gl.readPixels(0,0,c.width,c.height,gl.RGBA,gl.UNSIGNED_BYTE,p);let n=0;for(let i=3;i<p.length;i+=4)if(p[i])n++;return n});
+    assert(pixels>50,'WebGL produced visible pixels');
+    await cmd('gpu').click();assert.equal(await cmd('gpu').getAttribute('aria-pressed'),'false');
+  }else if(process.env.LAB_REQUIRE_GPU==='1')throw Error('WebGL unavailable on required GPU test');
   const beforeOrbit=await canvas.innerHTML();
   await page.locator('#rd-yaw').fill('35');await page.locator('#rd-tilt').fill('62');
   assert.notEqual(await canvas.innerHTML(),beforeOrbit);
