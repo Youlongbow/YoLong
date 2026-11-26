@@ -20,7 +20,9 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),84);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),92);
+  await page.locator('#rd-category').selectOption('furniture');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
   await page.locator('#rd-category').selectOption('cargo');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
   await page.locator('#rd-category').selectOption('lighting');
@@ -29,16 +31,23 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),84);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),92);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,65);
+  assert.equal(newTypes.length,73);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
    assert.equal(await count(),'1',type);
    const object=canvas.locator('[data-object]');
    assert(await object.locator('polygon,line').count()>1,type+' has distinct geometry');
-   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
+   if(['office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter'].includes(type)){
+     assert(await object.locator('polygon').count()>100,type+' indexed mesh detail');
+     assert((await page.locator('#rd-inspector').textContent()).includes(lang==='zh'?'原创网格资产':'Original mesh asset'));
+     await cmd('gpu').click();assert.equal(await cmd('gpu').getAttribute('aria-pressed'),'true');
+     assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>100);
+     await cmd('gpu').click();
+   }
+   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition','office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
    await page.locator('[data-view="top"]').click();
    assert.equal(await count(),'1');
    assert(await object.locator('polygon,line').count()>0,type+' top geometry');
