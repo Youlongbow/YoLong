@@ -55,6 +55,17 @@ try{
   await page.locator('[data-view="iso"]').click();
   await cmd('new').click();
   await page.locator('[data-add="floor_tile"]').click();
+  await page.locator('#rd-finish').selectOption('timber');
+  assert(await canvas.locator('[data-object] .rd-texture').count()>0);
+  assert((await canvas.locator('[data-object]').innerHTML()).includes('url(#rd-mat-timber)'));
+  await page.locator('#rd-tint').fill('#bbaa88');
+  await cmd('save').click();await cmd('new').click();await cmd('load').click();
+  await page.locator('#rd-objects button').first().click();
+  assert.equal(await page.locator('#rd-finish').inputValue(),'timber');
+  assert.equal(await page.locator('#rd-tint').inputValue(),'#bbaa88');
+  await cmd('reset-finish').click();
+  assert.equal(await page.locator('#rd-finish').inputValue(),'original');
+  assert.equal(await canvas.locator('[data-object] .rd-texture').count(),0);
   await cmd('join-copy-x').click();
   assert.equal(await count(),'2');
   assert.equal(await page.locator('[data-prop="x"]').inputValue(),'3');
