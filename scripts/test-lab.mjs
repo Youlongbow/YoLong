@@ -41,6 +41,15 @@ try{
     assert(await page.locator('#rd-asset-preview polygon').count()>30,type+' preview');
     await cmd('asset-close').click();
   }
+  for(const type of ['ecp_field_office','ecp_portable_office','ecp_staff_kiosk']){
+    await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
+    const exterior=await canvas.locator('[data-object]').innerHTML();
+    await cmd('office-cutaway').click();assert.notEqual(await canvas.locator('[data-object]').innerHTML(),exterior);
+    assert.equal(await count(),'1');await cmd('undo').click();assert.equal(await canvas.locator('[data-object]').innerHTML(),exterior);
+    await page.locator('#rd-objects button').first().click();await cmd('explode-room').click();assert.equal(await count(),'11');
+    assert.equal(await canvas.getAttribute('data-selected'),'11');
+    await cmd('undo').click();assert.equal(await count(),'1');
+  }
   await page.locator('#rd-category').selectOption('public_entry');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),11);
   for(const type of ['public_entry_canopy','public_glass_entry','visitor_kiosk','waiting_bench','accessibility_ramp','wayfinding_sign','luggage_trolley','reception_counter_low','queue_stanchion','visitor_information_board','entry_directory_screen']){
