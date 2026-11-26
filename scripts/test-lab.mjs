@@ -147,6 +147,13 @@ try{
     assert(Number(await gpu.getAttribute('data-triangles'))>0);
     const pixels=await gpu.evaluate(c=>{const gl=c.getContext('webgl');const p=new Uint8Array(c.width*c.height*4);gl.readPixels(0,0,c.width,c.height,gl.RGBA,gl.UNSIGNED_BYTE,p);let n=0;for(let i=3;i<p.length;i+=4)if(p[i])n++;return n});
     assert(pixels>50,'WebGL produced visible pixels');
+    assert.equal(await gpu.getAttribute('data-shading'),'directional-material');
+    const imageBefore=await gpu.evaluate(c=>c.toDataURL());
+    await cmd('gpu-light').click();
+    assert.equal(await gpu.getAttribute('data-shading'),'flat');
+    assert.notEqual(await gpu.evaluate(c=>c.toDataURL()),imageBefore,'GPU shading changes rendered pixels');
+    await cmd('gpu-light').click();
+    assert.equal(await gpu.getAttribute('data-shading'),'directional-material');
     assert.equal(await gpu.getAttribute('data-picking'),'depth-buffer');
     await cmd('new').click();
     await page.locator('[data-view="top"]').click();
