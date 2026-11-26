@@ -56,6 +56,14 @@ try{
   const pngPromise=page.waitForEvent('download');await cmd('render-png').click();const pngFile=await pngPromise;
   assert.equal(pngFile.suggestedFilename(),'raven-scene.png');const png=await readFile(await pngFile.path());
   assert.equal(png.readUInt32BE(16),1600);assert.equal(png.readUInt32BE(20),1040);
+  await page.locator('#rd-render-pan-x').fill('15');await page.locator('#rd-render-pan-x').dispatchEvent('change');
+  await page.locator('#rd-render-pan-y').fill('-10');await page.locator('#rd-render-pan-y').dispatchEvent('change');
+  assert.equal(await page.locator('#rd-render-pan-x-value').textContent(),'15%');assert.equal(await page.locator('#rd-render-pan-y-value').textContent(),'-10%');
+  const panPromise=page.waitForEvent('download');await cmd('render-svg').click();const panFile=await panPromise;assert.notEqual(await readFile(await panFile.path(),'utf8'),svgText);
+  await page.locator('#rd-render-jpeg-quality').fill('80');await page.locator('#rd-render-jpeg-quality').dispatchEvent('change');
+  const jpgPromise=page.waitForEvent('download');await cmd('render-jpg').click();const jpgFile=await jpgPromise;const jpg=await readFile(await jpgFile.path());assert.equal(jpgFile.suggestedFilename(),'raven-scene.jpg');assert.equal(jpg.readUInt16BE(0),0xffd8);
+  const jpgInfo=await page.evaluate(async encoded=>{const img=new Image();img.src='data:image/jpeg;base64,'+encoded;await img.decode();const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);return [c.width,c.height,...ctx.getImageData(0,0,1,1).data]},jpg.toString('base64'));assert.deepEqual(jpgInfo.slice(0,2),[1600,1040]);assert(jpgInfo.slice(2,5).every(n=>n>=245));assert.equal(jpgInfo[5],255);
+  await cmd('render-reset').click();assert.equal(await page.locator('#rd-render-pan-x').inputValue(),'0');assert.equal(await page.locator('#rd-render-pan-y').inputValue(),'0');
   await page.locator('#rd-render-view').selectOption('iso');
   await page.locator('#rd-render-light').selectOption('night');
   await page.locator('#rd-render-style').selectOption('clay');
@@ -109,6 +117,7 @@ try{
   await page.locator('#rd-render-layout').selectOption('four');
   assert(await page.locator('#rd-render-engine').isDisabled());
   assert(await page.locator('#rd-render-view').isDisabled());
+  assert(await page.locator('#rd-render-pan-x').isDisabled());assert(await page.locator('#rd-render-pan-y').isDisabled());
   await page.locator('#rd-render-title').fill('Office & reception <A>');await page.locator('#rd-render-title').dispatchEvent('change');
   await page.waitForFunction(()=>{const p=document.querySelector('#rd-render-preview img');return p?.complete&&p.naturalWidth===1600});
   const fourPromise=page.waitForEvent('download');await cmd('render-svg').click();const fourFile=await fourPromise;const fourSvg=await readFile(await fourFile.path(),'utf8');
