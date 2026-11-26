@@ -155,7 +155,29 @@ function civilianVehicleMesh(type){
  return{vertices,faces,colours};
 }
 const vehicleAssets=new Map(['car','truck','bus'].map(k=>[k,civilianVehicleMesh(k)]));
-const builtinMesh=k=>furnitureAssets.get(k)||vehicleAssets.get(k);
+// Original civilian standing figure. Normalized local coordinates, with tapered limbs and separate apparel colours.
+function standingFigureMesh(){
+ const vertices=[],faces=[],colours=[],n=16;
+ const tri=(a,b,c,col)=>{faces.push([a,b,c]);colours.push(col)};
+ const loft=(sections,col)=>{const base=vertices.length;for(const [x,y,z,rx,rz] of sections)for(let i=0;i<n;i++){const a=i*2*Math.PI/n;vertices.push([x+rx*Math.cos(a),y,z+rz*Math.sin(a)])}for(let j=0;j<sections.length-1;j++)for(let i=0;i<n;i++){const a=base+j*n+i,b=base+j*n+(i+1)%n;tri(a,b,b+n,col);tri(a,b+n,a+n,col)}const end=base+(sections.length-1)*n;for(let i=1;i<n-1;i++){tri(base,base+i+1,base+i,col);tri(end,end+i,end+i+1,col)}};
+ const pants='#53656f',shoe='#303b42',skin='#c0a68c',hair='#4e4944';
+ for(const side of [-1,1]){
+ const x=side*.16;
+ loft([[x,.005,.065,.115,.23],[x,.018,.065,.13,.26],[x,.055,.043,.12,.23],[x,.078,0,.102,.13]],shoe);
+ loft([[x,.075,0,.100,.115],[x,.15,-.012,.102,.12],[x,.25,-.008,.12,.13],[x,.32,.01,.105,.12],[x*.90,.42,0,.135,.145],[x*.75,.50,0,.15,.16]],pants);
+ loft([[side*.39,.36,.015,.057,.076],[side*.39,.38,.010,.075,.09],[side*.38,.424,.005,.068,.080]],skin);
+ loft([[side*.38,.418,0,.072,.082],[side*.38,.49,0,.084,.09],[side*.36,.57,0,.084,.105],[side*.32,.66,0,.108,.125],[side*.29,.73,0,.117,.14]],null);
+ }
+ loft([[0,.46,0,.285,.17],[0,.50,0,.30,.20],[0,.55,0,.275,.19],[0,.65,0,.31,.21],[0,.72,0,.355,.205],[0,.765,0,.26,.165],[0,.79,0,.13,.13]],null);
+ loft([[0,.77,0,.125,.12],[0,.835,0,.105,.115]],skin);
+ loft([[0,.82,.015,.11,.115],[0,.85,.021,.165,.16],[0,.89,.008,.192,.183],[0,.94,-.005,.19,.18],[0,.975,-.01,.15,.14],[0,.994,-.01,.075,.075]],skin);
+ loft([[0,.925,-.025,.192,.17],[0,.966,-.018,.174,.17],[0,.990,-.014,.125,.13],[0,1,-.014,.045,.06]],hair);
+ for(const side of [-1,1])loft([[side*.181,.874,0,.035,.045],[side*.193,.90,0,.037,.049],[side*.177,.921,0,.027,.032]],skin);
+ loft([[0,.884,.179,.033,.018],[0,.907,.180,.027,.031],[0,.928,.166,.014,.016]],skin);
+ return{vertices,faces,colours};
+}
+const personAsset=standingFigureMesh();
+const builtinMesh=k=>furnitureAssets.get(k)||vehicleAssets.get(k)||(k==='person'?personAsset:null);
 const MESH_LIMIT=12,FACE_LIMIT=600,VERTEX_LIMIT=1200;
 const meshLabel=v=>String(v||'').replace(/[^\p{L}\p{N} ._()-]/gu,'').trim().slice(0,60);
 const htmlText=v=>String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -228,7 +250,7 @@ export function initLab(lang){
  const ring=(x,y,z,rx,ry,plane='xz',col=c)=>{const points=Array.from({length:18},(_,i)=>{const a=i*Math.PI/9;return at(x+rx*Math.cos(a)*(plane==='yz'?0:1),y+ry*Math.sin(a)*(plane==='xz'?0:1),z+(plane==='xz'?ry*Math.sin(a):plane==='yz'?rx*Math.cos(a):0))});return '<polygon points="'+points.map(p=>p.join(',')).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="1.2"/>'};
  const disc=(x,y,z,rx,ry,col)=>poly(Array.from({length:16},(_,i)=>at(x+rx*Math.cos(i*Math.PI/8),y+ry*Math.sin(i*Math.PI/8),z)),col);
  switch(o.type){
- case 'car':case 'truck':case 'bus':case 'custom_mesh':case 'office_desk':case 'office_chair':case 'sofa':case 'round_table':case 'bookshelf':case 'filing_cabinet':case 'single_bed':case 'planter':{const mesh=o.mesh||builtinMesh(o.type),vertices=mesh.vertices.map(p=>at(p[0]*w,p[1]*h,p[2]*l));return mesh.faces.map((f,index)=>{const p=f.map(i=>vertices[i]),v=f.map(i=>mesh.vertices[i]),u=v[1].map((n,i)=>(n-v[0][i])*[w,h,l][i]),q=v[2].map((n,i)=>(n-v[0][i])*[w,h,l][i]),normal=[u[1]*q[2]-u[2]*q[1],u[2]*q[0]-u[0]*q[2],u[0]*q[1]-u[1]*q[0]],len=Math.hypot(...normal)||1;return{p,depth:p.reduce((s,n)=>s+n.depth,0)/3,col:shade(mesh.colours?.[index]||c,.65+.35*Math.abs((normal[0]*.35+normal[1]*.85+normal[2]*.39)/len))}}).sort((a,b)=>a.depth-b.depth).map(f=>poly(f.p,f.col)).join('')}
+ case 'person':case 'car':case 'truck':case 'bus':case 'custom_mesh':case 'office_desk':case 'office_chair':case 'sofa':case 'round_table':case 'bookshelf':case 'filing_cabinet':case 'single_bed':case 'planter':{const mesh=o.mesh||builtinMesh(o.type),vertices=mesh.vertices.map(p=>at(p[0]*w,p[1]*h,p[2]*l));return mesh.faces.map((f,index)=>{const p=f.map(i=>vertices[i]),v=f.map(i=>mesh.vertices[i]),u=v[1].map((n,i)=>(n-v[0][i])*[w,h,l][i]),q=v[2].map((n,i)=>(n-v[0][i])*[w,h,l][i]),normal=[u[1]*q[2]-u[2]*q[1],u[2]*q[0]-u[0]*q[2],u[0]*q[1]-u[1]*q[0]],len=Math.hypot(...normal)||1;return{p,depth:p.reduce((s,n)=>s+n.depth,0)/3,col:shade(mesh.colours?.[index]||c,.65+.35*Math.abs((normal[0]*.35+normal[1]*.85+normal[2]*.39)/len))}}).sort((a,b)=>a.depth-b.depth).map(f=>poly(f.p,f.col)).join('')}
  case 'floor_tile':{let v=B(0,0,0,w,l,h);for(let i=1;i<6;i++){v+=line([-w/2,h+.002,-l/2+l*i/6],[w/2,h+.002,-l/2+l*i/6],'#828c87',.7);v+=line([-w/2+w*i/6,h+.002,-l/2],[-w/2+w*i/6,h+.002,l/2],'#828c87',.7)}return v}
  case 'wall_opening':return B(-w*.33,0,0,w*.34,l,h)+B(w*.33,0,0,w*.34,l,h)+B(0,h*.76,0,w*.32,l,h*.24);
  case 'window_wall':return B(-w*.35,0,0,w*.30,l,h)+B(w*.35,0,0,w*.30,l,h)+B(0,0,0,w*.4,l,h*.34)+B(0,h*.76,0,w*.4,l,h*.24)+B(0,h*.33,0,w*.43,l*1.3,h*.03,'#d0cec0');
@@ -284,13 +306,12 @@ export function initLab(lang){
  case 'padlock':return B(0,0,0,w,l,h*.59)+ring(0,h*.64,0,w*.32,h*.3,'xy','#c9d1cd')+B(0,h*.22,l*.53,w*.07,l*.08,h*.15,'#4e646b');
  case 'safe':return B(0,0,0,w,l,h)+B(0,h*.05,l*.51,w*.86,l*.09,h*.9,'#a2b0b1')+disc(0,h*.55,l*.57,w*.15,h*.13,'#526970')+B(w*.29,h*.42,l*.58,w*.13,l*.12,h*.04,'#c7ceca');
  case 'radio':return B(0,0,0,w,l,h*.77)+B(-w*.28,h*.77,0,w*.1,l*.17,h*.23)+B(0,h*.54,l*.52,w*.72,l*.1,h*.14,'#9bb6a3')+B(0,h*.15,l*.53,w*.65,l*.08,h*.2,'#34484f');
- case 'building':{let v=B(0,0,0,w,l,h*.93)+B(0,h*.93,0,w*1.035,l*1.035,h*.07,'#677b83');if(view!=='top'){for(const x of [-.28,0,.28])v+=B(x*w,h*.40,l*.505,w*.17,l*.012,h*.25,'#53717d');v+=B(-w*.28,0,-l*.505,w*.17,l*.015,h*.58,'#7d9298')}return v}
+ case 'building':{let v=B(0,0,0,w,l,h*.91)+B(0,0,0,w*1.015,l*1.015,h*.065,'#8b9491')+B(0,h*.91,0,w*1.045,l*1.045,h*.035,'#6c7d82')+B(0,h*.945,0,w*1.025,l*1.025,h*.055,'#83928f');if(view!=='top'){const frames='#ced2cb',glass='#4b6874',reveal='#798b8e';for(const side of [-1,1]){for(const x of [-.29,0,.29]){if(side===-1&&x===0)continue;const z=side*l*.507;v+=B(x*w,h*.35,z,w*.20,l*.014,h*.33,reveal)+B(x*w,h*.375,z+side*l*.012,w*.18,l*.012,h*.28,frames)+B(x*w,h*.397,z+side*l*.023,w*.155,l*.01,h*.235,glass)+B(x*w,h*.395,z+side*l*.03,w*.008,l*.01,h*.24,frames)+B(x*w,h*.502,z+side*l*.03,w*.16,l*.01,h*.012,frames)+B(x*w,h*.34,z+side*l*.024,w*.225,l*.045,h*.018,frames)}for(const z of [-.24,.24]){const x=side*w*.507;v+=B(x,h*.35,z*l,w*.014,l*.25,h*.33,reveal)+B(x+side*w*.012,h*.375,z*l,w*.012,l*.225,h*.28,frames)+B(x+side*w*.023,h*.397,z*l,w*.01,l*.195,h*.235,glass)+B(x+side*w*.03,h*.395,z*l,w*.01,l*.01,h*.24,frames)+B(x+side*w*.025,h*.34,z*l,w*.04,l*.28,h*.018,frames)}}v+=B(0,0,-l*.507,w*.20,l*.022,h*.64,reveal)+B(0,h*.015,-l*.521,w*.17,l*.018,h*.60,frames)+B(0,h*.035,-l*.532,w*.145,l*.012,h*.55,'#7a939b')+B(w*.045,h*.29,-l*.543,w*.012,l*.009,h*.03,'#bdc9c8');for(const y of [.08,.84])v+=B(0,h*y,0,w*1.018,l*1.018,h*.015,'#9ca6a1')}return v}
  case 'room':return B(0,0,0,w,l,h,'#a9aba0');
  case 'road':{let v=B(0,0,0,w,l,h,'#56646a');for(const x of [-.36,-.12,.12,.36])v+=B(x*w,h,0,w*.13,l*.018,.012,'#c6c3aa');for(const z of [-.44,.44])v+=B(0,h,z*l,w*.98,l*.014,.01,'#a8b3ac');return v}
  case 'fence':case 'gate':{let v='';const n=5;for(let i=0;i<=n;i++)v+=B(-w/2+w*i/n,0,0,.06,l,h);for(const y of [.2,.77])v+=B(0,h*y,0,w,l*.7,.045);return v}
  case 'light':return B(0,0,0,w*.16,l*.24,h*.91)+B(0,h*.91,0,w,l,h*.09,o.state?'#f4dfaa':c);
  case 'camera':return B(0,0,0,w*.28,l*.5,h*.35,'#87989c')+B(0,h*.32,0,w,l,h*.68)+B(w*.44,h*.44,0,w*.13,l*.62,h*.43,'#536a77');
- case 'person':{const form=(x,y,z,rx,rz,H,col,topScale=.85)=>{const n=12,lower=Array.from({length:n},(_,i)=>at(x+rx*Math.cos(i*2*Math.PI/n),y,z+rz*Math.sin(i*2*Math.PI/n))),upper=Array.from({length:n},(_,i)=>at(x+rx*topScale*Math.cos(i*2*Math.PI/n),y+H,z+rz*topScale*Math.sin(i*2*Math.PI/n)));let v='';if(view!=='top'){const sides=lower.map((p,i)=>({p:[p,lower[(i+1)%n],upper[(i+1)%n],upper[i]],depth:(p[1]+lower[(i+1)%n][1])/2,i})).sort((a,b)=>a.depth-b.depth);v=sides.map(f=>poly(f.p,shade(col,.76+.22*(f.i%4)/3))).join('')}return v+poly(upper,shade(col,1.07))};let v='';for(const side of [-1,1]){v+=form(side*w*.17,0,-l*.08,w*.14,l*.30,h*.065,'#38464e');v+=form(side*w*.17,h*.065,0,w*.14,l*.19,h*.39,'#566f7a',1.05);v+=form(side*w*.40,h*.40,0,w*.09,l*.12,h*.27,c,1.3);v+=form(side*w*.40,h*.37,0,w*.085,l*.105,h*.065,'#bfa78f')}v+=form(0,h*.45,0,w*.31,l*.29,h*.29,c,1.17);v+=form(0,h*.74,0,w*.12,l*.14,h*.055,'#bfa78f');v+=form(0,h*.795,0,w*.21,l*.235,h*.135,'#bfa78f',.88);return v+form(0,h*.925,0,w*.215,l*.24,h*.065,'#58636a',.68)}
 
  case 'door':return o.state?B(-w*.46,0,0,w*.08,l,h)+B(-w*.43,0,l*.5,w*.07,w*.85,h,'#91a4a7'):B(0,0,0,w,l,h);
  case 'reader':return B(0,0,0,w,l,h)+B(0,h*.58,l*.47,w*.65,l*.13,h*.26,'#354f60');
