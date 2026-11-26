@@ -131,6 +131,15 @@ try{
   await page.locator('#rd-objects button').last().click();await cmd('delete').click();assert.equal(await count(),'6');
   await page.locator('[data-layer="people"]').uncheck();assert.equal(await count(),'5');
   await page.locator('[data-layer="people"]').check();assert.equal(await count(),'6');
+  const beforeOrbit=await canvas.innerHTML();
+  await page.locator('#rd-yaw').fill('35');await page.locator('#rd-tilt').fill('62');
+  assert.notEqual(await canvas.innerHTML(),beforeOrbit);
+  assert(!/NaN|#undefined/.test(await canvas.innerHTML()));
+  await cmd('orbit').click();assert.equal(await cmd('orbit').getAttribute('aria-pressed'),'true');
+  const ob=await canvas.boundingBox();await page.mouse.move(ob.x+ob.width*.5,ob.y+ob.height*.5);await page.mouse.down();await page.mouse.move(ob.x+ob.width*.5+40,ob.y+ob.height*.5+20,{steps:4});await page.mouse.up();
+  assert.notEqual(await page.locator('#rd-tilt').inputValue(),'62');
+  await cmd('orbit').click();await cmd('fit').click();
+  assert.equal(await page.locator('#rd-yaw').inputValue(),'0');assert.equal(await page.locator('#rd-tilt').inputValue(),'38');
   const iso=await canvas.innerHTML();await page.locator('[data-view="top"]').click();assert.notEqual(await canvas.innerHTML(),iso);
   await page.locator('[data-view="iso"]').click();
   await page.locator('#rd-objects button').nth(3).click();const off=await canvas.innerHTML();await cmd('state').click();assert.notEqual(await canvas.innerHTML(),off);
