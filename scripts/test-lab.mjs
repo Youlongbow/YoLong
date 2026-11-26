@@ -30,6 +30,15 @@ try{
     assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>500);
     await cmd('gpu').click();
   }
+  await page.locator('#rd-category').selectOption('people');
+  await cmd('new').click();await page.locator('[data-add="person"]').click();
+  assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>500);
+  await cmd('gpu').click();assert.equal(await cmd('gpu').getAttribute('aria-pressed'),'true');
+  assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>500);
+  await cmd('gpu').click();
+  await page.locator('#rd-category').selectOption('architecture');
+  await cmd('new').click();await page.locator('[data-add="building"]').click();
+  assert(await canvas.locator('[data-object] polygon').count()>200);
   await cmd('example').click();await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-category').selectOption('furniture');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
