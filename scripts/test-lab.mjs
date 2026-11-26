@@ -115,6 +115,7 @@ try{
     assert(await canvas.locator('[data-object] polygon').count()>1,type+' geometry');
     await page.locator('[data-asset-detail="'+type+'"]').click();
     assert(await page.locator('#rd-asset-preview polygon').count()>1,type+' preview');
+    if(['public_entry_canopy','public_glass_entry'].includes(type))assert(await page.locator('#rd-asset-preview polygon').count()>35,type+' detailed geometry');
     await cmd('asset-close').click();
   }
   await page.locator('#rd-category').selectOption('');
