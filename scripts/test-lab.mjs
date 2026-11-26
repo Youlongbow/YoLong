@@ -403,8 +403,7 @@ try {
    titles.add(title);
    keys.add(new URL(page.url()).searchParams.get('model'));
    assert.equal(await page.locator('#lab-info dd').count(),6);
-   assert.equal(await page.locator('#lab-engineering h4').count(),3);
-   assert(await page.locator('#lab-engineering p').evaluateAll(nodes=>nodes.length===3&&nodes.every(n=>n.textContent.trim().length>0)));
+   assert.equal(await page.locator('#lab-learning, #lab-engineering, #lab-quiz, #lab-process').count(),0);
 
    assert(await page.locator('#lab-info dd').evaluateAll(nodes=>nodes.every(n=>n.textContent.trim().length>0)));
    const sample=await page.evaluate(()=>{const gpu=document.querySelector('#lab-gl'),fallback=document.querySelector('#lab-canvas');const active=getComputedStyle(gpu).visibility==='visible'?gpu:fallback;const mini=document.createElement('canvas');mini.width=96;mini.height=96;const ctx=mini.getContext('2d');ctx.drawImage(active,0,0,96,96);const d=ctx.getImageData(0,0,96,96).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i+3]>80&&(d[i]>45||d[i+1]>50))n++;return{n,gpu:active===gpu}});
@@ -476,9 +475,8 @@ try {
   await page.locator('[data-act=right]').click();assert.notEqual(await modelImage(),before);
   await page.locator('[data-act=night]').click();assert.equal(await page.locator('[data-act=night]').getAttribute('aria-pressed'),'true');
   await page.locator('#lab-parts button').first().click();assert.equal(await page.locator('#lab-parts button').first().getAttribute('aria-pressed'),'true');
-  await page.locator('#lab-flow button').last().click();assert(await page.locator('#lab-flow-copy').textContent());if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/component-example.png'});
-  await page.locator('#lab-quiz button').first().click();assert(await page.locator('#lab-answer').textContent());
-  await page.locator('#lab-play').click();await page.waitForTimeout(1200);assert.equal(await page.locator('#lab-process button').nth(1).getAttribute('aria-pressed'),'true');
+  if(captures&&lang==='zh')await page.locator('.lab-canvas-stack').screenshot({path:captures+'/component-example.png'});
+  assert.equal(await page.locator('#lab-flow, #lab-quiz, #lab-play, #lab-engineering').count(),0);
   await page.reload({waitUntil:'domcontentloaded'});await page.locator('#lab-info h2').waitFor();assert.equal(new URL(page.url()).searchParams.get('model'),modelKey);
   await page.locator('.switch-desktop a').filter({hasText:lang==='zh'?'EN':'中文'}).click();await page.waitForURL('**/lab/'+(lang==='zh'?'en':'zh')+'/**');await page.locator('#lab-info h2').waitFor();assert.equal(new URL(page.url()).searchParams.get('model'),modelKey);
   console.log('LAB DESKTOP PASS',lang,'85 models and interactions');await page.close();
