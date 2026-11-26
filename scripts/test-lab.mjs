@@ -21,13 +21,13 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),202);
-  await cmd('entry-exhibit').click();assert.equal(await count(),'14');assert.equal(await canvas.getAttribute('data-selected'),'0');
-  assert.equal(await canvas.locator('[data-object]').count(),14);
-  await cmd('toggle-roofs').click();assert.equal(await count(),'13');assert.equal(await cmd('toggle-roofs').getAttribute('aria-pressed'),'false');
-  await cmd('toggle-roofs').click();assert.equal(await count(),'14');assert.equal(await cmd('toggle-roofs').getAttribute('aria-pressed'),'true');
+  await cmd('entry-exhibit').click();assert.equal(await count(),'19');assert.equal(await canvas.getAttribute('data-selected'),'0');
+  assert.equal(await canvas.locator('[data-object]').count(),19);
+  await cmd('toggle-roofs').click();assert.equal(await count(),'18');assert.equal(await cmd('toggle-roofs').getAttribute('aria-pressed'),'false');
   await page.locator('#rd-objects button[data-select]').first().click();assert.equal(await canvas.getAttribute('data-selected'),'1');
-  await cmd('duplicate').click();assert.equal(await count(),'15');await cmd('undo').click();assert.equal(await count(),'14');
-  await cmd('undo').click();assert.equal(await count(),'5');await cmd('redo').click();assert.equal(await count(),'14');
+  await cmd('duplicate').click();assert.equal(await count(),'19');await cmd('undo').click();assert.equal(await count(),'18');assert.equal(await cmd('toggle-roofs').getAttribute('aria-pressed'),'false');
+  await cmd('toggle-roofs').click();assert.equal(await count(),'19');assert.equal(await cmd('toggle-roofs').getAttribute('aria-pressed'),'true');
+  await cmd('undo').click();assert.equal(await count(),'5');await cmd('redo').click();assert.equal(await count(),'19');
   await cmd('undo').click();assert.equal(await count(),'5');
   for(const type of ['flatbed_lorry','utility_trailer','fire_service_truck']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
