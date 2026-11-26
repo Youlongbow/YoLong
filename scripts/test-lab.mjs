@@ -21,6 +21,21 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),153);
+  for(const [type,parts] of [['meeting_room',8],['patient_room',6]]){
+    await cmd('new').click();await page.locator('[data-floor-tab="1"]').click();
+    await page.locator('[data-add="'+type+'"]').click();assert.equal(await count(),'1');
+    await cmd('explode-room').click();assert.equal(await count(),String(parts));
+    assert.equal(await canvas.getAttribute('data-selected'),String(parts));
+    await canvas.focus();await page.keyboard.press('Escape');
+    await page.locator('#rd-objects button').last().click();
+    assert.equal(await canvas.getAttribute('data-selected'),'1');
+    await page.locator('[data-prop="x"]').fill('2');await page.locator('[data-prop="x"]').press('Tab');
+    assert.equal(Number(await page.locator('[data-prop="x"]').inputValue()),2);
+    await cmd('undo').click();await cmd('undo').click();assert.equal(await count(),'1');
+    await cmd('redo').click();assert.equal(await count(),String(parts));
+  }
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   await cmd('new').click();await cmd('fit').click();await page.locator('[data-add="welded_mesh_panel"]').click();
   assert(await canvas.locator('.rd-pick-area').count()===1);
   assert(await canvas.locator('[data-object] line[stroke="#dbe4e5"]').count()>20);
