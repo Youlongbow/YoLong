@@ -242,7 +242,7 @@ function addVideoReview(host,step,zh){
  panel.append(el('h4',d.title[l]));
  const dl=document.createElement('dl');dl.style.cssText='display:grid;grid-template-columns:minmax(0,1fr);gap:5px;margin:8px 0';
  for(const [key,copy] of d.rows){const dt=el('dt',key[l]),dd=el('dd',copy[l]);dt.style.cssText='font-weight:650;color:#d7bb93';dd.style.cssText='margin:0 0 9px;line-height:1.65';dl.append(dt,dd)}
- panel.append(dl);const ref=el('a',zh?'NPSA：工作场所 CCTV 指导（英文 PDF）':'NPSA: CCTV in the Workplace (PDF)');ref.href='https://www.npsa.gov.uk/system/files/documents/a7/eb/20200203%20CCTV%20in%20the%20Workplace.pdf';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
+ panel.append(dl);host.append(panel);
 }
 
 const accessReviewNotes=[
@@ -257,7 +257,7 @@ function addAccessReview(host,step,zh){
  const panel=document.createElement('section');panel.className='access-engineering-review';panel.style.cssText='grid-column:1/-1;border-top:1px solid #52626a;padding:14px 0;min-width:0';
  panel.append(el('h4',d[l]));const dl=document.createElement('dl');
  for(const [k,v] of [[zh?'设计评审':'Design review',d[2+l]],[zh?'验收依据':'Acceptance evidence',d[4+l]]]){dl.append(el('dt',k),el('dd',v))}
- panel.append(dl);const ref=el('a',zh?'NPSA 自动出入口控制系统用户指南 EIS0002':'NPSA User Guide on Automatic Access Control Systems EIS0002');ref.href='https://www.npsa.gov.uk/system/files/documents/eis0002-user-guide-on-automatic-access-control-systems.pdf';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
+ panel.append(dl);host.append(panel);
 }
 
 const boundaryReviewNotes=[
@@ -272,7 +272,7 @@ function addBoundaryReview(host,step,zh){
  const panel=document.createElement('section');panel.className='boundary-engineering-review';panel.style.cssText='grid-column:1/-1;border-top:1px solid #52626a;padding:14px 0;min-width:0';
  panel.append(el('h4',d[l]));const dl=document.createElement('dl');
  for(const [k,v] of [[zh?'设计评审':'Design review',d[2+l]],[zh?'验收依据':'Acceptance evidence',d[4+l]]])dl.append(el('dt',k),el('dd',v));
- panel.append(dl);const ref=el('a',zh?'NPSA：保护资产参考入口':'NPSA: Protecting your assets');ref.href='https://www.npsa.gov.uk/threat-risk/protecting-your-assets';ref.target='_blank';ref.rel='noopener noreferrer';panel.append(ref);host.append(panel);
+ panel.append(dl);host.append(panel);
 }
 
 const lightingReviewNotes=[
