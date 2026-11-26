@@ -535,7 +535,7 @@ try{
  if(section==='security')content=slug?securityDetail():securityList(s);
  else if(section==='journal')content=slug?researchDetail():researchList(s);
  else if(section==='training')content=slug?trainingDetail():trainingList();
- else if(section==='lab'){content=labMarkup(lang);document.title=(lang==='zh'?'安防设计实验室':'Security Design Lab')+' · RAVEN';}
+ else if(section==='lab'){content=labMarkup(lang);document.title=(lang==='zh'?'安防设计平台':'Physical Security Design Platform')+' · RAVEN';}
  else if(section==='capabilities')content=slug?capabilityDetail(s):capabilityIndex(s);
  else if(['about','experience','contact'].includes(section))content=staticContentPage();
  else content=homeHero(s)+expertise(s)+securityList(s,true)+researchList(s,true)+platforms(s);
