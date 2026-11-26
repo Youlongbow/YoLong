@@ -56,6 +56,7 @@ try{
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1',type);
     assert(await canvas.locator('[data-object] polygon').count()>5,type+' geometry');
+    if(['road_stop_sign','road_slow_sign'].includes(type)){const sign=canvas.locator('[data-object]');assert(await sign.locator('polygon').count()>35,type+' world-space lettering');assert.equal(await sign.locator('text').count(),0,type+' no floating SVG text');}
     await page.locator('[data-asset-detail="'+type+'"]').click();
     assert(await page.locator('#rd-asset-preview polygon').count()>5,type+' preview');
     await cmd('asset-close').click();
@@ -161,7 +162,7 @@ try{
   assert(await page.locator('#rd-render-engine').isDisabled());
   assert(await page.locator('#rd-render-view').isDisabled());
   assert(await page.locator('#rd-render-pan-x').isDisabled());assert(await page.locator('#rd-render-pan-y').isDisabled());
-  await page.locator('#rd-render-title').fill('Office & reception <A>');await page.locator('#rd-render-title').dispatchEvent('change');
+  await page.locator('#rd-render-title').fill('Office & reception <A>');assert(await page.locator('#rd-render-preview img').count());
   await page.waitForFunction(()=>{const p=document.querySelector('#rd-render-preview img');return p?.complete&&p.naturalWidth===1600});
   const fourPromise=page.waitForEvent('download');await cmd('render-svg').click();const fourFile=await fourPromise.catch(async e=>{throw Error(e.message+' | '+await page.locator('#rd-render-status').textContent()+' | download link visible: '+await page.locator('#rd-render-download-link').isVisible())});const fourSvg=await readFile(await fourFile.path(),'utf8');
   assert(fourSvg.includes('data-render-layout="four"'));assert.equal((fourSvg.match(/data-sheet-panel=/g)||[]).length,4);
