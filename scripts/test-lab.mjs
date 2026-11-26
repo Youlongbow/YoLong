@@ -21,7 +21,7 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),122);
-  assert.equal(await page.locator('#rd-shortcuts kbd').count(),29);
+  assert.equal(await page.locator('#rd-shortcuts kbd').count(),31);
   await cmd('new').click();
   await page.locator('#rd-floor').selectOption('1');
   await page.locator('[data-add="floor_tile"]').click();
@@ -39,8 +39,9 @@ try{
   assert.equal(await count(),'3');
   await page.locator('#rd-floor').selectOption('1');
   assert.equal(await count(),'2');
-  await cmd('floor-next').click();assert.equal(await count(),'3');
-  await cmd('floor-all').click();assert.equal(await count(),'5');
+  await canvas.focus();await page.keyboard.press(']');assert.equal(await count(),'3');
+  await page.keyboard.press('[');assert.equal(await count(),'2');
+  await page.keyboard.press('3');assert.equal(await count(),'5');
   await page.locator('#rd-floor').selectOption('2');
   await cmd('save').click();await cmd('new').click();await cmd('load').click();
   assert.equal(await page.locator('#rd-floor').inputValue(),'2');
