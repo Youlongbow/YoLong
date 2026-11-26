@@ -20,7 +20,28 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),19);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),52);
+  const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
+  assert.equal(newTypes.length,33);
+  for(const type of newTypes){
+   await cmd('new').click();
+   await page.locator('[data-add="'+type+'"]').click();
+   assert.equal(await count(),'1',type);
+   const object=canvas.locator('[data-object]');
+   assert(await object.locator('polygon,line').count()>1,type+' has distinct geometry');
+   assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
+   await page.locator('[data-view="top"]').click();
+   assert.equal(await count(),'1');
+   assert(await object.locator('polygon,line').count()>0,type+' top geometry');
+   await page.locator('[data-view="iso"]').click();
+  }
+  await cmd('new').click();
+  await page.locator('[data-add="steel_door"]').click();
+  const closed=await canvas.innerHTML();await cmd('state').click();assert.notEqual(await canvas.innerHTML(),closed);
+  await page.locator('[data-add="floodlight"]').click();
+  const unlit=await canvas.innerHTML();await cmd('state').click();assert.notEqual(await canvas.innerHTML(),unlit);
+  await cmd('save').click();await cmd('new').click();await cmd('load').click();assert.equal(await count(),'2');
+  await page.locator('[data-layer="lighting"]').uncheck();assert.equal(await count(),'1');await page.locator('[data-layer="lighting"]').check();
   await cmd('new').click();assert.equal(await count(),'0');
   for(const type of ['building','fence','door','light','car','person'])await page.locator('[data-add="'+type+'"]').click();
   assert.equal(await count(),'6');
