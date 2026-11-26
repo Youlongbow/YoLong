@@ -595,6 +595,7 @@ export function initLab(lang){
  case 'light':return B(0,0,0,w*.16,l*.24,h*.91)+B(0,h*.91,0,w,l,h*.09,o.state?'#f4dfaa':c);
  case 'camera':return B(0,0,0,w*.28,l*.5,h*.35,'#87989c')+B(0,h*.32,0,w,l,h*.68)+B(w*.44,h*.44,0,w*.13,l*.62,h*.43,'#536a77');
 
+ case 'window':{let v=B(0,0,0,w,l,h,'#7296a2');for(const x of [-.48,0,.48])v+=B(x*w,0,0,w*.04,l*1.08,h,'#c0c9c5');for(const y of [0,.48,.96])v+=B(0,y*h,0,w,l*1.08,h*.04,'#c0c9c5');return v}
  case 'door':return o.state?B(-w*.46,0,0,w*.08,l,h)+B(-w*.43,0,l*.5,w*.07,w*.85,h,'#91a4a7'):B(0,0,0,w,l,h);
  case 'reader':return B(0,0,0,w,l,h)+B(0,h*.58,l*.47,w*.65,l*.13,h*.26,'#354f60');
  default:return B(0,0,0,w,l,h)}}
@@ -647,7 +648,8 @@ export function initLab(lang){
  for(const n of nearby){if(path.includes(n))continue;const e=wallEnds(n);for(let k=0;k<2;k++)if(Math.hypot(e[k][0]-last[0],e[k][1]-last[1])<=tol)follow([...path,n],[...points,e[1-k]],e[1-k])}}
  follow([first],[start,end],end)}
  return best}
- function applyArchitectSnap(o){if(!architectSnap||!snap)return false;if(wallKinds.has(o.type)){if(snapWall(o)){snapNotice=t('墙体端点已连接','Wall endpoints connected');return true}}else if(roofKinds.has(o.type)){const target=roofTarget(o);if(target){for(const k of ['x','z','w','d','y'])o[k]=round3(target[k]);o.r=target.r;snapNotice=t('屋顶已匹配建筑轮廓','Roof fitted to building');return true}}return false}
+ function fitOpening(o){const kind=o.type==='door'?'wall_opening':'window_wall',radius=Math.min(.9,Math.max(.25,snapStep*1.4));let best=null;for(const n of objects){if(n.id===o.id||n.type!==kind||!shown(n)||Math.abs(n.y-workY)>.35)continue;const distance=Math.hypot(o.x-n.x,o.z-n.z);if(distance>radius||best&&distance>=best.distance)continue;best={distance,n}}if(!best)return false;const n=best.n;Object.assign(o,{x:n.x,z:n.z,r:n.r,y:round3(n.y+(kind==='window_wall'?n.h*.36:0)),w:round3(n.w*(kind==='window_wall'?.38:.30)),h:round3(n.h*(kind==='window_wall'?.38:.74)),d:round3(Math.min(o.d,n.d))});return true}
+ function applyArchitectSnap(o){if(!architectSnap||!snap)return false;if(o.type==='door'||o.type==='window'){if(fitOpening(o)){snapNotice=t('已匹配现有建筑开口','Fitted to existing architectural opening');return true}}else if(wallKinds.has(o.type)){if(snapWall(o)){snapNotice=t('墙体端点已连接','Wall endpoints connected');return true}}else if(roofKinds.has(o.type)){const target=roofTarget(o);if(target){for(const k of ['x','z','w','d','y'])o[k]=round3(target[k]);o.r=target.r;snapNotice=t('屋顶已匹配建筑轮廓','Roof fitted to building');return true}}return false}
  const screenPoint=e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());return[p.x,p.y]};const coords=(e,elevation=workY)=>ground(...screenPoint(e),elevation);
  svg.addEventListener('dragover',e=>{if(e.dataTransfer.types.includes('application/x-raven-model')){e.preventDefault();e.dataTransfer.dropEffect='copy'}});
  svg.addEventListener('drop',e=>{const type=e.dataTransfer.getData('application/x-raven-model');if(!map.has(type)||type==='custom_mesh')return;e.preventDefault();if(objects.length>=OBJECT_LIMIT)return;const [x,z]=coords(e),grid=v=>snap?Number((Math.round(v/snapStep)*snapStep).toFixed(3)):v;snapshot();const o=makeObject(type,next++,safe(grid(x),-siteSize/2,siteSize/2,0),safe(grid(z),-siteSize/2,siteSize/2,0));o.y=workY;snapNotice='';applyArchitectSnap(o);objects.push(o);rememberAsset(type);if(roofKinds.has(o.type)&&isolate&&o.y>=workY+band-.001)chooseFloor(0);select(o.id)});
