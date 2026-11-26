@@ -20,7 +20,17 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),167);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),172);
+  for(const type of ['flatbed_lorry','utility_trailer','fire_service_truck']){
+    await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
+    assert.equal(await count(),'1');
+    assert(await canvas.locator('[data-object] polygon').count()>20,type+' geometry');
+    await page.locator('[data-asset-detail="'+type+'"]').click();
+    assert(await page.locator('#rd-asset-preview polygon').count()>20,type+' preview');
+    await cmd('asset-close').click();
+  }
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   await page.locator('#rd-category').selectOption('public_entry');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),7);
   for(const type of ['public_entry_canopy','public_glass_entry','visitor_kiosk','waiting_bench','accessibility_ramp','wayfinding_sign','luggage_trolley']){
@@ -74,7 +84,7 @@ try{
   assert.equal(await canvas.locator('[data-object] text').textContent(),'!');
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
-  for(const [type,parts] of [['meeting_room',8],['patient_room',6]]){
+  for(const [type,parts] of [['meeting_room',8],['patient_room',6],['reception_room',8],['clinic_waiting_room',8]]){
     await cmd('new').click();await page.locator('[data-floor-tab="1"]').click();
     await page.locator('[data-add="'+type+'"]').click();assert.equal(await count(),'1');
     await cmd('explode-room').click();assert.equal(await count(),String(parts));
@@ -147,7 +157,7 @@ try{
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   assert(!(await page.locator('.rd-blast').textContent()).includes(lang==='zh'?'不计算爆炸压力':'no blast pressure'));
-  for(const [category,size] of [['rooms',3],['interior_equipment',5],['public_building',4],['aviation',4]]){
+  for(const [category,size] of [['rooms',5],['interior_equipment',5],['public_building',4],['aviation',4]]){
     await page.locator('#rd-category').selectOption(category);
     assert.equal(await page.locator('#rd-palette [data-add]').count(),size);
   }
@@ -368,10 +378,10 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),167);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),172);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),12);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
   for(const kind of ['car','truck','bus']){
     await cmd('new').click();await page.locator('[data-add="'+kind+'"]').click();
     assert(await canvas.locator('[data-object][data-mesh="true"] polygon').count()>500);
@@ -427,9 +437,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),167);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),172);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,148);
+  assert.equal(newTypes.length,153);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
