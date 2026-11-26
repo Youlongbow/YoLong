@@ -20,7 +20,16 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),158);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),159);
+  await cmd('new').click();await page.locator('[data-add="burst_demo"]').click();
+  assert.equal(await count(),'1');
+  assert(await canvas.locator('[data-object] polygon').count()>10);
+  await cmd('burst-play').click();assert(await page.locator('#rd-burst-dialog').isVisible());
+  assert(await page.locator('#rd-burst-stage').evaluate(n=>n.classList.contains('playing')));
+  assert(await page.locator('#rd-burst-stage .burst-cloud').count()===1);
+  await cmd('burst-replay').click();await cmd('burst-close').click();assert.equal(await count(),'1');
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   assert.equal(await page.locator('#rd-chapter').count(),0);
   assert(!/FM 3-19\.30|教材|资料|引用|章节|Reference chapter/i.test(await page.locator('#rd-tool').textContent()));
   for(const type of ['open_viewing_tower','enclosed_viewing_tower']){
@@ -68,7 +77,7 @@ try{
   assert(await canvas.locator('[data-object] line[stroke="#dbe4e5"]').count()>20);
   await canvas.focus();await page.keyboard.press('Escape');assert.equal(await canvas.getAttribute('data-selected'),'0');
   await canvas.locator('.rd-pick-area').click({force:true});assert.equal(await canvas.getAttribute('data-selected'),'1');
-  await page.locator('#rd-category').selectOption('training');assert.equal(await page.locator('#rd-palette [data-add]').count(),7);
+  await page.locator('#rd-category').selectOption('training');assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
   await page.locator('#rd-category').selectOption('');
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
@@ -342,7 +351,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),158);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),159);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),12);
@@ -401,9 +410,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),158);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),159);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,139);
+  assert.equal(newTypes.length,140);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
