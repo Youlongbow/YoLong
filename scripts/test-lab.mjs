@@ -103,7 +103,7 @@ try{
   await page.locator('[data-prop="w"]').fill('3');await page.locator('[data-prop="w"]').press('Tab');
   await cmd('reset-size').click();
   assert.equal(Number(await page.locator('[data-prop="w"]').inputValue()),4.5);
-  await cmd('undo').click();assert.equal(Number(await page.locator('[data-prop="w"]').inputValue()),3);
+  await cmd('undo').click();await page.locator('#rd-objects button').first().click();assert.equal(Number(await page.locator('[data-prop="w"]').inputValue()),3);
   await page.locator('#rd-category').selectOption('furniture');
   await cmd('new').click();await page.locator('[data-add="office_desk"]').click();
   assert.equal(Number(await page.locator('[data-prop="w"]').inputValue()),1.6);
