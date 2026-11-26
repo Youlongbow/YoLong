@@ -21,7 +21,12 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),156);
-  await cmd('new').click();await page.locator('[data-add="equipment_suv"]').click();
+  await cmd('new').click();
+  const equipmentAsset=page.locator('[data-add="equipment_suv"]');
+  const equipmentLabel=lang==='zh'?'干扰仪车':'Jammer Vehicle';
+  assert.equal(await equipmentAsset.locator('span').textContent(),equipmentLabel,'published asset name');
+  await equipmentAsset.click();
+  assert.equal(await page.locator('#rd-inspector > strong').textContent(),equipmentLabel,'selected vehicle name');
   assert.equal(Number(await page.locator('[data-prop="h"]').inputValue()),2.7);
   assert(await canvas.locator('[data-object] line[stroke="#b9c7c9"]').count()>0,'visible radio aerial');
   await cmd('new').click();await page.locator('[data-add="inert_training_block"]').click();
