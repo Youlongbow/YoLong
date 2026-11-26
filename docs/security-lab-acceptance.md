@@ -194,3 +194,9 @@
 - 45840291460 local-browser通过；live-route失败：四条路径均加载app.cafc7436cdf7.js及renderer 060dc1203dd5，字节哈希相符，预期及main为ae6617a31344，页面缓存HIT。并非新renderer覆盖旧验收；部署或页面缓存滞后，尚未区分。
 - 38005584d05f5299932871d36eefd543c18d4692：构建新增公开release manifest，lab HTML Cache-Control no-store；仅在新部署成功后生效。
 - 2444b7cfe69a55ed74cfcf111eec2fb11bfd1cfd：核验直接探测release manifest、预期哈希文件、稳定app.js导入，保留四路径严格验收。未改模型代码、域名和Cloudflare配置；无Cloudflare直接管理权限，发布修复尚未确认。
+
+
+## 2026-11-26：线上渲染器版本一致性恢复
+- 45841158346 的 live-route job 139982854536 成功：北京时间22:39:15，www.ravenlong.com 与 yolong.bournelong511.workers.dev 的中英文四条路径全部加载 ae6617a31344，实际 renderer 字节 SHA256 前12位一致。
+- 两站预期资源直接访问成功，稳定 app.js 均引用 ae6617a31344；新增 lab-release.json 在初次探针仍返回404，因此不能认定 release manifest 和缓存策略已生效，也不能归因于某一项修复。旧版 renderer 060dc1203dd5 的线上差异已消除。
+- 相同 renderer 的此前本地浏览器 job 139979843216 已成功。此次完整工作流本地 job 139982853988 尚在执行；保持模型代码不变直至本次验收结束。
