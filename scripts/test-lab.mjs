@@ -20,7 +20,7 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),92);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),100);
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),3);
   for(const kind of ['car','truck','bus']){
@@ -42,6 +42,10 @@ try{
   await cmd('example').click();await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-category').selectOption('furniture');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
+  await page.locator('#rd-category').selectOption('support');
+  for(const k of ['warning_beacon','audible_siren','work_spotlight','mobile_radio','safety_helmet','highvis_vest'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
+  await page.locator('#rd-category').selectOption('electronic');
+  for(const k of ['video_amplifier','fiber_converter'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
   await page.locator('#rd-category').selectOption('cargo');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
   await page.locator('#rd-category').selectOption('lighting');
@@ -50,9 +54,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),92);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),100);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,73);
+  assert.equal(newTypes.length,81);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
