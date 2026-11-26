@@ -40,6 +40,7 @@ try{
     assert(await canvas.locator('[data-object] polygon').count()>200,type+' mesh geometry');
     await page.locator('[data-asset-detail="'+type+'"]').click();
     assert(await page.locator('#rd-asset-preview polygon').count()>200,type+' mesh preview');
+    if(type==='humvee_display')assert(await page.locator('#rd-asset-preview polygon').count()>1000,'detailed exterior vehicle mesh');
     await cmd('asset-close').click();
   }
   for(const type of ['flatbed_lorry','utility_trailer','fire_service_truck']){
