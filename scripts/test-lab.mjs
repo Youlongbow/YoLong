@@ -96,6 +96,8 @@ try{
   await cmd('new').click();assert.equal(await count(),'0');
   for(const type of ['building','fence','door','light','car','person'])await page.locator('[data-add="'+type+'"]').click();
   assert.equal(await count(),'6');
+  assert(await canvas.locator('[data-object="5"] polygon').count()>80,'Vehicle has faceted wheels');
+  assert(await canvas.locator('[data-object="6"] polygon').count()>80,'Person has rounded body geometry');
   const prop=page.locator('[data-prop="x"]');await prop.fill('2.5');await prop.press('Tab');assert.equal(await page.locator('[data-prop="x"]').inputValue(),'2.5');
   await cmd('duplicate').click();assert.equal(await count(),'7');
   await cmd('undo').click();assert.equal(await count(),'6');
@@ -116,6 +118,9 @@ try{
   await cmd('multi').click();
   await page.locator('#rd-objects button').first().click();
   assert.equal(await canvas.getAttribute('data-selected'),'2');
+  await cmd('align-x').click();
+  assert.equal(await page.locator('[data-prop="x"]').inputValue(),'0');
+  await cmd('align-z').click();await cmd('align-y').click();
   await cmd('group').click();await cmd('stack').click();
   await cmd('multi').click();
   await page.locator('#rd-objects button').last().click();
