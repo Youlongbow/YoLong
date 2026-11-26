@@ -21,6 +21,21 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),100);
+  await page.locator('#rd-chapter').selectOption('6');
+  assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),1);
+  assert.equal(await page.locator('#rd-palette [data-add="safety_helmet"]').count(),0);
+  await cmd('new').click();await page.locator('[data-add="video_amplifier"]').click();
+  await page.locator('[data-reference-chapter="6"]').click();
+  assert.equal(await page.locator('#rd-chapter').inputValue(),'6');
+  await page.locator('#rd-chapter').selectOption('2');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),0);
+  assert((await page.locator('#rd-chapter-info').textContent()).includes('2-1'));
+  await page.locator('#rd-chapter').selectOption('supplement');
+  assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
+  assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
+  await page.locator('#rd-chapter').selectOption('');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),100);
+  await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),3);
   for(const kind of ['car','truck','bus']){
