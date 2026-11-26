@@ -50,10 +50,16 @@ try{
   const burstBefore=await canvas.locator('[data-object]').innerHTML();
   await page.locator('[data-view="top"]').click();assert.notEqual(await canvas.locator('[data-object]').innerHTML(),burstBefore);
   await page.locator('[data-view="iso"]').click();
-  await cmd('burst-play').click();assert(await page.locator('#rd-burst-dialog').isVisible());
-  assert(await page.locator('#rd-burst-stage').evaluate(n=>n.classList.contains('playing')));
-  assert(await page.locator('#rd-burst-stage .burst-cloud').count()===1);
-  await cmd('burst-replay').click();await cmd('burst-close').click();assert.equal(await count(),'1');
+  const staticBurst=await canvas.locator('[data-object]').innerHTML();
+  await cmd('burst-play').click();
+  await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.burstPlaying==='true');
+  assert(!(await page.locator('#rd-burst-dialog').isVisible()),'playback stays on canvas');
+  assert.notEqual(await canvas.locator('[data-object]').innerHTML(),staticBurst,'animated geometry');
+  await page.waitForFunction(()=>document.querySelector('#rd-canvas').dataset.burstPlaying==='false',{},{timeout:10000});
+  assert.equal(await canvas.locator('[data-object]').innerHTML(),staticBurst,'original model restored');
+  await cmd('burst-play').click();await cmd('burst-stop').click();
+  assert.equal(await canvas.getAttribute('data-burst-playing'),'false');
+  assert.equal(await count(),'1');
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   assert.equal(await page.locator('#rd-chapter').count(),0);
