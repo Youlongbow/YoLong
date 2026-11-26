@@ -94,10 +94,18 @@ try{
     assert.equal(await gpuPreview.getAttribute('data-renderer'),'webgl');
     assert(Number(await gpuPreview.getAttribute('data-triangles'))>0);
     assert(await cmd('render-svg').isDisabled());assert(await cmd('render-png').isEnabled());
+    const pixelsBefore=await gpuPreview.evaluate(node=>node.toDataURL());
+    await page.locator('#rd-render-exposure').fill('50');await page.locator('#rd-render-exposure').dispatchEvent('change');
+    assert.equal(await page.locator('#rd-render-exposure-value').textContent(),'50%');
+    assert.notEqual(await gpuPreview.evaluate(node=>node.toDataURL()),pixelsBefore,'studio exposure changes rendered pixels');
+    await page.locator('#rd-render-key').fill('90');await page.locator('#rd-render-key').dispatchEvent('change');
+    await page.locator('#rd-render-ambient').fill('40');await page.locator('#rd-render-ambient').dispatchEvent('change');
+    assert.equal(await page.locator('#rd-render-key-value').textContent(),'90°');assert.equal(await page.locator('#rd-render-ambient-value').textContent(),'40%');
+    await page.locator('#rd-render-exposure').fill('100');await page.locator('#rd-render-exposure').dispatchEvent('change');
     assert(await gpuPreview.evaluate(node=>{const pixels=node.getContext('2d').getImageData(0,0,node.width,node.height).data;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>240)return true;return false}),'GPU preview contains opaque geometry');
     const gpuPromise=page.waitForEvent('download');await cmd('render-png').click();const gpuFile=await gpuPromise;const gpuPng=await readFile(await gpuFile.path());assert.equal(gpuPng.readUInt32BE(16),1600);assert.equal(gpuPng.readUInt32BE(20),1040);
   }
-  await page.locator('#rd-render-engine').selectOption('vector');assert(await cmd('render-svg').isEnabled());
+  await page.locator('#rd-render-engine').selectOption('vector');assert(await cmd('render-svg').isEnabled());assert(await page.locator('#rd-render-exposure').isDisabled());
   await cmd('render-close').click();assert.equal(await canvas.innerHTML(),beforeGPU);
 
 
