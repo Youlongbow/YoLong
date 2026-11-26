@@ -20,7 +20,18 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),153);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),156);
+  await cmd('new').click();await page.locator('[data-add="equipment_suv"]').click();
+  assert.equal(Number(await page.locator('[data-prop="h"]').inputValue()),2.7);
+  assert(await canvas.locator('[data-object] line[stroke="#b9c7c9"]').count()>0,'visible radio aerial');
+  await cmd('new').click();await page.locator('[data-add="inert_training_block"]').click();
+  assert.equal(await canvas.locator('[data-object] text').textContent(),'INERT');
+  await cmd('new').click();await page.locator('[data-add="training_warning_card"]').click();
+  assert.equal(await canvas.locator('[data-object] text').textContent(),'EXERCISE');
+  await cmd('new').click();await page.locator('[data-add="incident_location_pin"]').click();
+  assert.equal(await canvas.locator('[data-object] text').textContent(),'!');
+  await cmd('new').click();await cmd('fit').click();await cmd('example').click();
+
   for(const [type,parts] of [['meeting_room',8],['patient_room',6]]){
     await cmd('new').click();await page.locator('[data-floor-tab="1"]').click();
     await page.locator('[data-add="'+type+'"]').click();assert.equal(await count(),'1');
@@ -41,7 +52,7 @@ try{
   assert(await canvas.locator('[data-object] line[stroke="#dbe4e5"]').count()>20);
   await canvas.focus();await page.keyboard.press('Escape');assert.equal(await canvas.getAttribute('data-selected'),'0');
   await canvas.locator('.rd-pick-area').click({force:true});assert.equal(await canvas.getAttribute('data-selected'),'1');
-  await page.locator('#rd-category').selectOption('training');assert.equal(await page.locator('#rd-palette [data-add]').count(),4);
+  await page.locator('#rd-category').selectOption('training');assert.equal(await page.locator('#rd-palette [data-add]').count(),7);
   await page.locator('#rd-category').selectOption('');
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
@@ -318,7 +329,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-chapter').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),153);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),156);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),12);
@@ -377,9 +388,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),2);
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),153);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),156);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,134);
+  assert.equal(newTypes.length,137);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
@@ -393,7 +404,7 @@ try{
      assert(Number(await page.locator('#rd-gpu').getAttribute('data-triangles'))>100);
      await cmd('gpu').click();
    }
-   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition','office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','security_guard','soldier','police_officer','unidentified_person','hostile_role','woman_black_robe','civilian_woman','hesco_visual','concrete_partition','portable_cabin','aircraft_hangar','water_tank','medical_stretcher','first_aid_tent','portable_toilet','wood_pallet','civilian_ambulance','forklift','operations_room','meeting_room','patient_room','display_wall','desktop_computer','workstation_desk','server_rack','patient_bed','public_police_station','hospital_building','airport_terminal','airport_tower','civilian_helicopter','helipad_visual','building_storey','communications_van','utility_pickup','welded_mesh_panel','vertical_bar_fence','y_fence_visual','coil_fence_visual','gabion_y_visual','gabion_coil_visual','drainage_v','drainage_u','landscape_mound','equipment_suv','unattended_backpack','unattended_case','unattended_box','exercise_marker'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
+   if(!['floor_tile','wall_opening','window_wall','flat_roof','gable_roof','staircase','column','interior_partition','office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter','hilux_dc','hiace_commuter','land_cruiser_300','coach_bus','security_guard','soldier','police_officer','unidentified_person','hostile_role','woman_black_robe','civilian_woman','hesco_visual','concrete_partition','portable_cabin','aircraft_hangar','water_tank','medical_stretcher','first_aid_tent','portable_toilet','wood_pallet','civilian_ambulance','forklift','operations_room','meeting_room','patient_room','display_wall','desktop_computer','workstation_desk','server_rack','patient_bed','public_police_station','hospital_building','airport_terminal','airport_tower','civilian_helicopter','helipad_visual','building_storey','communications_van','utility_pickup','welded_mesh_panel','vertical_bar_fence','y_fence_visual','coil_fence_visual','gabion_y_visual','gabion_coil_visual','drainage_v','drainage_u','landscape_mound','equipment_suv','unattended_backpack','unattended_case','unattended_box','exercise_marker','inert_training_block','training_warning_card','incident_location_pin'].includes(type))assert((await page.locator('#rd-inspector').textContent()).includes('FM 3-19.30'),type+' source');
    await page.locator('[data-view="top"]').click();
    assert.equal(await count(),'1');
    assert(await object.locator('polygon,line').count()>0,type+' top geometry');
