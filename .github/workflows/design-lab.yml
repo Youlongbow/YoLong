@@ -33,9 +33,10 @@ jobs:
       - run: node scripts/build.mjs
       - run: npm install --no-save playwright@1.56.1
       - run: npx playwright install --with-deps chromium
-      - name: Exercise bilingual SVG editor in Chromium
+      - name: Exercise bilingual editor and native WebGL pixel output in Chromium
         env:
           LAB_CAPTURE_DIR: lab-visual-review
+          LAB_REQUIRE_GPU: '1'
         run: node scripts/test-lab.mjs
       - name: Preserve visual review captures
         if: always()
