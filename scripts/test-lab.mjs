@@ -20,7 +20,7 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),257);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),278);
   const allKeys=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add));
   const groups=await page.locator('#rd-category option').evaluateAll(nodes=>nodes.map(n=>n.value).filter(Boolean));
   assert.equal(groups.length,9);
@@ -32,8 +32,8 @@ try{
   }
   assert.deepEqual(classified.sort(),allKeys.sort(),'each model belongs to exactly one primary category');
   await page.locator('#rd-category').selectOption('industry_prefabs');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
-  for(const section of ['港口','油田','光伏','矿山','水泥厂']){
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),36);
+  for(const section of ['港口','油田','光伏','矿山','水泥厂','机场','建筑工程','汽车制造','物流园区','商业设施','医疗机构','人道主义设施']){
     await page.locator('#rd-subcategory').selectOption(section);
     assert.equal(await page.locator('#rd-palette [data-add]').count(),3,section);
     for(const type of await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add))){
@@ -641,7 +641,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),257);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),278);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),39);
@@ -702,9 +702,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),257);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),278);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,238);
+  assert.equal(newTypes.length,259);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
