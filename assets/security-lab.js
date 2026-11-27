@@ -561,7 +561,7 @@ function standingFigureMesh(role='person'){
  const vertices=[],faces=[],colours=[],n=16;
  const tri=(a,b,c,col)=>{faces.push([a,b,c]);colours.push(col)};
  const loft=(sections,col)=>{const base=vertices.length;for(const [x,y,z,rx,rz] of sections)for(let i=0;i<n;i++){const a=i*2*Math.PI/n;vertices.push([x+rx*Math.cos(a),y,z+rz*Math.sin(a)])}for(let j=0;j<sections.length-1;j++)for(let i=0;i<n;i++){const a=base+j*n+i,b=base+j*n+(i+1)%n;tri(a,b,b+n,col);tri(a,b+n,a+n,col)}const end=base+(sections.length-1)*n;for(let i=1;i<n-1;i++){tri(base,base+i+1,base+i,col);tri(end,end+i,end+i+1,col)}};
- const shirt=role==='civilian_male'?'#8da1ae':role==='civilian_walking'?'#a4b2a0':role==='civilian_seated'?'#8d9bb1':null;const pants=role==='soldier'?'#77816b':role==='police_officer'?'#354b60':role==='security_guard'?'#435764':'#53656f',shoe='#303b42',skin='#c0a68c',hair='#4e4944';
+ const shirt=role==='civilian_male'?'#8da1ae':role==='civilian_walking'?'#a4b2a0':role==='civilian_seated'?'#8d9bb1':role==='security_guard'?'#526b78':role==='police_officer'?'#40576d':role==='soldier'?'#78806a':role==='civilian_woman'?'#9b827e':role==='unidentified_person'?'#929692':role==='hostile_role'?'#68645f':'#87949a';const pants=role==='soldier'?'#77816b':role==='police_officer'?'#354b60':role==='security_guard'?'#435764':'#53656f',shoe='#303b42',skin='#c0a68c',hair='#4e4944';
  if(role==='woman_black_robe'||role==='civilian_long_coat'){const robe=role==='civilian_long_coat'?'#b8ae96':'#35393c';
  loft([[0,.02,0,.27,.29],[0,.12,0,.32,.31],[0,.40,0,.30,.25],[0,.62,0,.27,.21],[0,.74,0,.33,.20],[0,.81,0,.16,.15]],robe);
  for(const side of [-1,1])loft([[side*.32,.32,0,.085,.10],[side*.36,.50,0,.12,.13],[side*.27,.73,0,.15,.14]],robe);
