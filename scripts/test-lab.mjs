@@ -20,7 +20,7 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),288);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),297);
   const allKeys=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add));
   const groups=await page.locator('#rd-category option').evaluateAll(nodes=>nodes.map(n=>n.value).filter(Boolean));
   assert.equal(groups.length,9);
@@ -65,6 +65,22 @@ try{
   await cmd('prefab-roof').click();assert.equal(await prefab.innerHTML(),closedPrefab);
   await cmd('toggle-roofs').click();assert.equal(await count(),'1');assert.notEqual(await prefab.innerHTML(),closedPrefab);
   await cmd('toggle-roofs').click();assert.equal(await prefab.innerHTML(),closedPrefab);
+  await cmd('prefab-shell-parts').click();assert.equal(await count(),'6');
+  assert.equal(await canvas.getAttribute('data-selected'),'6');
+  await cmd('toggle-roofs').click();assert.equal(await count(),'5');
+  await cmd('toggle-roofs').click();assert.equal(await count(),'6');
+  await cmd('save').click();await cmd('new').click();await cmd('load').click();assert.equal(await count(),'6');
+  await cmd('new').click();await page.locator('[data-add="prefab_auto_assembly"]').click();
+  await cmd('prefab-shell-parts').click();assert.equal(await count(),'6');
+  await cmd('undo').click();assert.equal(await count(),'1');
+  await page.locator('#rd-category').selectOption('architecture');
+  await page.locator('#rd-subcategory').selectOption('地面材质模块');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
+  for(const type of ['ground_asphalt','ground_concrete','ground_gravel','ground_sand','ground_grass']){
+    await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
+    assert.equal(await count(),'1');assert(await canvas.locator('[data-object] polygon').count()>10,type+' textured surface');
+  }
+  await page.locator('#rd-category').selectOption('');
   // An array includes its source, uses one undo transaction and creates independent objects.
   await cmd('new').click();await page.locator('[data-add="floor_tile"]').click();
   await page.locator('.rd-array-copy summary').click();
@@ -110,7 +126,7 @@ try{
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   await page.locator('#rd-category').selectOption('architecture');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),57);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),66);
   await page.locator('#rd-category').selectOption('');
   for(const type of ['ecp_field_office','ecp_service_canopy','ecp_portable_office','ecp_staff_kiosk','ecp_utility_unit']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
@@ -442,7 +458,7 @@ try{
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   assert(!(await page.locator('.rd-blast').textContent()).includes(lang==='zh'?'不计算爆炸压力':'no blast pressure'));
-  for(const [category,size] of [['architecture',57],['vehicle',39],['support',14],['access',60]]){
+  for(const [category,size] of [['architecture',66],['vehicle',39],['support',14],['access',60]]){
     await page.locator('#rd-category').selectOption(category);
     assert.equal(await page.locator('#rd-palette [data-add]').count(),size);
   }
@@ -663,7 +679,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),288);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),297);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),39);
@@ -709,7 +725,7 @@ try{
   assert(await canvas.locator('[data-object] polygon').count()>200);
   await cmd('example').click();await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-category').selectOption('architecture');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),57);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),66);
   await page.locator('#rd-category').selectOption('support');
   for(const k of ['mobile_radio','backup_generator','battery_cabinet'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
   await page.locator('#rd-category').selectOption('support');
@@ -724,9 +740,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),288);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),297);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,269);
+  assert.equal(newTypes.length,278);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
