@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
   "snapshotDate": "2026-11-27",
-  "total": 143,
+  "total": 144,
   "events": [
     {
       "slug": "2026-11-26-pakistan-winder-transport-protest",
@@ -56,6 +56,20 @@
       "eventDate": "2026-11-25",
       "sourceUrls": [
         "https://www.reuters.com/world/middle-east/yemens-houthis-say-they-attacked-saudi-oil-refinery-riyadh-financial-district-2026-11-25/"
+      ]
+    },
+    {
+      "slug": "2026-11-24-thailand-pattaya-chinese-kidnapping",
+      "date": "2026-11-24",
+      "region": "泰国 / 春武里府",
+      "category": "personnel",
+      "title": "泰国芭堤雅：两名中国女子遭绑架后获救",
+      "summary": "泰国警方11月23日救出两名遭勒索赎金的中国女子，并拘捕一名中国籍嫌疑人。",
+      "body": "据Khaosod English及Pattaya Mail报道，两名中国女子未按计划返回曼谷及中国，友人报警后，泰国警方于11月23日将二人安全救出并拘捕嫌疑人。报道所述赎金要求合计200万泰铢。案件进入司法调查。此次事件反映旅游城市内针对外籍人员的勒索风险，尤其是行程脱离既定安排后失联所产生的响应延迟。企业应将差旅人员错过约定联络或返程节点纳入异常升级机制，指定能够联系当地警方和领事机构的值班负责人，保存行程与紧急联系人资料。后续关注警方公布的指控、是否存在其他受害者以及案件与其他勒索网络的关联。来源：https://www.khaosodenglish.com/news/2026/11/24/two-chinese-women-kidnapped-by-chinese-man-in-pattaya/；https://www.pattayamail.com/news/pattaya-kidnap-suspect-turns-knife-on-himself-after-police-rescue-two-chinese-women-572938",
+      "eventDate": "2026-11-23",
+      "sourceUrls": [
+        "https://www.khaosodenglish.com/news/2026/11/24/two-chinese-women-kidnapped-by-chinese-man-in-pattaya/",
+        "https://www.pattayamail.com/news/pattaya-kidnap-suspect-turns-knife-on-himself-after-police-rescue-two-chinese-women-572938"
       ]
     },
     {

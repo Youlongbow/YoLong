@@ -4,7 +4,7 @@
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
   "snapshotDate": "2026-11-27",
-  "total": 143,
+  "total": 144,
   "events": [
     {
       "slug": "2026-11-26-pakistan-winder-transport-protest",
@@ -56,6 +56,20 @@
       "eventDate": "2026-11-25",
       "sourceUrls": [
         "https://www.reuters.com/world/middle-east/yemens-houthis-say-they-attacked-saudi-oil-refinery-riyadh-financial-district-2026-11-25/"
+      ]
+    },
+    {
+      "slug": "2026-11-24-thailand-pattaya-chinese-kidnapping",
+      "date": "2026-11-24",
+      "region": "Thailand / Chonburi",
+      "category": "personnel",
+      "title": "Thailand: Two Chinese women rescued after kidnapping in Pattaya",
+      "summary": "Thai police rescued two Chinese women on 23 November and detained a Chinese suspect in an alleged ransom case.",
+      "body": "Khaosod English and Pattaya Mail reported that two Chinese women missed their planned return journey and were rescued by Thai police on 23 November after a friend reported their disappearance. The reported ransom demand totalled THB 2 million. A suspect was detained and the case is under investigation. The incident illustrates extortion exposure in a tourist destination and the response delay that can follow an unexplained deviation from travel plans. Employers should define escalation triggers for missed check-ins or return journeys, designate a duty contact able to reach local police and consular services, and retain itinerary and emergency contact information. Follow-up indicators include formal charges, additional victims and any documented links to other extortion networks. Sources: https://www.khaosodenglish.com/news/2026/11/24/two-chinese-women-kidnapped-by-chinese-man-in-pattaya/; https://www.pattayamail.com/news/pattaya-kidnap-suspect-turns-knife-on-himself-after-police-rescue-two-chinese-women-572938",
+      "eventDate": "2026-11-23",
+      "sourceUrls": [
+        "https://www.khaosodenglish.com/news/2026/11/24/two-chinese-women-kidnapped-by-chinese-man-in-pattaya/",
+        "https://www.pattayamail.com/news/pattaya-kidnap-suspect-turns-knife-on-himself-after-police-rescue-two-chinese-women-572938"
       ]
     },
     {
