@@ -20,10 +20,10 @@ try{
   await page.locator('#rd-palette [data-add]').first().waitFor({timeout:30000});
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),242);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),257);
   const allKeys=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add));
   const groups=await page.locator('#rd-category option').evaluateAll(nodes=>nodes.map(n=>n.value).filter(Boolean));
-  assert.equal(groups.length,8);
+  assert.equal(groups.length,9);
   const classified=[];
   for(const g of groups){
     await page.locator('#rd-category').selectOption(g);
@@ -31,6 +31,19 @@ try{
     classified.push(...await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add)));
   }
   assert.deepEqual(classified.sort(),allKeys.sort(),'each model belongs to exactly one primary category');
+  await page.locator('#rd-category').selectOption('industry_prefabs');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
+  for(const section of ['港口','油田','光伏','矿山','水泥厂']){
+    await page.locator('#rd-subcategory').selectOption(section);
+    assert.equal(await page.locator('#rd-palette [data-add]').count(),3,section);
+    for(const type of await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add))){
+      await page.locator('[data-asset-detail="'+type+'"]').click();
+      assert(await page.locator('#rd-asset-preview polygon').count()>20,type+' architectural exterior geometry');
+      await cmd('asset-close').click();
+    }
+  }
+  await page.locator('#rd-category').selectOption('');
+
   await page.locator('#rd-category').selectOption('access');
   await page.locator('#rd-subcategory').selectOption('停车出入口设备');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),4);
@@ -628,7 +641,7 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add="office_desk"]').count(),1);
   assert.equal(await page.locator('#rd-palette [data-add="video_amplifier"]').count(),0);
   await page.locator('#rd-category').selectOption('');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),242);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),257);
   await cmd('example').click();
   await page.locator('#rd-category').selectOption('vehicle');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),39);
@@ -689,9 +702,9 @@ try{
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
-  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),242);
+  assert.equal(await page.locator('#rd-palette [data-add] svg').count(),257);
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
-  assert.equal(newTypes.length,223);
+  assert.equal(newTypes.length,238);
   for(const type of newTypes){
    await cmd('new').click();
    await page.locator('[data-add="'+type+'"]').click();
