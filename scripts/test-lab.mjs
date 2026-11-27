@@ -21,9 +21,22 @@ try{
   const canvas=page.locator('#rd-canvas'),count=()=>canvas.getAttribute('data-count'),cmd=k=>page.locator('[data-cmd="'+k+'"]');
   assert.equal(await count(),'5');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),233);
+  const allKeys=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add));
+  const groups=await page.locator('#rd-category option').evaluateAll(nodes=>nodes.map(n=>n.value).filter(Boolean));
+  assert.equal(groups.length,19);
+  const classified=[];
+  for(const g of groups){
+    await page.locator('#rd-category').selectOption(g);
+    assert(await page.locator('#rd-palette h5').count()>0,g+' section headings');
+    classified.push(...await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add)));
+  }
+  assert.deepEqual(classified.sort(),allKeys.sort(),'each model belongs to exactly one primary category');
+  await page.locator('#rd-category').selectOption('');
+
   await cmd('architecture-gallery').click();assert.equal(await count(),'10');assert.equal(await canvas.getAttribute('data-selected'),'0');
   assert.equal(await canvas.locator('[data-object]').count(),10);
-  await page.locator('#rd-object-category').selectOption('ecp_visual');assert.equal(await page.locator('#rd-objects button[data-select]').count(),5);
+  await page.locator('#rd-object-category').selectOption('public_building');assert.equal(await page.locator('#rd-objects button[data-select]').count(),4);
+  await page.locator('#rd-object-category').selectOption('support');assert.equal(await page.locator('#rd-objects button[data-select]').count(),1);
   await page.locator('#rd-object-category').selectOption('');
   await cmd('undo').click();assert.equal(await count(),'5');
   await cmd('entry-exhibit').click();assert.equal(await count(),'19');assert.equal(await canvas.getAttribute('data-selected'),'0');
@@ -53,8 +66,9 @@ try{
   }
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
-  await page.locator('#rd-category').selectOption('ecp_visual');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
+  await page.locator('#rd-category').selectOption('public_building');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
+  await page.locator('#rd-category').selectOption('');
   for(const type of ['ecp_field_office','ecp_service_canopy','ecp_portable_office','ecp_staff_kiosk','ecp_utility_unit']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1',type);
@@ -73,7 +87,7 @@ try{
     await cmd('undo').click();assert.equal(await count(),'1');
   }
   await page.locator('#rd-category').selectOption('road_safety');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),24);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),28);
   await page.locator('[data-asset-detail="road_stop_sign"]').click();
   const assetPreview=page.locator('#rd-asset-preview'),initialAsset=await assetPreview.innerHTML(),beforeAssetInspect=await canvas.innerHTML();
   for(const side of ['front','right','back','left']){await page.locator('[data-asset-view="'+side+'"]').click();assert.equal(await assetPreview.getAttribute('data-asset-preview-view'),side);assert.equal(await page.locator('[data-asset-view="'+side+'"]').getAttribute('aria-pressed'),'true');assert(await assetPreview.locator('polygon').count()>0);if(side==='back'){assert(await assetPreview.locator('polygon[fill="#909b97"]').count()>0,'rear metal backing');}}
@@ -109,7 +123,7 @@ try{
     await cmd('asset-close').click();
   }
   await cmd('new').click();await page.locator('[data-add="road_stop_marking"]').click();assert.equal(await count(),'1');
-  await page.locator('#rd-category').selectOption('architecture');
+  await page.locator('#rd-category').selectOption('');
   for(const type of ['landscape_gabion','architectural_precast_panel','architectural_slat_panel']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1',type);assert(await canvas.locator('[data-object] polygon').count()>8,type+' geometry');
@@ -117,7 +131,8 @@ try{
     await cmd('asset-close').click();
   }
   await page.locator('#rd-category').selectOption('public_entry');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),15);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),6);
+  await page.locator('#rd-category').selectOption('');
   for(const type of ['public_entry_canopy','public_glass_entry','visitor_kiosk','waiting_bench','accessibility_ramp','wayfinding_sign','luggage_trolley','reception_counter_low','queue_stanchion','visitor_information_board','entry_directory_screen','visitor_signin_table','waiting_seat_single','public_info_pedestal','public_entrance_mat']){
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1',type);
@@ -313,7 +328,7 @@ try{
   await page.keyboard.press('Shift+t');assert(await page.locator('#rd-palette').isVisible());
 
   await page.locator('#rd-category').selectOption('terrain');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),3);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),4);
   await cmd('new').click();await page.locator('[data-add="drainage_v"]').click();
   assert(await canvas.locator('[data-object] polygon').count()>=6);
   await page.locator('#rd-category').selectOption('');
@@ -363,7 +378,7 @@ try{
   await cmd('new').click();await cmd('fit').click();await cmd('example').click();
 
   assert(!(await page.locator('.rd-blast').textContent()).includes(lang==='zh'?'不计算爆炸压力':'no blast pressure'));
-  for(const [category,size] of [['rooms',5],['interior_equipment',5],['public_building',4],['aviation',4]]){
+  for(const [category,size] of [['rooms',5],['public_building',15],['aviation',5],['emergency',6]]){
     await page.locator('#rd-category').selectOption(category);
     assert.equal(await page.locator('#rd-palette [data-add]').count(),size);
   }
@@ -511,7 +526,7 @@ try{
   await page.waitForFunction(()=>document.querySelector('#rd-canvas')?.dataset.count==='180');
   assert.equal(await page.locator('#rd-objects button').count(),180);
   assert(Number(await canvas.getAttribute('data-rendered'))<180,'off-screen objects are culled');
-  await page.locator('#rd-object-category').selectOption('base');
+  await page.locator('#rd-object-category').selectOption('cargo');
   assert.equal(await page.locator('#rd-objects button').count(),90);
   await page.locator('#rd-object-search').fill('wood pallet');
   assert.equal(await page.locator('#rd-objects button').count(),90);
@@ -570,7 +585,7 @@ try{
   assert.notEqual(await page.locator('#rd-asset-preview').innerHTML(),beforeDetail);
   assert.equal(await count(),'5');
   await cmd('asset-related').click();
-  assert.equal(await page.locator('#rd-category').inputValue(),'locks');
+  assert.equal(await page.locator('#rd-category').inputValue(),'architecture');
   await page.locator('[data-asset-detail="steel_door"]').click();
   await cmd('asset-place').click();assert.equal(await count(),'6');
   await cmd('example').click();await page.locator('#rd-category').selectOption('electronic');
@@ -623,22 +638,24 @@ try{
   await page.locator('#rd-category').selectOption('furniture');
   await cmd('new').click();await page.locator('[data-add="office_desk"]').click();
   assert.equal(Number(await page.locator('[data-prop="w"]').inputValue()),1.6);
-  await page.locator('#rd-category').selectOption('base');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),11);
+  await page.locator('#rd-category').selectOption('barriers');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),16);
   await page.locator('#rd-category').selectOption('architecture');
   await cmd('new').click();await page.locator('[data-add="building"]').click();
   assert(await canvas.locator('[data-object] polygon').count()>200);
   await cmd('example').click();await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-category').selectOption('furniture');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),8);
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),12);
   await page.locator('#rd-category').selectOption('support');
-  for(const k of ['warning_beacon','audible_siren','work_spotlight','mobile_radio','safety_helmet','highvis_vest'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
+  for(const k of ['mobile_radio','backup_generator','battery_cabinet'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
+  await page.locator('#rd-category').selectOption('emergency');
+  for(const k of ['safety_helmet','highvis_vest','first_aid_kit'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
   await page.locator('#rd-category').selectOption('electronic');
   for(const k of ['video_amplifier','fiber_converter'])assert.equal(await page.locator('#rd-palette [data-add="'+k+'"]').count(),1);
   await page.locator('#rd-category').selectOption('cargo');
-  assert.equal(await page.locator('#rd-palette [data-add]').count(),5);
-  await page.locator('#rd-category').selectOption('lighting');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),6);
+  await page.locator('#rd-category').selectOption('lighting');
+  assert.equal(await page.locator('#rd-palette [data-add]').count(),7);
   await page.locator('#rd-category').selectOption('');
   await page.locator('#rd-search').fill('6-48');
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
