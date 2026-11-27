@@ -3,9 +3,35 @@
   "lang": "en",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a5-ab2d-c4b0dc23025e",
-  "snapshotDate": "2026-11-26",
-  "total": 141,
+  "snapshotDate": "2026-11-27",
+  "total": 143,
   "events": [
+    {
+      "slug": "2026-11-26-pakistan-winder-transport-protest",
+      "date": "2026-11-26",
+      "region": "Pakistan / Balochistan",
+      "category": "transport",
+      "title": "Pakistan: Winder transport operators continue protest",
+      "summary": "Local reporting describes a passenger transport association protest over checkpoint treatment and service disruption.",
+      "body": "The Balochistan Post reported on 26 November that transport operators rallied in Winder on 25 November as their protest entered its fourth day. The association alleged mistreatment during inspections and disruption to passenger services. Assessment: the dispute concerns friction between enforcement and transport operations; failed negotiations could further reduce service availability. Employers should confirm schedules, staff transfers and alternative transport with providers. Track association decisions, official responses and actual service restoration. Source: local media reporting.",
+      "eventDate": "2026-11-25",
+      "sourceUrls": [
+        "https://thebalochistanpost.net/2026/11/winder-transporters-rally-as-protest-against-coast-guard-treatment-enters-fourth-day/"
+      ]
+    },
+    {
+      "slug": "2026-11-26-saudi-jazan-refinery-disruption",
+      "date": "2026-11-26",
+      "region": "Saudi Arabia / Jazan",
+      "category": "energy",
+      "title": "Saudi Arabia: Jazan refinery partially suspends operations after attack",
+      "summary": "The energy ministry confirmed a fatal incident and temporary partial suspension at the refinery.",
+      "body": "Reuters reported on 26 November that the Saudi energy ministry confirmed a fire, the death of a Nepalese worker and a partial operational suspension following an attack. The Saudi-led coalition attributed the incident to the Houthis. Assessment: repeated energy-sector incidents increase both personnel and delivery risks. Actual supply consequences depend on the extent and duration of the outage. Procurement teams should confirm delivery commitments; site managers should review emergency communications and medical support. Indicators: operator restart notices, shipment revisions and contractor staffing arrangements.",
+      "eventDate": "2026-11-26",
+      "sourceUrls": [
+        "https://www.reuters.com/world/middle-east/saudi-led-coalition-says-houthis-attacked-aramcos-jazan-refinery-2026-11-26/"
+      ]
+    },
     {
       "slug": "2026-11-25-laos-vientiane-telecom-fraud-arrests",
       "date": "2026-11-25",

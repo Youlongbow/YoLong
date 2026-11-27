@@ -3,9 +3,35 @@
   "lang": "zh",
   "source": "RAVEN public Notion Security Monitor",
   "sourcePageId": "40531022-10ef-81a1-8f8f-c8ed95956a72",
-  "snapshotDate": "2026-11-26",
-  "total": 141,
+  "snapshotDate": "2026-11-27",
+  "total": 143,
   "events": [
+    {
+      "slug": "2026-11-26-pakistan-winder-transport-protest",
+      "date": "2026-11-26",
+      "region": "巴基斯坦／俾路支省",
+      "category": "transport",
+      "title": "巴基斯坦温德尔：客运经营者抗议持续",
+      "summary": "当地媒体报道，奎达至卡拉奇客运协会抗议检查站待遇，部分客运服务受到影响。",
+      "body": "The Balochistan Post于11月26日报道，客运经营者25日在温德尔集会，抗议已持续四天。协会指称检查过程中的不当待遇影响客运服务。分析：争议集中于执法与运输经营之间的摩擦，若协商失败，客运服务可能进一步缩减。企业应向承运商确认班次、员工接送及替代交通安排。追踪协会后续决定、主管部门回应及实际班次恢复情况。来源为当地媒体报道。",
+      "eventDate": "2026-11-25",
+      "sourceUrls": [
+        "https://thebalochistanpost.net/2026/11/winder-transporters-rally-as-protest-against-coast-guard-treatment-enters-fourth-day/"
+      ]
+    },
+    {
+      "slug": "2026-11-26-saudi-jazan-refinery-disruption",
+      "date": "2026-11-26",
+      "region": "沙特阿拉伯／吉赞",
+      "category": "energy",
+      "title": "沙特吉赞：炼厂遇袭后部分业务暂停",
+      "summary": "沙特能源部确认吉赞炼厂发生致命袭击，部分业务暂停，正在评估损失。",
+      "body": "路透社11月26日援引沙特能源部声明称，吉赞炼厂遇袭后发生火灾，一名尼泊尔员工死亡，部分业务暂时停止。沙特领导的联军将事件归责于胡塞武装。分析：连续能源设施事件使企业面临人员安全与供应履约的双重压力。实际供应影响取决于停运范围及恢复周期。采购部门应向供应商确认交付安排，现场管理层应复核员工应急联络与医疗保障。追踪指标：运营商复产公告、装运计划调整、承包商人员安排。",
+      "eventDate": "2026-11-26",
+      "sourceUrls": [
+        "https://www.reuters.com/world/middle-east/saudi-led-coalition-says-houthis-attacked-aramcos-jazan-refinery-2026-11-26/"
+      ]
+    },
     {
       "slug": "2026-11-25-laos-vientiane-telecom-fraud-arrests",
       "date": "2026-11-25",
