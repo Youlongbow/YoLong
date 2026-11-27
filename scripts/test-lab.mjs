@@ -54,6 +54,28 @@ try{
 
   await page.locator('#rd-category').selectOption('');
 
+  // Empty-shell mode is reversible and retained by scene storage.
+  await cmd('new').click();await page.locator('[data-add="prefab_construction_office"]').click();
+  const prefab=canvas.locator('[data-object]'),closedPrefab=await prefab.innerHTML();
+  await cmd('prefab-roof').click();assert.equal(await count(),'1');assert.notEqual(await prefab.innerHTML(),closedPrefab);
+  assert.equal(await cmd('prefab-roof').getAttribute('aria-pressed'),'true');
+  await cmd('save').click();await cmd('new').click();await cmd('load').click();
+  await page.locator('#rd-objects button[data-select]').first().click();
+  assert.equal(await cmd('prefab-roof').getAttribute('aria-pressed'),'true');
+  await cmd('prefab-roof').click();assert.equal(await prefab.innerHTML(),closedPrefab);
+  await cmd('toggle-roofs').click();assert.equal(await count(),'1');assert.notEqual(await prefab.innerHTML(),closedPrefab);
+  await cmd('toggle-roofs').click();assert.equal(await prefab.innerHTML(),closedPrefab);
+  // An array includes its source, uses one undo transaction and creates independent objects.
+  await cmd('new').click();await page.locator('[data-add="floor_tile"]').click();
+  await page.locator('.rd-array-copy summary').click();
+  await page.locator('#rd-array-columns').fill('3');await page.locator('#rd-array-rows').fill('2');
+  await page.locator('#rd-array-gap-x').fill('.5');await page.locator('#rd-array-gap-z').fill('.5');
+  await cmd('array-copy').click();assert.equal(await count(),'6');
+  assert.equal(await canvas.getAttribute('data-selected'),'6');
+  await cmd('undo').click();assert.equal(await count(),'1');
+  await cmd('redo').click();assert.equal(await count(),'6');
+  await cmd('example').click();assert.equal(await count(),'5');
+
   await cmd('architecture-gallery').click();assert.equal(await count(),'10');assert.equal(await canvas.getAttribute('data-selected'),'0');
   assert.equal(await canvas.locator('[data-object]').count(),10);
   await page.locator('#rd-object-category').selectOption('architecture');assert.equal(await page.locator('#rd-objects button[data-select]').count(),9);
