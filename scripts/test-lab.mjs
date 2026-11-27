@@ -271,6 +271,12 @@ try{
     await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
     assert.equal(await count(),'1');assert(await canvas.locator('[data-object] polygon').count()>12);
     assert(await canvas.locator('[data-object] .rd-tower-ladder polygon').count()>30,'ladder geometry');
+    const gpuPreview=page.locator('#rd-gpu');
+    if(process.env.LAB_REQUIRE_GPU==='1'){assert.equal(await cmd('gpu').getAttribute('aria-pressed'),'true','depth-buffer automatically enabled for tall viewing assets');assert(Number(await gpuPreview.getAttribute('data-triangles'))>60);}
+    await page.locator('#rd-yaw').fill('90');await page.locator('#rd-yaw').dispatchEvent('change');
+    assert(await canvas.locator('[data-object] .rd-tower-ladder polygon').count()>30,'ladder remains present after rotation');
+    await page.locator('#rd-yaw').fill('0');await page.locator('#rd-yaw').dispatchEvent('change');
+
     await page.locator('[data-asset-detail="'+type+'"]').click();
     assert(await page.locator('#rd-asset-preview polygon').count()>12);
     await cmd('asset-close').click();
