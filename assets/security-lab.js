@@ -582,6 +582,10 @@ function standingFigureMesh(role='person'){
  loft([[0,.925,-.025,.192,.17],[0,.966,-.018,.174,.17],[0,.990,-.014,.125,.13],[0,1,-.014,.045,.06]],hair);
  for(const side of [-1,1])loft([[side*.181,.874,0,.035,.045],[side*.193,.90,0,.037,.049],[side*.177,.921,0,.027,.032]],skin);
  loft([[0,.884,.179,.033,.018],[0,.907,.180,.027,.031],[0,.928,.166,.014,.016]],skin);
+ // Civilian apparel details: belt, cuffs, and distinct hairstyle geometry.
+ loft([[0,.475,0,.289,.177],[0,.492,0,.302,.202],[0,.506,0,.295,.195]],'#45484a');
+ for(const side of [-1,1])loft([[side*.38,.425,0,.076,.086],[side*.38,.449,0,.079,.087]],shirt);
+ if(role==='civilian_woman'){loft([[0,.77,-.105,.10,.09],[0,.84,-.12,.15,.13],[0,.93,-.075,.19,.16],[0,.98,-.025,.15,.14]],hair);}
  return{vertices,faces,colours};
 }
 const personAsset=normalizeAsset(standingFigureMesh());
