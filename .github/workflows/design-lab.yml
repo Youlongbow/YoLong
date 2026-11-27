@@ -12,6 +12,7 @@ on:
       - 'scripts/build.mjs'
       - 'scripts/seo.mjs'
       - 'scripts/test-lab.mjs'
+      - 'scripts/test-lab-people.mjs'
       - '.github/workflows/design-lab.yml'
   workflow_dispatch:
 jobs:
@@ -37,7 +38,9 @@ jobs:
         env:
           LAB_CAPTURE_DIR: lab-visual-review
           LAB_REQUIRE_GPU: '1'
-        run: node scripts/test-lab.mjs
+        run: |
+          node scripts/test-lab.mjs
+          node scripts/test-lab-people.mjs
       - name: Preserve visual review captures
         if: always()
         uses: actions/upload-artifact@v4
