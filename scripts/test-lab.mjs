@@ -741,6 +741,22 @@ try{
   assert.equal(await page.locator('#rd-palette [data-add]').count(),0,'source page number is not searchable');
   await page.locator('#rd-search').fill('');
   assert.equal(await page.locator('#rd-palette [data-add] svg').count(),297);
+  const invalidThumbnails=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.flatMap(n=>{
+    const svg=n.querySelector('svg'),faces=[...svg.querySelectorAll('polygon')];
+    const bad=faces.some(p=>/(?:NaN|Infinity|undefined)/.test(p.getAttribute('points')||'')||!(p.getAttribute('points')||'').trim());
+    return bad?[n.dataset.add]:[];
+  }));
+  assert.deepEqual(invalidThumbnails,[],'all 297 model thumbnails have finite projected polygon coordinates');
+  for(const type of ['warehouse','portable_cabin']){
+    await cmd('new').click();await page.locator('[data-add="'+type+'"]').click();
+    const model=canvas.locator('[data-object]');
+    assert(await model.locator('polygon').count()>120,type+' continuous roof and facade detailing');
+    const before=await model.innerHTML();
+    await page.locator('[data-prop="r"]').fill('45');await page.locator('[data-prop="r"]').press('Tab');
+    assert.notEqual(await model.innerHTML(),before,type+' orientation-aware shading');
+    assert(!/(?:NaN|Infinity|undefined)/.test(await model.innerHTML()),type+' finite rotated geometry');
+  }
+
   const newTypes=await page.locator('#rd-palette [data-add]').evaluateAll(nodes=>nodes.map(n=>n.dataset.add).filter(k=>!['building','room','wall','door','window','road','platform','fence','gate','bollard','camera','light','reader','cabinet','counter','car','truck','bus','person'].includes(k)));
   assert.equal(newTypes.length,278);
   for(const type of newTypes){
@@ -749,6 +765,8 @@ try{
    assert.equal(await count(),'1',type);
    const object=canvas.locator('[data-object]');
    assert(await object.locator('polygon,line').count()>1,type+' has distinct geometry');
+   assert(!(await object.locator('polygon').evaluateAll(nodes=>nodes.some(n=>/(?:NaN|Infinity|undefined)/.test(n.getAttribute('points')||'')))),type+' finite projected geometry');
+
    if(['office_desk','office_chair','sofa','round_table','bookshelf','filing_cabinet','single_bed','planter'].includes(type)){
      assert(await object.locator('polygon').count()>100,type+' indexed mesh detail');
      assert((await page.locator('#rd-inspector').textContent()).includes(lang==='zh'?'原创网格资产':'Original mesh asset'));
