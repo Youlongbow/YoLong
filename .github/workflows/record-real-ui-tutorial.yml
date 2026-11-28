@@ -2,11 +2,15 @@ name: RAVEN actual UI tutorial recording
 on:
   push:
     branches: [tutorial/real-ui-recording]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   record:
+    if: github.event_name != 'pull_request' || github.head_ref == 'tutorial/real-ui-recording'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
