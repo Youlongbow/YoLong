@@ -1,0 +1,86 @@
+name: Record and publish English RAVEN tutorial
+on:
+  pull_request:
+    branches: [main]
+    types: [synchronize, reopened]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  record:
+    if: github.event_name == 'workflow_dispatch' || (github.head_ref == 'tutorial/real-ui-recording' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Use latest production editor
+        run: |
+          git fetch origin main
+          git show origin/main:assets/security-lab.js > assets/security-lab.js
+      - name: Install recording tools
+        run: |
+          pip install playwright pillow edge-tts
+          python -m playwright install --with-deps chromium
+          sudo apt-get install -y ffmpeg fonts-noto-cjk espeak-ng
+      - name: Record actual English editor
+        run: python scripts/record-real-ui-tutorial-en.py
+      - name: Validate English media
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('tutorial-output-en')
+          info=json.loads((p/'recording-info.json').read_text())
+          assert (p/'RAVEN_Real_UI_EN_Narrated.mp4').stat().st_size>100000
+          assert (p/'preview.png').stat().st_size>1000
+          assert any(s['type']=='audio' and s['codec']=='aac' for s in info['streams'])
+          assert any(s['type']=='video' and s['codec']=='h264' for s in info['streams'])
+          assert len(info['narration_cues'])>=9
+          assert 50<info['duration_seconds']<180
+          assert 'Welcome to' in info['narration_cues'][0]['text']
+          print(info['duration_seconds'], info['voice_engine'])
+          PY
+      - name: Upload English video and preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: RAVEN-English-UI-tutorial
+          path: tutorial-output-en/
+          if-no-files-found: error
+      - name: Publish both languages to main
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B tutorial-publish-en origin/main
+          mkdir -p assets/tutorial
+          cp tutorial-output-en/RAVEN_Real_UI_EN_Narrated.mp4 assets/tutorial/raven-quick-start-en.mp4
+          cp tutorial-output-en/preview.png assets/tutorial/raven-quick-start-en.png
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('assets/security-lab.js')
+          s=p.read_text()
+          secs=round(json.loads(Path('tutorial-output-en/recording-info.json').read_text())['duration_seconds'])
+          s=s.replace('Quick start · Chinese narrated tutorial (79 sec)',f'Quick start · English video tutorial ({secs} sec)')
+          s=s.replace('Mandarin narration with Chinese captions.','English narration with English captions.')
+          for ext in ['mp4','png']:
+              old=f'/assets/tutorial/raven-quick-start-cn.{ext}'
+              new="/assets/tutorial/raven-quick-start-${z?'cn':'en'}."+ext
+              s=s.replace(old,new)
+          assert "raven-quick-start-${z?'cn':'en'}.mp4" in s
+          assert "raven-quick-start-${z?'cn':'en'}.png" in s
+          assert 'Chinese narrated tutorial' not in s
+          p.write_text(s)
+          PY
+          test -s assets/tutorial/raven-quick-start-cn.mp4
+          test -s assets/tutorial/raven-quick-start-cn.png
+          node --input-type=module --check < assets/security-lab.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/security-lab.js assets/tutorial/raven-quick-start-en.mp4 assets/tutorial/raven-quick-start-en.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish English RAVEN quick start and language-aware video player"
+          git push origin HEAD:main
