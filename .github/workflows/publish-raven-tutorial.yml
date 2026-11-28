@@ -1,0 +1,64 @@
+name: Publish verified RAVEN tutorial
+on:
+  pull_request:
+    branches: [main]
+    types: [synchronize, reopened]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    if: github.event_name == 'workflow_dispatch' || (github.head_ref == 'tutorial/real-ui-recording' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Retrieve and validate the exact narrated recording
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run download 46121313080 --repo "$GITHUB_REPOSITORY" -n RAVEN-real-UI-tutorial -D /tmp/raven-video
+          test -s /tmp/raven-video/RAVEN_Real_UI_CN_Narrated.mp4
+          test -s /tmp/raven-video/preview.png
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          info=json.loads(Path('/tmp/raven-video/recording-info.json').read_text())
+          assert any(x['type']=='audio' and x['codec']=='aac' for x in info['streams'])
+          assert any(x['type']=='video' and x['codec']=='h264' for x in info['streams'])
+          assert len(info['narration_cues'])>=9
+          assert 60 < info['duration_seconds'] < 180
+          print(info['voice_engine'],info['duration_seconds'])
+          PY
+          mkdir -p assets/tutorial
+          cp /tmp/raven-video/RAVEN_Real_UI_CN_Narrated.mp4 assets/tutorial/raven-quick-start-cn.mp4
+          cp /tmp/raven-video/preview.png assets/tutorial/raven-quick-start-cn.png
+      - name: Add responsive quick-start player to real editor
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/security-lab.js')
+          s=p.read_text()
+          marker=' <div class="rd-tool" id="rd-tool">'
+          player=''' <details class="rd-quick-start" style="margin:0 0 16px;border:1px solid #35444a;border-radius:8px;background:#172026;padding:14px 18px"><summary style="cursor:pointer;font-size:15px;font-weight:600;color:#dce8e8">${t('快速入门 · 中文操作教学（79秒）','Quick start · Chinese narrated tutorial (79 sec)')}</summary><p style="font-size:13px;color:#a2b0b4;margin:10px 0">${t('真实编辑器操作演示：底图、比例、模型、自由变换、GPU 预览及保存。','Actual editor walkthrough: map underlay, scale, models, free transform, GPU preview and saving. Mandarin narration with Chinese captions.')}</p><video controls playsinline preload="none" poster="/assets/tutorial/raven-quick-start-cn.png" style="display:block;width:100%;max-width:960px;height:auto;margin:12px auto 0;background:#10171b;border-radius:5px" aria-label="${t('安防设计平台操作教学','Design platform tutorial')}"><source src="/assets/tutorial/raven-quick-start-cn.mp4" type="video/mp4"></video><a href="/assets/tutorial/raven-quick-start-cn.mp4" download style="display:inline-block;margin-top:9px;color:#b9cdca;font-size:12px">${t('下载教学视频','Download tutorial')}</a></details>
+          '''
+          if 'class="rd-quick-start"' not in s:
+              assert s.count(marker)==1
+              s=s.replace(marker,player+marker)
+              p.write_text(s)
+          PY
+          node --input-type=module --check < assets/security-lab.js
+          git diff --stat
+      - name: Commit verified media and player to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/security-lab.js assets/tutorial/raven-quick-start-cn.mp4 assets/tutorial/raven-quick-start-cn.png
+          if git diff --cached --quiet; then echo "Already published"; exit 0; fi
+          git commit -m "Publish verified Chinese narrated RAVEN quick start video"
+          git push origin HEAD:main
+          git rev-parse HEAD
