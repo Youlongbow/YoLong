@@ -1,0 +1,31 @@
+name: RAVEN actual UI tutorial recording
+on:
+  push:
+    branches: [tutorial/real-ui-recording]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install recording tools
+        run: |
+          pip install playwright pillow
+          python -m playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg fonts-noto-cjk
+      - name: Record real editor
+        run: python scripts/record-real-ui-tutorial.py
+      - name: Upload video and preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: RAVEN-real-UI-tutorial
+          path: tutorial-output/
+          if-no-files-found: error
