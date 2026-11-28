@@ -20,10 +20,10 @@ jobs:
           python-version: '3.12'
       - name: Install recording tools
         run: |
-          pip install playwright pillow
+          pip install playwright pillow edge-tts
           python -m playwright install --with-deps chromium
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg fonts-noto-cjk
+          sudo apt-get install -y ffmpeg fonts-noto-cjk espeak-ng
       - name: Record real editor
         run: python scripts/record-real-ui-tutorial.py
       - name: Upload video and preview
